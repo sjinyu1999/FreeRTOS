@@ -452,8 +452,6 @@ FreeRTOS 的每个端口都有一个唯一的 portmacro.h 头文件，其中包�
 
 变量的前缀是它们的类型：
 
-
-
 - c 表示 char
 - s 表示 int16_t（short）
 
@@ -469,8 +467,6 @@ FreeRTOS 的每个端口都有一个唯一的 portmacro.h 头文件，其中包�
 ### 函数名
 
 函数以它们返回的类型和它们在其中定义的文件为前缀。 例如：
-
-
 
 - *v***Task**PrioritySet() 返回一个 void，并定义在 **task**.c 中。
 - *x***Queue**Receive() 返回一个 BaseType_t类型的变量，并定义在 **queue**.c 中。
@@ -530,14 +526,10 @@ FreeRTOS 源代码可以使用不同的编译器进行编译，所有编译器�
 
 FreeRTOS 是作为一组 C 源文件提供的，因此作为一名称职的 C 程序员是使用 FreeRTOS 的先决条件，因此本章假定读者熟悉以下概念：
 
-
-
 - 如何构建C项目，包括不同的编译和链接阶段。
 - 栈和堆是什么.
 
 - 标准 C 库 malloc() 和 free() 函数。
-
-
 
 ### 动态内存分配及其与 FreeRTOS 的相关性
 
@@ -558,8 +550,6 @@ FreeRTOS 是作为一组 C 源文件提供的，因此作为一名称职的 C �
 
 - 如果允许堆空间增长到其他变量使用的内存，它们可能是难以调试出来的错误来源。
 
-
-
 ### 动态内存分配的选项
 
 从 FreeRTOS V9.0.0 开始，内核对象可以在编译时静态分配，也可以在运行时动态分配：早期版本的FreeRTOS 使用内存池分配方案，从而在编译时预先分配不同大小的内存块池，然后由内存分配功能。 虽然这是在实时系统中使用的常见方案，但它被证明是许多支持请求的来源，主要是因为它无法有效地使用 RAM 以使其适用于非常小的嵌入式系统，因此该方案被放弃。
@@ -577,8 +567,6 @@ pvPortMalloc() 和 vPortFree() 是公共函数，因此也可以从应用程序�
 ### 范围
 
 本章的目的是让读者更好地理解：
-
-
 
 - 什么时候 FreeRTOS 分配RAM。
 - FreeRTOS 提供的 5 个内存分配方案示例。
@@ -612,7 +600,7 @@ heap_1 分配方案将一个简单数组细分为更小的块，因为调用了 
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635933600462-f47eedd8-7502-46fd-837d-bb8435e9b9a4.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635933600462-f47eedd8-7502-46fd-837d-bb8435e9b9a4.png)
 
 图5. 每次创建任务时从 heap_1 阵列分配的 RAM
 
@@ -633,13 +621,11 @@ heap_2.c 也可以通过细分由 configTOTAL_HEAP_SIZE 标注的数组来工作
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635933600757-8b0c9bed-ef35-4132-917b-1b2b2610d5c6.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635933600757-8b0c9bed-ef35-4132-917b-1b2b2610d5c6.png)
 
 图 6. 在创建和删除任务时，正在分配和释放来自 heap_2 数组的 RAM
 
 图 6 展示了创建，删除然后再创建任务时最佳拟合算法的工作原理。 参考图6：
-
-
 
 1. A 显示了创建了三个任务之后的数组。一个大的自由块仍在数组顶部。
 2. B 显示了一个任务被删除之后的数组。数组顶部的大型自由块仍然存在。 现在还有两个较小的空闲块，这是先前已分配给 TCB 和栈的任务，而现在已被删除。
@@ -669,13 +655,11 @@ heap_4 将相邻空闲块的（合并）组合成一个更大的块，最大限�
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635933600952-bda5943d-c3a2-410d-823b-9b6dbe693782.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635933600952-bda5943d-c3a2-410d-823b-9b6dbe693782.png)
 
 图 7. 正在分配并从 heap_4 数组中释放的 RAM
 
 图 7 演示了如何分配和释放具有内存合并工作的 heap_4 首次拟合算法。 参考图 7：
-
-
 
 1. A 显示了创建三个任务后的数组。 一个大的自由块保留在数组的顶部。
 2. B 显示了删除一个任务后的数组。巨大的自由块仍在数组顶部。还有一个空闲块，是先前已分配任务 TCB 和堆栈，现在已经删除。 请注意，与演示 heap_2 时不同，删除 TCB 时释放的内存以及删除堆栈时释放的内存不会保留为两个单独的空闲块，而是组合起来创建一个更大的单个空闲块。
@@ -686,36 +670,22 @@ heap_4 将相邻空闲块的（合并）组合成一个更大的块，最大限�
 1. E 显示队列被删除后的情况，这会自动释放已分配给已删除队列的内存。现在，用户分配块的任一侧都有可用内存。
 2. F 显示用户分配的内存已被释放后的情况。用户分配的块使用的内存已与任意一侧的空闲内存组合，创建一个更大的单个空闲块。
 
-
-
 heap_4 不是具有确定性的，但比 malloc() 和 free() 的大多数标准库实现更快。
 
 ### 设置 Heap_4 使用的数组的起始地址
 
 本节包含高级信息。若只是为了使用 heap_4，没有必要阅读或理解本节。
 
-
-
 有时，应用程序编写者需要将 heap_4 使用的数组放在特定的内存地址。例如，FreeRTOS 任务使用的堆栈是从堆中分配的，因此可能需要确保堆位于快速的内部存储器中， 而不是缓慢的外部存储器。
-
-
 
 默认情况下，heap_4 使用的数组在 heap_4.c 源文件中声明，其起始地址由链接器自动设置。 但是，如果在 FreeRTOSConfig.h 中将 configAPPLICATION_ALLOCATED_HEAP 编译时配置常量设置为 1，则必须由使用 FreeRTOS 的应用程序声明该数组。 如果数组声明为应用程序的一部分，则应用程序的编写者可以设置其起始地址。
 
-
-
 如果在 FreeRTOSConfig.h 中将 configAPPLICATION_ALLOCATED_HEAP 设置为 1，则必须在其中一个应用程序的源文件中声明一个名为 ucHeap 的 uint8_t 数组，其大小为 configTOTAL_HEAP_SIZE 设置。
-
-
 
 将变量放在特定内存地址所需的语法取决于所使用的编译器，因此请参阅编译器的文档。 两个编译器的示例如下：
 
-
-
 - 清单 2 显示 GCC 编译器声明数组所需的语法，并将数组放在名为 .my_heap 的内存部分中。
 - 清单 3 显示 IAR 编译器声明数组所需的语法，并将数组放在绝对地址 0x20000000 上 。
-
-
 
 ```c
 uint8_t ucHeap[ configTOTAL_HEAP_SIZE ] __attribute__ ( ( section( ".my_heap" ) ) );
@@ -733,8 +703,6 @@ uint8_t ucHeap[ configTOTAL_HEAP_SIZE ] @ 0x20000000;
 
 heap_5 用于分配和释放内存的算法与 heap_4 使用的算法相同。 与 heap_4 不同的是，heap_5 不限于从单个静态声明的数组中分配内存; heap_5 可以从多个独立的内存空间分配内存。 当运行 FreeRTOS 的系统提供的 RAM 在系统的内存映射中不显示为单个连续（无空间）块时，heap_5 非常有用。
 
-
-
 在编写本文时，heap_5 是唯一提供的内存分配方案，必须在调用 pvPortMalloc() 之前显式初始化。 使用 vPortDefineHeapRegions() API函数初始化 Heap_5。 当使用 heap_5 时，必须先调用 vPortDefineHeapRegions()，然后才能创建任何内核对象（任务，队列，信号量等）。
 
 ### vPortDefineHeapRegions() API函数
@@ -748,8 +716,6 @@ void vPortDefineHeapRegions(const HeapRegion_t *const pxHeapRegions );
 清单 4. vPortDefineHeapRegions() API 函数原型
 
 每个单独的存储区域由 HeapRegion_t 类型的结构描述。 所有可用内存区域的描述都作为 HeapRegion_t 结构数组传递给 vPortDefineHeapRegions()。
-
-
 
 ```verilog
 typedef struct HeapRegion
@@ -772,7 +738,7 @@ typedef struct HeapRegion
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635933600926-a8612b64-b6cf-48eb-85cf-c66cbe5404b0.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635933600926-a8612b64-b6cf-48eb-85cf-c66cbe5404b0.png)
 
 图 8. 内存映射
 
@@ -814,11 +780,7 @@ int main( void )
 
 清单 6. 一个 HeapRegion_t 结构数组，它们共同描述了 RAM 的 3 个区域
 
-
-
 虽然清单 6 正确描述了 RAM，但它没有演示一个可用的示例，因为它将所有 RAM 分配给堆，而没有 RAM 可供其他变量使用。
-
-
 
 构建项目时，构建过程的链接阶段会为每个变量分配一个 RAM 地址。 可供链接器使用的 RAM 通常由链接器配置文件（如链接描述文件）描述。 在图 8 B 中，假设链接器脚本包含有关 RAM1 的信息，但不包括有关 RAM2 或 RAM3 的信息。 因此，链接器在 RAM1 中放置了变量，只留下了地址为 0x0001nnnn 的 RAM1 部分可供 heap_5 使用。 0x0001nnnn 的实际值将取决于所链接的应用程序中包含的所有变量的总大小。 链接器使所有 RAM2 和所有 RAM3 都未使用，使得整个 RAM2 和整个 RAM3 可供 heap_5 使用。
 
@@ -1049,7 +1011,7 @@ int32_t lVariableExample = 0;
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635995518702-e2ed01de-83a9-45a8-a5df-fac1e30b3ba3.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635995518702-e2ed01de-83a9-45a8-a5df-fac1e30b3ba3.png)
 
 图 9. 顶层任务状态和转换
 
@@ -1177,7 +1139,7 @@ int main( void )
 
 执行该示例将生成图 10 中所示的输出。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635996495870-7a09af02-4122-4001-ab11-55e8dd15e680.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635996495870-7a09af02-4122-4001-ab11-55e8dd15e680.png)
 
 图 10. 执行示例 1 时生成的输出
 
@@ -1193,7 +1155,7 @@ int main( void )
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635996495578-50f6ccc4-f552-4309-8f1c-3e3845833ba9.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635996495578-50f6ccc4-f552-4309-8f1c-3e3845833ba9.png)
 
 图 11.两个示例 1 任务的实际执行模式
 
@@ -1347,7 +1309,7 @@ configTICK_RATE_HZ 的最佳值取决于正在开发的应用程序，但值通�
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635997524402-12ef733f-1066-4c7d-a98d-cf8ea78a2593.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635997524402-12ef733f-1066-4c7d-a98d-cf8ea78a2593.png)
 
 图 12. 执行序列展开以显示滴答中断执行
 
@@ -1409,7 +1371,7 @@ int main( void )
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635998116184-6714d06a-2dcc-4cef-8c0e-a5d6d5745263.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635998116184-6714d06a-2dcc-4cef-8c0e-a5d6d5745263.png)
 
 图 13. 以不同的优先级运行两个任务
 
@@ -1421,7 +1383,7 @@ int main( void )
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635998115879-33726541-8bb3-4b85-934b-c698858aaee9.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635998115879-33726541-8bb3-4b85-934b-c698858aaee9.png)
 
 图 14. 当一个任务的优先级高于另一个任务时的执行模式
 
@@ -1476,7 +1438,7 @@ FreeRTOS 的队列，二进制信号量，计数信号量，互斥量，递归�
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635998355516-0d90c553-da06-4c6c-80b1-b80e537ddfdd.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635998355516-0d90c553-da06-4c6c-80b1-b80e537ddfdd.png)
 
 图 15. 完整的任务状态机
 
@@ -1537,7 +1499,7 @@ const TickType_t xDelay250ms = pdMS_TO_TICKS( 250 );
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635998975518-5fca50bb-fe3a-4557-b451-5a8f1f374495.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635998975518-5fca50bb-fe3a-4557-b451-5a8f1f374495.png)
 
 图16.执行示例4时产生的输出 
 
@@ -1549,7 +1511,7 @@ const TickType_t xDelay250ms = pdMS_TO_TICKS( 250 );
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635998975820-725d737a-27b4-486c-89ab-c7c758bb8c67.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635998975820-725d737a-27b4-486c-89ab-c7c758bb8c67.png)
 
 图17. 任务使用vTaskDelay()代替NULL 循环时的执行顺序
 
@@ -1565,7 +1527,7 @@ const TickType_t xDelay250ms = pdMS_TO_TICKS( 250 );
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635998975351-cc37ae23-819c-4968-9d2a-44f926bfd9b0.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1635998975351-cc37ae23-819c-4968-9d2a-44f926bfd9b0.png)
 
 图 18.粗线表示例4中任务所执行的状态转换
 
@@ -1692,13 +1654,13 @@ const TickType_t xDelay3ms = pdMS_TO_TICKS( 3 );
 
 图 19 显示了示例 6 生成的输出，并通过图 20 中所示的执行顺序解释了观察到的行为。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636003548129-7c94f574-f7fc-4bbd-8a62-bab00cf22fa0.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636003548129-7c94f574-f7fc-4bbd-8a62-bab00cf22fa0.png)
 
 图 19. 执行示例 6 时生成的输出
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636003547829-6ab4f336-8e9c-465b-be34-3828bb8c9d77.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636003547829-6ab4f336-8e9c-465b-be34-3828bb8c9d77.png)
 
 图 20. 示例 6 的执行模式
 
@@ -1819,7 +1781,7 @@ const TickType_t xDelay250ms = pdMS_TO_TICKS( 250 );
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636004122657-a8018e6b-03d7-4323-9f8e-55587af3fb20.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636004122657-a8018e6b-03d7-4323-9f8e-55587af3fb20.png)
 
 图 21. 执行示例 7 时生成的输出
 
@@ -1976,13 +1938,13 @@ int main( void )
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636005149753-00f92ede-12e4-4676-9c1f-c1033c91be31.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636005149753-00f92ede-12e4-4676-9c1f-c1033c91be31.png)
 
 图 22. 运行示例 8 时的任务执行顺序
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636005149758-ae7dbbb5-5b42-498d-a9f2-657426972854.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636005149758-ae7dbbb5-5b42-498d-a9f2-657426972854.png)
 
 图 23. 执行示例 8 时产生的输出
 
@@ -2094,13 +2056,13 @@ void vTask2( void *pvParameters )
 
 清单 39. 示例 9 任务 2 的实现
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636005679119-d75bf7e7-93ac-4db3-a9cb-b7f58677a559.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636005679119-d75bf7e7-93ac-4db3-a9cb-b7f58677a559.png)
 
 图 24. 执行示例 9 的输出结果
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636005678926-6cd45eaf-06f1-4961-89ac-b416728bc6a0.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636005678926-6cd45eaf-06f1-4961-89ac-b416728bc6a0.png)
 
 图 25. 示例 9 的执行顺序
 
@@ -2112,7 +2074,7 @@ void vTask2( void *pvParameters )
 
 
 
-译者注：原文就是待完成。
+> 译者注：原文就是待完成。
 
 
 
@@ -2163,7 +2125,7 @@ void vTask2( void *pvParameters )
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636006163237-1d4e45b5-6947-4f62-abed-8c5843fc6685.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636006163237-1d4e45b5-6947-4f62-abed-8c5843fc6685.png)
 
 图 26. 执行模式在一个假设的应用程序中突出显示任务优先级和优先级，其中每个任务都被赋予了唯一的优先级
 
@@ -2181,7 +2143,7 @@ void vTask2( void *pvParameters )
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636006163243-98b7aa16-3853-47e8-9cad-6ede003b0e10.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636006163243-98b7aa16-3853-47e8-9cad-6ede003b0e10.png)
 
 图 27. 执行模式在一个假设的应用程序中突出显示任务优先级和时间切片，其中两个任务以相同的优先级运行
 
@@ -2207,7 +2169,7 @@ void vTask2( void *pvParameters )
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636006163221-747cec7a-77d0-4b45-901f-6312954d9970.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636006163221-747cec7a-77d0-4b45-901f-6312954d9970.png)
 
 图 28. 同一场景的执行模式如图 27 所示，但这次将 configIDLE_SHOULD_YIELD 设置为1
 
@@ -2239,7 +2201,7 @@ FreeRTOSConfig.h 设置将 FreeRTOS 调度程序配置为使用优先级抢占�
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636006430382-395d6c69-99e1-4193-84f9-1a7f47caa650.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636006430382-395d6c69-99e1-4193-84f9-1a7f47caa650.png)
 
 图 29. 执行模式，演示当不使用时间切片时，具有相同优先级的任务如何可以获得非常不同的处理时间量
 
@@ -2271,7 +2233,7 @@ FreeRTOSConfig.h 设置将 FreeRTOS 调度程序配置为使用优先级抢占�
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636006700649-8ef52549-2f45-48ad-89c1-0111cca7958b.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636006700649-8ef52549-2f45-48ad-89c1-0111cca7958b.png)
 
 图 30. 显示协作式调度程序行为的执行模式
 
@@ -2359,7 +2321,7 @@ FreeRTOSConfig.h 设置将 FreeRTOS 调度程序配置为使用优先级抢占�
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636007539867-7cde74d6-3c85-4ca7-8964-91adf229f12a.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636007539867-7cde74d6-3c85-4ca7-8964-91adf229f12a.png)
 
 图 31. 写入队列和从队列读取的示例序列
 
@@ -2659,13 +2621,13 @@ QueueHandle_txQueue;int main( void )
 
 发送到队列的两个任务都具有相同的优先级。 这导致两个发送任务依次将数据发送到队列。 例 10 中产生的输出如图 32 所示。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636009217986-4d4b1766-a395-47f3-b5ea-874aa265b6ed.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636009217986-4d4b1766-a395-47f3-b5ea-874aa265b6ed.png)
 
 图 32. 执行示例 10 产生的输出
 
 图 33 展示了执行的顺序
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636009217849-e08f6a41-477f-4e96-b904-7f536a748b7f.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636009217849-e08f6a41-477f-4e96-b904-7f536a748b7f.png)
 
 图 33 .示例 10 执行顺序
 
@@ -2675,7 +2637,7 @@ FreeRTOS 设计中常见的任务是从多个源接收数据，所以接收任�
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636009291854-192cb58f-4eef-407d-85e5-e542e10dc802.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636009291854-192cb58f-4eef-407d-85e5-e542e10dc802.png)
 
 图 34. 发送结构到队列的示例场景
 
@@ -2859,7 +2821,7 @@ int main( void )
 
 示例 11 生成的输出如图 35 所示。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636010272533-30942d14-dede-422f-a845-deb1f85342e5.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636010272533-30942d14-dede-422f-a845-deb1f85342e5.png)
 
 图 35. 示例 11 产生的输出
 
@@ -2867,7 +2829,7 @@ int main( void )
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636010257309-6a9aeb4f-b4f2-4080-b8b5-9f3140764004.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636010257309-6a9aeb4f-b4f2-4080-b8b5-9f3140764004.png)
 
 图 36. 示例 11 的执行顺序
 
@@ -3345,7 +3307,7 @@ char *pcReceivedString;
 
 图 37 显示了示例 12 产生的输出。可以看出，接收任务从两个发送任务接收字符串。vSenderTask1() 使用的阻塞时间是 vSenderTask2() 使用的块时间的一半，导致 vSenderTask1() 发送的字符串打印频率是 vSenderTask2() 发送的字符串的两倍。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636012137223-8409cebc-07e8-4a46-ab17-ccbebd5462e6.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636012137223-8409cebc-07e8-4a46-ab17-ccbebd5462e6.png)
 
 图 37. 执行示例 12 时产生的输出
 
@@ -3645,7 +3607,7 @@ void ATimerCallback( TimerHandle_t xTimer );
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636013705888-f6634080-ebab-4eda-aaca-bf13cc26a399.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636013705888-f6634080-ebab-4eda-aaca-bf13cc26a399.png)
 
 图 38一次性软件计时器和自动重新加载软件计时器之间的行为差异
 
@@ -3667,13 +3629,13 @@ xTimerDelete()接口函数的作用是：删除计时器。可以随时删除计
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636013705902-99800f84-ae67-440b-90c9-3310cac40bce.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636013705902-99800f84-ae67-440b-90c9-3310cac40bce.png)
 
 图39自动重新加载软件计时器状态和转换
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636013705551-9f9c00ea-ec01-4ccb-be7d-55253a1a817f.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636013705551-9f9c00ea-ec01-4ccb-be7d-55253a1a817f.png)
 
 图40一次性软件定时器状态和转换
 
@@ -3699,7 +3661,7 @@ xTimerDelete()接口函数的作用是：删除计时器。可以随时删除计
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636013974388-3c1f11a9-dd13-4d5e-b740-fd915ce0b6a0.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636013974388-3c1f11a9-dd13-4d5e-b740-fd915ce0b6a0.png)
 
 图41 软件定时器API函数使用定时器命令队列与RTOS守护程序任务通信
 
@@ -3713,7 +3675,7 @@ xTimerDelete()接口函数的作用是：删除计时器。可以随时删除计
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636013974334-7e306f7b-1f83-4107-85be-dee306722f04.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636013974334-7e306f7b-1f83-4107-85be-dee306722f04.png)
 
 图42 调用xTimerStart()的任务的优先级高于守护程序任务的优先级时的执行模式
 
@@ -3733,7 +3695,7 @@ xTimerDelete()接口函数的作用是：删除计时器。可以随时删除计
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636013974569-c3bbbfc2-83ff-4d93-9db7-9feb390934af.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636013974569-c3bbbfc2-83ff-4d93-9db7-9feb390934af.png)
 
 图43 当调用xTimerStart()的任务的优先级低于守护程序任务的优先级时的执行模式
 
@@ -3921,7 +3883,7 @@ TickType_t xTimeNow;
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636016723478-770313b8-648a-490e-8a2d-10d63175c4eb.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636016723478-770313b8-648a-490e-8a2d-10d63175c4eb.png)
 
 图44 执行示例13时产生的输出
 
@@ -4058,7 +4020,7 @@ uint32_t ulExecutionCount;
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636018371894-d9394688-5f72-4013-a729-fe5b572f9b11.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636018371894-d9394688-5f72-4013-a729-fe5b572f9b11.png)
 
 图45执行示例14时产生的输出
 
@@ -4149,7 +4111,7 @@ static BaseType_t xErrorDetected = pdFALSE;
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636019663078-040714ed-3f00-4f97-b1c8-1b9b9a3fd5cf.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636019663078-040714ed-3f00-4f97-b1c8-1b9b9a3fd5cf.png)
 
 图46. 启动和重置周期为6个滴答的软件计时器
 
@@ -4285,11 +4247,7 @@ TickType_t xTimeNow;
 
 清单86. 示例15中用于重置软件计时器的任务
 
-
-
 执行示例15时产生的输出如图47所示。参考图47：
-
-
 
 - 第一次按键发生在滴答计数为812的时候。当时打开了背光，启动了一次计时器。
 - 当滴答计数为1813、3114、4015和5016时，出现了进一步的按键。所有这些按键都会导致计时器在计时器到期之前被重置。
@@ -4298,7 +4256,7 @@ TickType_t xTimeNow;
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636020021564-3b9b3a22-9894-4fdd-a45e-7891522494d2.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636020021564-3b9b3a22-9894-4fdd-a45e-7891522494d2.png)
 
 图47执行示例15时产生的输出
 
@@ -4312,39 +4270,31 @@ TickType_t xTimeNow;
 
 ## 章节介绍和范围
 
+
+
 ### 事件
 
 嵌入式实时系统必须对源自环境的事件做出响应。例如，到达以太网外设的数据包（事件）可能需要传递到 TCP/IP 堆栈进行处理（操作）。非琐碎的系统必须服务于来自多个源的事件，所有这些源都有不同的处理开销和响应时间要求。在每种情况下，都必须对最佳事件处理实施策略作出判断：
-
-
 
 1. 如何检测事件？通常使用中断，但也可以轮询输入。
 2. 当使用中断时，中断服务程序（ISR）内部应执行多少处理，外部应执行多少处理？通常希望每个 ISR尽可能短。
 
 1. 如何将事件与主（非 ISR）代码通信，以及如何构造此代码以最佳地适应潜在异步事件的处理？
 
-
-
 FreeRTOS 不会对应用程序设计者强加任何特定的事件处理策略，但确实提供了允许以简单且可维护的方式实施所选策略的功能。
 
-
-
 重要的是区分任务的优先级和中断的优先级：
-
-
 
 - 任务是与运行 FreeRTOS 的硬件无关的软件功能。 应用程序编写者在软件中分配任务的优先级，软件算法（调度程序）决定哪个任务将处于运行状态。
 - 尽管是用软件编写的，但中断服务程序是硬件特性，因为硬件控制将运行哪个中断服务程序以及何时运行。 任务只有在没有 ISR 运行时才会运行，所以最低优先级的中断会中断最高优先级的任务，任务没有办法抢占 ISR。
 
-
-
 所有运行FreeRTOS的体系结构都能够处理中断，但有关中断条目和中断优先级分配的细节因体系结构而异。
+
+
 
 ### 范围
 
 本章旨在让读者更好地理解：
-
-
 
 - 哪些 FreeRTOS API 函数可以在中断服务程序中使用。
 - 将中断处理推迟到任务的方法。
@@ -4357,129 +4307,90 @@ FreeRTOS 不会对应用程序设计者强加任何特定的事件处理策略�
 
 
 
-
-
 ## 从 ISR 使用 FreeRTOS API
+
+
 
 ### 中断安全 API
 
 通常需要使用来自中断服务函数 (ISR) 的 FreeRTOS API 函数提供的功能，但许多 FreeRTOS API 函数执行在 ISR 内无效的操作——其中最值得注意的是放置调用 API函数进入Blocked状态； 如果从 ISR 调用 API 函数，则它不是从任务调用的，因此没有调用任务可以置于阻塞状态。 FreeRTOS 通过提供一些 API 函数的两个版本来解决这个问题； 一种用于任务的版本，一种用于 ISR 的版本。 旨在从 ISR 使用的函数在其名称后加上“FromISR”。
 
-
-
 注意：切勿从 ISR 调用名称中不含“FromISR”的 FreeRTOS API 函数。
+
+
 
 ### 使用单独的中断安全 API 的好处
 
 具有用于中断的单独 API 可以使任务代码更高效，ISR 代码更有效，并且中断输入更简单。 要了解为什么，考虑另一种解决方案，它将提供一个API函数的单一版本，可以从一个任务和一个ISR调用。如果可以从任务和ISR调用相同版本的API函数，则：
 
-
-
 - API 函数需要额外的逻辑来确定它们是从任务还是从 ISR 调用的。 额外的逻辑会在函数中引入新的路径，使函数变得更长、更复杂、更难测试。
 - 当从任务调用函数时，某些 API 函数参数将过时，而当从 ISR 调用函数时，其他函数参数将过时。
-
 - 每个 FreeRTOS 移植都需要提供一种机制来确定执行上下文（任务或 ISR）。
 - 难以确定执行上下文（任务或 ISR）的架构将需要额外的、浪费的、使用更复杂的非标准中断入口代码，允许软件提供执行上下文。
+
+
 
 ### 使用单独的中断安全 API 的缺点
 
 拥有两个版本的某些 API 函数可以提高任务和 ISR 的效率，但会带来新的问题；有时需要从任务和 ISR 调用不属于 FreeRTOS API 的函数，但需要使用 FreeRTOS API。
 
-
-
 这通常只有在集成第三方代码时才会出现问题，因为这是软件设计不受应用程序编写者控制的唯一时候。 如果这确实成为一个问题，那么可以使用以下技术之一来克服该问题：
-
-
 
 1. 将中断处理推迟到任务，因此 API 函数只能从任务的上下文中调用。
 2. 如果您使用的是支持中断嵌套的 FreeRTOS 移植，则使用以 “FromISR” 结尾的 API 函数版本，因为该版本可以从任务和 ISR 中调用（反之则不然，不以 “FromISR” 结尾的 API 函数 不能从 ISR 调用“FromISR”）。
-
 1. 第三方代码通常包括一个 RTOS 抽象层，可以实现该抽象层来测试调用函数的上下文（任务或中断），然后调用适合该上下文的 API 函数。
+
+
 
 ### xHigherPriorityTaskWoken 参数
 
 本节介绍了 xHigherPriorityTaskWoken 参数的概念。 如果您尚未完全理解本节，请不要担心，因为以下部分提供实际示例。
 
-
-
 如果上下文切换是由中断执行的，那么中断退出时运行的任务可能与进入中断时运行的任务不同——中断将中断一个任务，但返回到另一个任务。
-
-
 
 一些 FreeRTOS API 函数可以将任务从阻塞状态移动到就绪状态。 这已经在诸如 xQueueSendToBack() 之类的函数中看到了，如果有一个任务在阻塞状态等待数据在主题队列上可用，它将解除对任务的阻塞。
 
-
-
 如果被 FreeRTOS API 函数解除阻塞的任务的优先级高于处于运行状态的任务的优先级，那么根据 FreeRTOS 调度策略，应该切换到更高优先级的任务。 实际切换到更高优先级任务的时间取决于调用 API 函数的上下文：
-
-
 
 - 如果从任务中调用 API 函数
 
-
-
-如果在 FreeRTOSConfig.h 中将 configUSE_PREEMPTION 设置为 1，那么在 API 函数中会自动切换到更高优先级的任务——所以在 API 函数退出之前。 这已经在图 43 中看到，其中写入定时器命令队列导致在写入命令队列的函数退出之前切换到 RTOS 守护程序任务。
-
-
+​       如果在 FreeRTOSConfig.h 中将 configUSE_PREEMPTION 设置为 1，那么在 API 函数中会自动切换到更高优先级的任务——所以在 API 函数退出之前。 这已     经在图 43 中看到，其中写入定时器命令队列导致在写入命令队列的函数退出之前切换到 RTOS 守护程序任务。
 
 - 如果从中断调用 API 函数
 
-
-
-中断内不会自动切换到更高优先级的任务。 相反，设置了一个变量来通知应用程序编写者应该执行上下文切换。 中断安全 API 函数（以 “FromISR” 结尾的函数）有一个名为 pxHigherPriorityTaskWoken 的指针参数，用于此目的。
-
-
+​       中断内不会自动切换到更高优先级的任务。 相反，设置了一个变量来通知应用程序编写者应该执行上下文切换。 中断安全 API 函数（以 “FromISR” 结尾的函数）有一个名为 pxHigherPriorityTaskWoken 的指针参数，用于此目的。
 
 如果应该执行上下文切换，则中断安全 API 函数会将 *pxHigherPriorityTaskWoken 设置为 pdTRUE。 为了能够检测到这种情况，pxHigherPriorityTaskWoken 指向的变量在第一次使用之前必须初始化为 pdFALSE。
 
-
-
 如果应用程序编写者选择不从 ISR 请求上下文切换，则更高优先级的任务将保持就绪状态，直到调度程序下次运行——在最坏的情况下将在下一次滴答中断期间。
-
-
 
 FreeRTOS API 函数只能将 *pxHighPriorityTaskWoken 设置为 pdTRUE。 如果一个 ISR 调用了多个 FreeRTOS API 函数，那么可以在每个 API 函数调用中传递相同的变量作为 pxHigherPriorityTaskWoken 参数，并且该变量只需要在第一次使用之前初始化为 pdFALSE。
 
-
-
 在 API 函数的中断安全版本中，上下文切换不会自动发生有几个原因：
-
-
 
 1. 避免不必要的上下文切换：在任务需要执行任何处理之前，中断可能会执行多次。 例如，考虑一个任务处理一个由中断驱动的 UART 接收到的字符串的场景； 每次接收到一个字符时，UART ISR 都切换到任务是一种浪费，因为任务只有在接收到完整字符串后才能执行。
 
+2. 控制执行序列：中断可能偶尔发生，而且时间不可预测。 专业的 FreeRTOS 用户可能希望暂时避免在其应用程序的特定点不可预测地切换到不同的任务——尽管这也可以使用 FreeRTOS 调度程序锁定机制来实现。
 
+3. 可移植性：它是可以跨所有 FreeRTOS 移植使用的最简单的机制。
 
-1. 控制执行序列：中断可能偶尔发生，而且时间不可预测。 专业的 FreeRTOS 用户可能希望暂时避免在其应用程序的特定点不可预测地切换到不同的任务——尽管这也可以使用 FreeRTOS 调度程序锁定机制来实现。
-2. 可移植性：它是可以跨所有 FreeRTOS 移植使用的最简单的机制。
+4. 效率：面向较小处理器架构的端口仅允许在 ISR 的最后请求上下文切换，而消除该限制将需要额外且更复杂的代码。 它还允许在同一 ISR 内多次调用 FreeRTOS API 函数，而不会在同一 ISR 内生成多个上下文切换请求。
 
-
-
-1. 效率：面向较小处理器架构的端口仅允许在 ISR 的最后请求上下文切换，而消除该限制将需要额外且更复杂的代码。 它还允许在同一 ISR 内多次调用 FreeRTOS API 函数，而不会在同一 ISR 内生成多个上下文切换请求。
-
-
-
-1. 在 RTOS 滴答定时中断执行：正如本书后面将看到的，可以将应用程序代码添加到 RTOS 滴答中断中。 尝试在滴答中断内进行上下文切换的结果取决于正在使用的 FreeRTOS 移植。 充其量，它会导致对调度程序的不必要调用。
-
-
+5. 在 RTOS 滴答定时中断执行：正如本书后面将看到的，可以将应用程序代码添加到 RTOS 滴答中断中。 尝试在滴答中断内进行上下文切换的结果取决于正在使用的 FreeRTOS 移植。 充其量，它会导致对调度程序的不必要调用。
 
 使用 pxHigherPriorityTaskWoken 参数是可选的。 如果不需要，则将 pxHigherPriorityTaskWoken 设置为 NULL。
+
+
 
 ### portYIELD_FROM_ISR() 和 portEND_SWITCHING_ISR() 宏
 
 本节介绍用于从 ISR 请求上下文切换的宏。 如果您尚未完全理解本节，请不要担心，因为以下部分提供实际示例。
 
-
-
 taskYIELD() 是一个宏，可以在任务中调用以请求上下文切换。 portYIELD_FROM_ISR() 和 portEND_SWITCHING_ISR() 都是 taskYIELD() 的中断安全版本。 portYIELD_FROM_ISR() 和 portEND_SWITCHING_ISR() 都以同样的方式使用，并且做同样的事情。 某些 FreeRTOS 移植仅提供两个宏之一。 较新的 FreeRTOS 移植提供这两种宏。本书中的示例使用 portYIELD_FROM_ISR()。
-
-1
 
 ```verilog
 portEND_SWITCHING_ISR( xHigherPriorityTaskWoken );
 ```
-
-
 
 清单 87. portEND_SWITCHING_ISR() 宏 
 
@@ -4487,19 +4398,11 @@ portEND_SWITCHING_ISR( xHigherPriorityTaskWoken );
 portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 ```
 
-
-
 清单 88. portYIELD_FROM_ISR() 宏
 
-
-
-从中断安全 API 函数传出的 xHigherPriorityTaskWoken 参数可以直接用作调用 portYIELD_FROM_ISR()中的参数。
-
-
+> 从中断安全 API 函数传出的 xHigherPriorityTaskWoken 参数可以直接用作调用 portYIELD_FROM_ISR()中的参数。
 
 如果 portYIELD_FROM_ISR()xHigherPriorityTaskWoken 参数是 pdFALSE（0），则不请求上下文切换，并且宏不起作用。 如果 portYIELD_FROM_ISR()xHigherPriorityTaskWoken 参数不是 pdFALSE，则请求上下文切换，并且处于 Running 状态的任务可能会更改。 中断将始终返回到处于运行状态的任务，即使在中断执行期间处于运行状态的任务发生了变化。
-
-
 
 大多数 FreeRTOS 移植允许在 ISR 内的任何位置调用 portYIELD_FROM_ISR()。 一些 FreeRTOS 移植（主要用于较小架构的端口）仅允许在 ISR 的最后调用 portYIELD_FROM_ISR()。
 
@@ -4509,47 +4412,30 @@ portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 
 保持 ISR 尽可能短通常被认为是最佳实践。 原因包括：
 
-
-
 - 即使任务已被分配非常高的优先级，如果硬件不提供中断，则它们只会运行。
 - ISR 可以中断（添加“抖动”）任务的开始时间和执行时间。
-
 - 根据运行 FreeRTOS 的架构，在执行 ISR 时可能无法接受任何新中断，或至少是新中断的子集。
 - 应用程序编写者需要考虑并防范任务和 ISR 同时访问变量、外设和内存缓冲区等资源的后果。
-
 - 一些 FreeRTOS 移植允许中断嵌套，但中断嵌套会增加复杂性并降低可预测性。中断越短，嵌套的可能性就越小。
-- 
 
 中断服务程序必须记录中断的原因，并清除中断。 中断所需的任何其他处理通常可以在任务中执行，从而允许中断服务程序尽可能快地退出。这称为“延迟中断处理”，因为中断所需的处理从“延迟”开始。 任务的 ISR。
 
-
-
 将中断处理推迟到任务还允许应用程序编写者优先处理相对于应用程序中其他任务的处理，并使用所有 FreeRTOS API 函数。
-
-
 
 如果中断处理的任务的优先级高于任何其他任务的优先级，则处理将立即执行，就像处理已在 ISR 本身中执行一样。 这种情况如图 48 所示，其中任务 1 是一个正常的应用程序任务，任务 2 是中断处理被推迟到的任务。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636075883656-39b14edf-eb77-4a3d-b477-c442fc65c0e8.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636075883656-39b14edf-eb77-4a3d-b477-c442fc65c0e8.png)
 
 图 48. 高优先级任务中的中断处理
 
-
-
 在图 48 中，中断处理从时间 t2 开始，实际上在时间 t4 结束，但只有时间 t2 和 t3 之间的时间段用于 ISR。 如果未使用延迟中断处理，则时间 t2 和 t4 之间的整个时间段都将花费在 ISR 中。
 
-
-
 关于何时最好执行 ISR 中的中断所需的所有处理以及何时最好将部分处理推迟到任务，没有绝对的规则。 在以下情况下将处理推迟到任务最有用：
-
-
 
 - 中断所需的处理并非微不足道。 例如，如果中断只是存储模数转换的结果，那么几乎可以肯定这最好在 ISR 内部执行，但如果转换结果还必须通过软件过滤器，那么它可能是最好在任务中执行过滤器。
 - 中断处理可以方便地执行 ISR 内部无法执行的操作，例如写入控制台或分配内存。
 
 - 中断处理不是确定性的——这意味着事先不知道处理需要多长时间。
-
-
 
 以下各节描述并演示了本章到目前为止介绍的概念，包括可用于实现延迟中断处理的 FreeRTOS 功能。
 
@@ -4559,31 +4445,21 @@ portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 
 中断安全版本的Binary Semaphore API可以被用来在每次特定的中断发生时解除对任务的封锁。有效地使任务与中断同步。这使得大部分的中断事件处理在同步任务中实现。只有非常快和短的部分直接留在ISR中。如上一节所述，二进制信号是被用来 “推迟”中断处理的到一个任务1。
 
-
-
 使用直接到任务的通知将一个任务从中断中解禁，比使用Binary Semaphore更有效率。直接到任务的通知在第9章 "任务通知 "中才会涉及。
-
-
 
 正如之前在图48中所展示的，如果中断处理是特别关键的时间，那么可以设置延迟处理任务的优先级，以确保该任务总是优先于系统中的其他任务。然后，ISR可以被实现，包括对 portYIELD_FROM_ISR() ，确保ISR直接返回到中断处理的任务中。这样做的效果是确保整个事件处理的在时间上连续执行（没有中断），这就像所有的事件都是在ISR本身。图49重复了图48中的情景，但文字被更新为描述如何使用semaphore来控制延迟处理任务的执行。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636079382522-076e62b6-ff99-42b3-9216-0ffa86e99374.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636079382522-076e62b6-ff99-42b3-9216-0ffa86e99374.png)
 
 图49. 使用二进制信号来实现延迟的中断处理
 
-
-
 延迟处理任务使用一个阻塞的 "take" 调用到 semaphore ，作为一种手段进入阻塞状态以等待事件的发生。当事件发生时，ISR在同一信号上使用 "give" 操作来解除对任务的封锁，这样所需的事件处理可以继续进行。
-
-
 
 “接受信号”和“给予信号”是具有不同含义的概念根据它们的使用情况，有不同的含义。在这种中断同步的情况下，binary Semaphore在概念上可以被认为是一个长度为1的队列。该队列可以在任何时候都最多包含一个项，所以总是要么是空的，要么是满的（hence, binary）。通过调用 xSemaphoreTake() ，中断处理被推迟到的任务有效地试图用一个阻塞时间从队列中读取，如果队列是空的，则导致任务进入阻塞状态。当事件发生时，ISR使用 xSemaphoreGiveFromISR() 函数将一个令牌（semaphore）放入队列，使队列变满。这将导致任务退出阻塞状态并移除令牌，使队列再次变空。当任务完成其处理后，它再次尝试从队列中读出并发现队列是空的，于是重新进入阻塞状态以等待下一个事件。这个序列在图50中展示。
 
-
-
 图50显示了中断“给出”信号，尽管它并没有首先“拿走”它，以及任务“拿”走了信号，但没有把它送回去。这就是为什么这种情况被描述为在概念上类似于向队列中写和从队列中读。它经常引起混淆因为它并不遵循与其他信号使用场景相同的规则，在其他场景中，一个任务使用semaphore的任务必须一直把它送回来--比如第7章中资源管理描述的场景。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636081992050-7c154d1a-1644-4f15-978d-aefaf283a81c.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636081992050-7c154d1a-1644-4f15-978d-aefaf283a81c.png)
 
 图50. 使用binary semaphore使一个任务与中断同步
 
@@ -4593,11 +4469,7 @@ portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 
 FreeRTOS V9.0.0还包括 xSemaphoreCreateBinaryStatic() 函数，该函数在编译时分配内存。所需的内存，以便在编译时静态地创建一个二进制信号：对所有各种类型的FreeRTOS semaphore的句柄都存储在一个SemaphoreHandle_t类型的变量中。
 
-
-
 在使用semaphore之前，必须先创建它。要创建一个binary semaphore，请使用 xSemaphoreCreateBinary() API函数1。
-
-
 
 一些Semaphore API函数实际上是宏，而不是函数。为了简单起见，在本书中被称为函数。
 
@@ -4606,8 +4478,6 @@ SemaphoreHandle_t xSemaphoreCreateBinary( void );
 ```
 
 清单89. xSemaphoreCreateBinary() API函数原型
-
-
 
 表 33. xSemaphoreCreateBinary() 的返回值
 
@@ -4619,11 +4489,7 @@ SemaphoreHandle_t xSemaphoreCreateBinary( void );
 
 “取用”semaphore 是指 "获得 "或 "接收 "该semaphore 。只有在semaphore是可用的情况下才可以采取。
 
-
-
 所有不同类型的FreeRTOS信号，除了递归互斥，都可以使用 xSemaphoreTake() 函数。
-
-
 
 xSemaphoreTake() 不能从一个中断服务例程中使用。
 
@@ -4632,8 +4498,6 @@ BaseType_t xSemaphoreTake( SemaphoreHandle_t xSemaphore, TickType_t xTicksToWait
 ```
 
 清单90. xSemaphoreTake() 的API函数原型
-
-
 
 表 34.xSemaphoreTake() 参数和返回值
 
@@ -4649,8 +4513,6 @@ BaseType_t xSemaphoreTake( SemaphoreHandle_t xSemaphore, TickType_t xTicksToWait
 
 本书的后面一节将介绍Counting semaphores。
 
-
-
 xSemaphoreGiveFromISR() 是 xSemaphoreGive() 的中断安全版本，所以具有pxHigherPriorityTaskWoken参数，这在本章开始时已经描述过。
 
 ```verilog
@@ -4659,8 +4521,6 @@ BaseType_t xSemaphoreGiveFromISR( SemaphoreHandle_t xSemaphore,
 ```
 
 清单91. xSemaphoreGiveFromISR() API函数原型
-
-
 
 表 35. xSemaphoreGiveFromISR() 参数和返回值
 
@@ -4673,8 +4533,6 @@ BaseType_t xSemaphoreGiveFromISR( SemaphoreHandle_t xSemaphore,
 ### 示例16. 使用binary semaphore使一个任务与中断同步
 
 这个例子使用一个binary semaphore来解除一个任务与中断服务程序之间的阻断——有效地使该任务与中断同步。
-
-
 
 一个简单的周期性任务被用来每500毫秒产生一个软件中断。一个软件中断是为了方便而使用的，因为在一些目标环境中，连接到一个真正的中断的复杂性，所以使用软件中断是为了方便。清单92显示了周期性任务的实现。请注意，该任务在中断产生前后都会打印出一个字符串。这使得执行的顺序可以在例子执行时产生的输出中被观察到。
 
@@ -4700,8 +4558,6 @@ static void vPeriodicTask( void *pvParameters )
 
 清单92. 实现例16中定期生成软件中断的任务 
 
-
-
 清单93显示了中断处理被推迟的任务的实现——该任务通过使用一个binaty semaphore同步。同样，在任务的每次迭代中都会打印出一个字符串，所以任务和中断的执行顺序可以从例子执行时产生的输出中看出来。
 
 ```verilog
@@ -4719,15 +4575,9 @@ static void vPeriodicTask( void *pvParameters )
 
 清单93. 中断处理所涉及的任务的实现 （与中断同步的任务）。
 
-
-
 清单94显示了这个ISR，除了 "给 "信号以解除对中断处理的任务的封锁外，没有什么作用。
 
-
-
 注意xHigherPriorityTaskWoken变量是如何被使用的。在调用xSemaphoreGiveFromISR() 之前，它被设置为pdFALSE，然后在调用portYIELD_FROM_ISR() 时作为参数使用。如果xHigherPriorityTaskWoken等于pdTRUE，在 portYIELD_FROM_ISR() 宏中会要求进行上下文切换。
-
-
 
 与大多数FreeRTOS运行的架构不同，FreeRTOS的Windows端口需要一个ISR来返回一个值。与Windows端口一起提供的 portYIELD_FROM_ISR() 宏的实现包括返回语句，所以清单94没有明确显示返回值。
 
@@ -4746,11 +4596,7 @@ static uint32_t ulExampleInterruptHandler(void)
 
 清单94. 示例16中使用的软件中断的ISR
 
-
-
 main()函数创建了binary semaphore，创建了任务，安装了中断处理程序。处理并启动调度程序。该函数的实现见清单95。
-
-
 
 为安装中断处理程序而调用的函数的语法是针对FreeRTOS Windows端口的，对于其他FreeRTOS端口可能有所不同。请参考FreeRTOS.org网站上的特定端口文档页面，以及FreeRTOS下载中提供的例子，以找到你正在使用的端口所需的语法。
 
@@ -4778,63 +4624,47 @@ int main(void)
 
 清单95. 示例16中 main() 的实现
 
-
-
 例16产生的输出如图51所示。正如预期的那样，vHandlerTask() 在中断产生后立即进入了运行状态，所以任务的输出与周期性任务产生的输出相分离。图52中提供了进一步的解释。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636093177939-15bcfd4b-fdd7-45ea-8215-02b2af35bafc.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636093177939-15bcfd4b-fdd7-45ea-8215-02b2af35bafc.png)
 
 图51. 执行示例16时产生的输出
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636093274205-f5851fb4-dffb-41f7-a29c-a2ac0c5f7907.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636093274205-f5851fb4-dffb-41f7-a29c-a2ac0c5f7907.png)
 
 图52. 执行例16时的执行顺序
+
+
 
 ### 完善示例16中使用的任务的实现
 
 示例16使用一个binary semaphore来同步一个任务和一个中断。其执行顺序如下：
 
-
-
 1. 中断发生了。
-
-
 
 2. ISR执行并“给出”semaphore 以解除对任务的封锁。
 
-
-
 3. 任务在ISR之后立即执行，并“拿走”了semaphore。
-
-
 
 4. 任务处理了该事件，然后试图再次“拿走”semaphore——进入阻塞状态，因为semaphore还不可用（另一个中断还没有发生）。
 
-
-
 只有当中断发生的频率相对较低时，示例16中的任务结构才是充分的。为了理解这个原因，我们可以考虑一下，如果在任务完成对第一个中断的处理之前，又发生了第二个、第三个中断，会发生什么：
 
-
-
 - 当第二个ISR执行时，semaphore将是空的，所以ISR将给出semaphore，且任务在完成对第一个事件的处理后将立即处理第二个事件。这种情况在图53中显示。
-
-
 
 - 当第三个ISR执行时，semaphore已经可用，防止ISR再次给出semaphore，所以任务不会知道第三个事件已经发生。这种情况在图54中显示。
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636094583388-c25d8f39-1a95-4fb2-a2ef-5a9fba60794a.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636094583388-c25d8f39-1a95-4fb2-a2ef-5a9fba60794a.png)
 
 图53. 在任务完成处理第一个事件之前发生一个中断时的情景
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636094676453-cb3a2122-221e-4fbc-9fb5-bf133a9d19f8.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636094676453-cb3a2122-221e-4fbc-9fb5-bf133a9d19f8.png)
 
 图54 在任务完成处理第一个事件之前发生两个中断时的情景
-
-
 
 示例16中使用的延迟中断处理任务，如清单93所示，其结构是在每次调用 xSemaphoreTake() 时只处理一个事件。这对示例16来说是足够的，因为产生事件的中断是由软件触发的，而且发生的时间是可预测的。在实际应用中，中断是由硬件产生的，并且发生在不可预测的时间。因此，为了尽量减少错过中断的机会，延迟中断处理任务的结构必须使它在每次调用 xSemaphoreTake() 之间处理所有已经存在的事件。1
 
@@ -4843,8 +4673,6 @@ int main(void)
 另外，也可以使用计数信号或直接到任务的通知来计数事件。计数信号将在下一节中描述。直接到在第9章,任务的通知中描述。直接到任务的通知是首选方法，因为它们在运行时间和RAM的使用上都是最有效的。
 
 示例16中使用的延迟中断处理任务还有一个弱点；它在调用 xSemaphoreTake() 时没有使用超时。相反，该任务将portMAX_DELAY作为 xSemaphoreTake() 的xTicksToWait参数，这导致该任务无限期地等待（没有超时），等待 semaphore 的出现。无限期超时经常被用在示例代码中，因为它们的使用简化了示例的结构，从而使示例更容易理解。然而，在实际应用中，无限期超时通常是不好的做法，因为它们使人们很难从错误中恢复。作一个例子，考虑这样的情景：一个任务正在等待一个中断来给出 semaphore ，但是硬件中的错误状态阻止了中断的产生：
-
-
 
 - 如果任务在没有超时的情况下等待，它将不知道错误状态，并将永远等待。
 - 如果任务在等待时有超时，那么 xSemaphoreTake() 将在超时结束时返回pdFAIL，然后任务可以在下次执行时检测并清除错误。这种情况在清单96中也有演示。
@@ -4887,19 +4715,13 @@ static void vUARTReceiveHandlerTask(void *pvParameters)
 
 正如binary semaphores 可以被认为是长度为1的队列一样，counting semaphores 可以被认为是长度为1以上的队列。任务对存储在队列中的数据不感兴趣，只是对队列中的项目数量感兴趣。 configUSE_COUNTING_SEMAPHORES必须在FreeRTOSConfig.h中设置为1，才能使用counting semaphores 。
 
-
-
 每当一个 counting semaphore 被 "给予 "时，其队列中的另一个空间就被使用。队列中的项目数量是 semaphore 的“计数”值。
-
-
 
 1. 计数事件1
 
 在这种情况下，事件处理程序会在每次事件发生时 “给”一个semaphore——导致信号的计数值在每次“给出 ”时被递增。 一个任务在每次处理一个事件时都会“拿走”一个semaphore——导致semaphore 的数值被递减。
 
 在每次 "取 "的时候都会递减。计数值是已经发生的事件数与已经发生的事件数之间的差值。这个机制是图55中所示。
-
-
 
 用于统计事件的计数信号器在创建时，其初始计数值为0。
 
@@ -4909,19 +4731,15 @@ static void vUARTReceiveHandlerTask(void *pvParameters)
 
 在这种情况下，计数值表示可用资源的数量。为了获得资源的控制权，一个任务必须首先获得一个 semaphore ——减少 semaphore 的计数值。当计数值达到0时，就没有可用的资源了。当一个任务完成了对资源的控制，它就会“给”回 semaphore ——增加 semaphore 的计数值。
 
-
-
 用于管理资源的 Counting semaphores 在创建时，其初始计数值等于可用资源的数量。第7章介绍了使用semaphores 来管理资源。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636097763206-7d7472d6-fae3-4560-a851-4917b7a68aca.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636097763206-7d7472d6-fae3-4560-a851-4917b7a68aca.png)
 
 图55. 使用一个counting semaphore来 "计数 "事件
 
 ### xSemaphoreCreateCounting() API函数
 
 FreeRTOS V9.0.0还包括 xSemaphoreCreateCountingStatic() 函数，该函数在编译时分配静态地创建一个counting semaphore的内存：所有不同类型的FreeRTOS信号的句柄都存储在一个SemaphoreHandle_t类型的变量中。
-
-
 
 在使用semaphore之前，必须先创建它。要创建一个counting semaphore，请使用 xSemaphoreCreateCounting() API函数。
 
@@ -4931,8 +4749,6 @@ SemaphoreHandle_t xSemaphoreCreateCounting( UBaseType_t uxMaxCount,
 ```
 
 清单97. xSemaphoreCreateCounting() API函数原型 
-
-
 
 表 36. xSemaphoreCreateCounting()参数和返回值
 
@@ -4952,8 +4768,6 @@ xCountingSemaphore = xSemaphoreCreateCounting(10, 0);
 ```
 
 清单98. 示例17中用于创建counting semaphore的 xSemaphoreCreateCounting() 的调用
-
-
 
 为了模拟高频率发生的多个事件，中断服务例程被改变为在每个中断中“给予”semaphore 不止一次。每个事件都被锁在 semaphore 的计数值中。修改后的中断服务例程显示在清单99中。
 
@@ -4975,15 +4789,11 @@ static uint32_t ulExampleInterruptHandler(void)
 
 清单99. 示例17所使用的中断服务例程的实现
 
-
-
 所有其他的函数与示例16中使用的函数相比都没有修改。
-
-
 
 示例17执行时产生的输出如图56所示。可以看出，在每次产生中断时，被推迟处理的任务会处理所有三个[模拟]事件。这些事件被锁在信号的计数值中，允许任务依次处理它们。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636101378827-75ccc71d-0a24-4dd0-b078-f9e41f7bdabf.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636101378827-75ccc71d-0a24-4dd0-b078-f9e41f7bdabf.png)
 
 图56. 执行示例17时产生的输出
 
@@ -4997,8 +4807,6 @@ static uint32_t ulExampleInterruptHandler(void)
 
 第5章描述了与软件定时器有关的FreeRTOS API函数如何在定时器命令队列中向守护任务发送命令。xTimerPendFunctionCall() 和 xTimerPendFunctionCallFromISR() API函数使用相同的定时器命令队列，向守护任务发送 "执行函数 "命令。发送给守护任务的函数随后在守护任务的上下文中被执行。
 
-
-
 集中式延时中断处理的优点包括：
 
 - 降低资源使用量
@@ -5008,8 +4816,6 @@ static uint32_t ulExampleInterruptHandler(void)
 - 简化的用户模式
 
 ​       递延中断处理函数是一个标准的C函数。
-
-
 
 集中式延时中断处理的缺点包括：
 
@@ -5022,8 +4828,6 @@ static uint32_t ulExampleInterruptHandler(void)
 xTimerPendFunctionCallFromISR() 将一个命令发送到定时器命令队列的后面。
 
 在xTimerPendFunctionCallFromISR() 发送给队列的"execute function"命令之前，已经在定时器命令队列中的命令将被守护任务处理。
-
-
 
 不同的中断有不同的时间限制，所以在同一个应用程序中使用两种推迟中断处理的方法是很常见的。
 
@@ -5050,8 +4854,6 @@ void vPendableFunction( void *pvParameter1, uint32_t ulParameter2 );
 
 清单101. xTimerPendFunctionCallFromISR() 的xFunctionToPend参数中传递的函数必须符合的原型。
 
-
-
 表 37. xTimerPendFunctionCallFromISR() 参数和返回值
 
 | 参数名称/返回值           | 描述                                                         |
@@ -5065,11 +4867,7 @@ void vPendableFunction( void *pvParameter1, uint32_t ulParameter2 );
 
 示例18提供了与示例16类似的功能，但没有使用semaphore，也没有专门创建一个任务来执行中断所需要的处理。相反，处理是由RTOS守护任务执行的。
 
-
-
 示例18所使用的中断服务例程如清单102所示。它调用 xTimerPendFunctionCallFromISR()，将一个指向vDeferredHandlingFunction() 函数的指针传递给守护任务。延迟的中断处理由vDeferredHandlingFunction() 函数执行。
-
-
 
 中断服务程序每次执行时都会增加一个名为 ulParameterValue 的变量。ulParameterValue 在调用xTimerPendFunctionCallFromISR() 时被用作 ulParameter2 的值，因此在守护任务执行vDeferredHandlingFunction() 时也将被用作 ulParameter2 的值。该函数的另一个参数pvParameter1，在这个例子中没有使用。
 
@@ -5093,11 +4891,7 @@ static uint32_t ulExampleInterruptHandler(void)
 
 清单102. 示例18中使用的软件中断处理程序
 
-
-
 vDeferredHandlingFunction() 的实现在清单103中显示。它打印出一个固定的字符串，以及其ulParameter2的参数值。
-
-
 
 vDeferredHandlingFunction() 必须具有清单101中的原型，尽管在这个例子中，只有一个参数被实际使用。
 
@@ -5111,11 +4905,7 @@ static void vDeferredHandlingFunction(void *pvParameter1, uint32_t ulParameter2)
 
 清单103. 执行示例18中中断所需的处理的函数
 
-
-
 示例18使用的main() 函数在清单104中显示。它比示例16使用的 main() 函数更简单，因为它没有创建一个semaphore 或一个任务来执行延迟中断处理。
-
-
 
 vPeriodicTask() 是周期性产生软件中断的任务。它被创建时的优先级低于守护任务的优先级，以确保一旦守护任务离开阻塞状态，它就会被守护任务抢占。
 
@@ -5139,15 +4929,13 @@ int main(void)
 
 清单104. 示例18中 main() 的实现
 
-
-
 示例18产生的输出如图57所示。守护任务的优先级高于产生软件中断的任务的优先级，所以vDeferredHandlingFunction() 在中断产生后立即被守护任务执行。这导致 vDeferredHandlingFunction() 输出的消息出现在周期性任务输出的两个消息之间，就像用 semaphore 来解锁专门的延迟中断处理任务时那样。图58中提供了进一步的解释。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636105289736-5c5c060b-774c-4943-a6af-84c5675d2b25.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636105289736-5c5c060b-774c-4943-a6af-84c5675d2b25.png)
 
 图57. 执行示例18时产生的输出
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636105350694-0dc0ebe9-b795-4087-a35e-20942bf90516.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636105350694-0dc0ebe9-b795-4087-a35e-20942bf90516.png)
 
 图58 执行示例18时的执行顺序
 
@@ -5157,11 +4945,7 @@ int main(void)
 
 二进制和计数信号被用来交流事件。队列被用来交流事件，并传输数据。
 
-
-
 xQueueSendToFrontFromISR() 是 xQueueSendToFront() 的版本，可以在中断服务例程中安全使用；xQueueSendToBackFromISR() 是 xQueueSendToBack() 的版本，可以在中断服务例程中安全使用；而xQueueReceiveFromISR() 是 xQueueReceive() 的版本，可以在中断服务例程中安全使用。
-
-
 
 ### xQueueSendToFrontFromISR() 和xQueueSendToBackFromISR() API 函数
 
@@ -5183,11 +4967,7 @@ BaseType_t xQueueSendToBackFromISR(QueueHandle_t xQueue,
 
 清单106. xQueueSendToBackFromISR() API函数原型
 
-
-
 xQueueSendFromISR() 和 xQueueSendToBackFromISR() 在功能上等同。
-
-
 
 表 38. xQueueSendToFrontFromISR() 和 xQueueSendToBackFromISR() 参数和返回值
 
@@ -5202,8 +4982,6 @@ xQueueSendFromISR() 和 xQueueSendToBackFromISR() 在功能上等同。
 
 队列提供了一种简单方便的方式将数据从中断传递给任务，但如果数据到达的频率很高，使用队列的效率就不高。
 
-
-
 FreeRTOS下载中的许多演示程序包括一个简单的UART驱动程序，它使用一个队列将字符从UART的接收ISR中传递出来。在这些演示程序中，使用队列有两个原因：演示队列在ISR中的使用，以及故意加载系统以测试FreeRTOS端口。以这种方式使用队列的ISR绝对不是为了代表一种有效的设计，除非数据到达的速度很慢，否则建议生产代码不要复制这种技术。更有效的技术，那些适合于生产代码，包括：
 
 
@@ -5213,8 +4991,6 @@ FreeRTOS下载中的许多演示程序包括一个简单的UART驱动程序，�
 
 - 在ISR中直接处理收到的字符，然后使用队列将数据处理的结果（而不是原始数据）发送给一个任务。这在之前由图34演示过。
 
-
-
 1 直接到任务的通知提供了从ISR中解除任务阻塞的最有效方法。直接到任务的通知将在第9章 "任务通知 "中介绍。
 
 2 作为FreeRTOS+TCP(http://www.FreeRTOS.org/tcp)的一部分提供的 "流缓冲 "可用于此目的。
@@ -5222,8 +4998,6 @@ FreeRTOS下载中的许多演示程序包括一个简单的UART驱动程序，�
 ### 示例19. 在一个队列中从一个中断中发送和接收信息
 
 这个例子演示了 xQueueSendToBackFromISR() 和 xQueueReceiveFromISR() 在同一个中断中使用。和以前一样，为了方便，中断是由软件产生的。
-
-
 
 创建一个周期性任务，每200毫秒向一个队列发送五个数字。只有在所有五个数字都被发送后，它才会产生一个软件中断。该任务的实现在清单107中显示。
 
@@ -5255,8 +5029,6 @@ static void vIntegerGenerator(void *pvParameters)
 ```
 
 清单 107. 示例19中写入队列的任务的实现
-
-
 
 中断服务例程反复调用 xQueueReceiveFromISR() ，直到所有由周期性任务写入队列的值都被读出，队列留空。每个收到的值的最后两位被用作一个字符串数组的索引。然后通过调用 xQueueSendFromISR() ，将相应索引位置的字符串指针发送到不同的队列。中断服务例程的实现见清单108。
 
@@ -5294,8 +5066,6 @@ Windows端口使用的portYIELD_FROM_ISR()的实现包括一个返回语句，�
 
 清单108. 例19所使用的中断服务例程的实现
 
-
-
 从中断服务例程中接收字符指针的任务在队列中阻塞，直到有消息到达，在接收到每个字符串时打印出来。它的实现在清单109中显示。
 
 ```verilog
@@ -5312,8 +5082,6 @@ char *pcString;
 ```
 
 清单109. 打印出从示例19中的中断服务例程收到的字符串的任务
-
-
 
 像往常一样，main()在启动调度程序之前创建所需的队列和任务。它的实现在清单110中显示。
 
@@ -5339,15 +5107,13 @@ int main( void )
 
 清单110. 示例19的main()函数
 
-
-
 执行示例19时产生的输出如图59所示。可以看出，中断接收了所有五个整数，并产生了五个字符串作为响应。图60中给出了更多的解释。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636337624983-fa5577b7-cf32-4898-927b-584773549def.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636337624983-fa5577b7-cf32-4898-927b-584773549def.png)
 
 图59. 执行示例19时产生的输出
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636337712214-d0dc3f3d-9031-4fba-bf94-1675c821d4f7.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636337712214-d0dc3f3d-9031-4fba-bf94-1675c821d4f7.png)
 
 图60. 例19产生的执行顺序
 
@@ -5357,17 +5123,11 @@ int main( void )
 
 在任务优先级和中断优先级之间出现混淆是很常见的。本节讨论的是中断优先级，即中断服务例程（ISR）执行时相对于对方的优先级。分配给一个任务的优先级与分配给一个中断的优先级没有任何关系。硬件决定ISR的执行时间，而软件决定任务的执行时间。为响应硬件中断而执行的ISR将中断一个任务，但一个任务不能抢先执行ISR。
 
-
-
 支持中断嵌套的端口需要在 FreeRTOSConfig.h 中定义表39中详述的一个或两个常量。
 
 configMAX_API_CALL_INTERRUPT_PRIORITY 都定义了同一个属性。旧的 FreeRTOS 端口使用 configMAX_SYSCALL_INTERRUPT_PRIORITY ，而新的 FreeRTOS 端口使用 configMAX_API_CALL_INTERRUPT_PRIORITY 。
 
-
-
 表 39. 控制中断嵌套的常量
-
-
 
 | 恒定                                                         | 描述                                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -5375,8 +5135,6 @@ configMAX_API_CALL_INTERRUPT_PRIORITY 都定义了同一个属性。旧的 FreeR
 | configKERNEL_INTERRUPT_PRIORITY                              | 设置tick中断所使用的中断优先级，并且必须始终设置为可能的最低中断优先级。如果使用的FreeRTOS端口没有同时使用configMAX_SYSCALL_INTERRUPT_PRIORITY 常量，那么任何使用中断安全的FreeRTOS API函数的中断也必须以 configKERNEL_INTERRUPT_PRIORITY 定义的优先级执行。 |
 
 每个中断源都有一个数值优先级，和一个逻辑优先级：
-
-
 
 - 数值优先级
 
@@ -5386,23 +5144,13 @@ configMAX_API_CALL_INTERRUPT_PRIORITY 都定义了同一个属性。旧的 FreeR
 
 一个中断的逻辑优先级描述了该中断对其他中断的优先级。
 
-
-
 如果两个不同优先级的中断同时发生，那么处理器将执行两个中断中逻辑优先级较高的那个中断的ISR，然后再执行两个中断中逻辑优先级较低那个中断的ISR。
-
-
 
 一个中断可以中断（嵌套）任何具有较低逻辑优先级的中断，但一个中断不能中断（嵌套）任何具有相同或更高逻辑优先级的中断。
 
-
-
 中断的数字优先级和逻辑优先级之间的关系取决于处理器结构。在某些处理器上，分配给一个中断的数字优先级越高，该中断的逻辑优先级就越高，而在其他处理器架构上，分配给一个中断的数字优先级越高，该中断的逻辑优先级就越低。
 
-
-
 通过将 configMAX_SYSCALL_INTERRUPT_PRIORITY 设置为比 configKERNEL_INTERRUPT_PRIORITY 更高的逻辑中断优先级，可以创建一个完整的中断嵌套模型。这在图61中得到了证明，图中显示了这样一种情况：
-
-
 
 - 处理器有七种独特的中断优先级。
 - 分配给数字优先级为7的中断比分配给数字优先级为1的中断有更高的逻辑优先级。
@@ -5412,18 +5160,17 @@ configMAX_API_CALL_INTERRUPT_PRIORITY 都定义了同一个属性。旧的 FreeR
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636338947247-e45b09e7-f928-400c-ac68-47b21a63983a.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636338947247-e45b09e7-f928-400c-ac68-47b21a63983a.png)
 
 图61. 影响中断嵌套行为的常量
 
 参考图61：
 
-
-
 - 当内核或应用程序处于关键部分时，使用优先级1到3（包括）的中断被阻止执行。以这些优先级运行的ISR可以使用中断安全的FreeRTOS API函数。关键部分的描述见第7章。
 - 使用优先级为4或以上的中断不受关键部分的影响，因此在硬件本身的限制下，调度员所做的任何事情都不会阻止这些中断立即执行。以这些优先级执行的ISR不能使用任何 FreeRTOS的API函数。
-
 - 通常，需要非常严格的时间精度的功能（例如电机控制）会使用高于configMAX_SYSCALL_INTERRUPT_PRIORITY的优先级，以确保调度器不会在中断响应时间中引入抖动。
+
+
 
 ### 对ARM Cortex-M1和ARM GIC用户的说明
 
@@ -5433,39 +5180,23 @@ Cortex-M处理器上的中断配置是混乱的，而且容易出错。为了帮
 
 ARM Cortex内核和ARM通用中断控制器（GIC）使用数字上的低优先级数字来表示逻辑上的高优先级中断。这似乎有悖于直觉，而且很容易忘记。如果你想给一个中断分配一个逻辑上的低优先级，那么它必须被分配一个数字上的高值。如果你想给一个中断分配一个逻辑上的高优先级。 那么它就必须被分配一个数字上的低值。
 
-
-
 Cortex-M中断控制器允许最多有8位用于指定每个中断的优先级，使255成为最低的优先级,零是最高优先级。然而，Cortex-M微控制器通常只实现8个可能的位数。实际实现的位数取决于微控制器系列。
-
-
 
 当八个可能的位中只有一个子集被实现时，只有字节中最有意义的位可以被使用--留下最没有意义的位。未实现的位可以取任何值，但把它们设置为1是正常的。 图62展示了二进制101的优先级是如何存储在一个实现了四个优先位的Cortex-M微控制器中。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636339801928-abdc7bff-8d30-4479-86b1-3cfc39b1608b.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636339801928-abdc7bff-8d30-4479-86b1-3cfc39b1608b.png)
 
 图62 二进制101的优先级是如何被一个实现了四个优先位的Cortex-M微控制器存储的
 
-
-
 在图62中，二进制值101被移到了最有意义的四个位，因为最没有意义的四个位没有实现。未实现的位被设置为1。
-
-
 
 一些库函数希望在优先权值被移到已执行的（最重要的）位子上之后再指定。当使用这样的函数时，图62中所示的优先级可以被指定为十进制95。十进制95是二进制101向上移位4，成为二进制101nnnn（其中"n"是一个未实现的位），未实现的位设置为1，成为二进制1011111。
 
-
-
 一些库函数希望在优先权值被移到已执行的（最有意义的）位之前就被指定。当使用这样的函数时，图62中的优先权必须被指定为十进制5。十进制5是二进制101，没有任何移位。
-
-
 
 configMAX_SYSCALL_INTERRUPT_PRIORITY 和 configKERNEL_INTERRUPT_PRIORITY 必须以允许它们直接写入Cortex-M寄存器的方式来指定，所以在优先级值被上移到实现的位后。
 
-
-
 configKERNEL_INTERRUPT_PRIORITY必须始终设置为可能的最低中断优先级。 未实现的优先级位可以被设置为1，所以不管实际实现了多少个优先级位，这个常数总是可以被设置为255。
-
-
 
 Cortex-M中断的默认优先级为0--可能的最高优先级。Cortex-M硬件的实现不允许configMAX_SYSCALL_INTERRUPT_PRIORITY 被设置为0，所以使用FreeRTOS API的中断的优先级决不能停留在其默认值。
 
@@ -5478,8 +5209,6 @@ Cortex-M中断的默认优先级为0--可能的最高优先级。Cortex-M硬件�
 ## 引言及范围
 
 在多任务系统中，如果一个任务开始访问资源，但在转换出运行状态之前没有完成其访问，则可能发生错误。如果任务使资源处于不一致的状态，那么任何其他任务或中断对相同资源的访问都可能导致数据损坏或其他类似问题。
-
-
 
 以下是一些例子:
 
@@ -5512,8 +5241,6 @@ Cortex-M中断的默认优先级为0--可能的最高优先级。Cortex-M硬件�
 
 清单 111. 读、修改、写顺序的示例
 
-
-
 这是一个“非原子”操作，因为它需要多个指令才能完成，并且可以被中断。考虑以下场景，其中两个任务试图更新名为PORTA的内存映射寄存器。
 
 1. 1. 任务A将PORTA的值加载到寄存器中——操作的读部分。
@@ -5522,27 +5249,17 @@ Cortex-M中断的默认优先级为0--可能的最高优先级。Cortex-M硬件�
 1. 1. 任务B更新PORTA值。则进入阻塞状态。
    2. 任务A从它被抢占的位置继续执行。在将更新后的值写回PORTA之前，它修改已经保存在寄存器中的PORTA值的副本。
 
-
-
 在这个场景中，任务A更新和回写PORTA的过期值。任务B在任务A获取PORTA值的副本之后修改PORTA，并且在任务A将其修改后的值写回PORTA寄存器之前修改PORTA。当任务A写入PORTA时，它会覆盖任务B已经执行的修改，从而有效地破坏PORTA寄存器值。
 
-
-
 本例使用外设寄存器，但在对变量执行读、修改、写操作时也适用相同的原则。
-
-
 
 1. 变量的非原子访问
 
 更新结构的多个成员，或更新比体系结构的自然字长更大的变量（例如，在16位机器上更新32位变量），这些都是非原子操作的例子。如果它们被打断，可能会导致数据丢失或损坏。
 
-
-
 1. 函数可重入性
 
 如果从多个任务调用函数是安全的，那么该函数就是可重入的。或者来自任务和中断。重入函数被称为线程安全，因为它们可以从多个执行线程访问，而不会有数据或逻辑操作被破坏的风险。
-
-
 
 每个任务维护自己的堆栈和自己的一组处理器(硬件)寄存器值。如果函数只访问存储在堆栈或寄存器中的数据，那么该函数是可重入的，线程安全的。清单112是一个 重入函数的例子。清单113是一个非可重入函数的例子。
 
@@ -5560,8 +5277,6 @@ long lVar2;
 ```
 
 清单112. 一个可重入函数的例子
-
-
 
 ```groovy
 /*在本例中，1Varl是一个全局变量，因此每个调用1NonsenseFunction的任务都会访问该变量的同一个
@@ -5594,8 +5309,6 @@ long lReturn;
 
 为了确保始终保持数据一致性，可以访问任务之间或任务与中断之间共享的资源。必须使用“互斥”进行管理。目标是确保，一旦一个任务开始访问不可重入且非线程安全的共享资源，在资源返回到一致状态之前，相同的任务对资源具有独占访问权。
 
-
-
 FreeRTOS提供了几个可以用来实现互斥的特性。但是，最好的互斥方法是(只是可能，因为通常不实用)将应用程序设计成不共享资源的方式，并且只从单个任务访问每个资源。
 
 
@@ -5621,9 +5334,11 @@ FreeRTOS提供了几个可以用来实现互斥的特性。但是，最好的互
 
 ### 基本的关键部分
 
-基本临界区是由调用宏taskENTER_critical()和taskEXIT_CRITICAL()包围的代码区域有个。关键部分也是被称为临界区域。
+基本临界区是由调用宏`taskENTER_critical()`和`taskEXIT_CRITICAL()`包围的代码区域有个。关键部分也是被称为临界区域。
 
-taskENTER_CRITICAL()和taskEXIT_CRITICAL()不接受任何参数，或返回一个值1。注释清单114演示了它们的使用。
+`taskENTER_CRITICAL()`和`taskEXIT_CRITICAL()`不接受任何参数，或返回一个值。注释清单114演示了它们的使用。
+
+> 值：像macro这样的函数并不像实际函数那样“返回一个值”。本书将术语“返回值”应用到宏上，最简单的做法是把宏看成一个函数。
 
 ```groovy
 /*确保对PORTA寄存器的访问不会被中断，将其置于临界区，进入临界区。*/
@@ -5638,13 +5353,7 @@ taskEXIT_CRITICAL();
 
 清单111.  使用临界区来保护对寄存器的访问
 
-
-
 本书附带的示例项目使用了一个名为vPrintString()的函数来将字符串写入标准输出(即使用FreeRTOS Windows端口时的终端窗口)。vPrintString()从许多不同的任务调用;因此，理论上，它的实现可以使用临界区保护对标准输出的访问，如清单115所示。
-
-值1：像macro这样的函数并不像实际函数那样“返回一个值”。本书将术语“返回值”应用到宏上，最简单的做法是把宏看成一个函数。
-
-
 
 ```groovy
 void vPrintString( const char *pcString )
@@ -5659,31 +5368,19 @@ void vPrintString( const char *pcString )
 }
 ```
 
-清单115.  vPrintString()的一个可能实现
+清单115.  `vPrintString()`的一个可能实现
 
+以这种方式实现的临界区是一种提供互斥的非常粗糙的方法。它们通过禁用中断来工作，要么完全禁用，要么直到`configMAX_SYSCALL_INTERRUPT_PRIORITY`设置的中断优先级—取决于正在使用的FreeRTOS por。抢占式的上下文切换只能发生在一个中断中，因此，只要中断保持禁用，调用`taskENTER_CRITICAL()`的任务就会被保证保持在运行状态，直到临界区段退出。
 
+基本临界段必须保持很短，否则它们将对中断响应时间产生不利影响。对`taskENTER_CRITICAL()`的每个调用都必须与对`taskEXIT_CRITICAL()`的调用紧密匹配。因此，不应该使用临界区来保护标准输出(stdout，即计算机写入其输出数据的流)(如清单115所示)，因为向终端写入数据可能是一个相对较长的操作。本章的例子探讨了可选的解决方案。
 
-以这种方式实现的临界区是一种提供互斥的非常粗糙的方法。它们通过禁用中断来工作，要么完全禁用，要么直到configMAX_SYSCALL_INTERRUPT_PRIORITY设置的中断优先级—取决于正在使用的FreeRTOS por。抢占式的上下文切换只能发生在一个中断中，因此，只要中断保持禁用，调用taskENTER_CRITICAL()的任务就会被保证保持在运行状态，直到临界区段退出。
+关键部分嵌套是安全的，因为内核保留了嵌套深度的计数。只有当嵌套深度返回0时，即每次调用`taskEXIT_CRITICAL()`都执行一次对`taskENTER_CRITICAL()`的调用，临界区才会退出。
 
+调用`taskENTER_CRITICAL()`和`taskEXIT_CRITICAL()`是任务改变FreeRTOS运行的处理器的中断启用状态的唯一合法方法。通过任何其他方法改变中断启用状态都会使宏的嵌套计数无效。
 
+`taskENTER_CRITICAL()`和`taskEXIT_CRITICAL()`不会以“FromlSR”结束，所以一定不能从中断服务程序中调用。`taskENTER_CRITICAL_FROM_ISR()` 是一个中断安全版本的`taskENTER_CRITICAL()`，和`taskEXIT_CRITICAL_FROM_ISR()`是一个允许中断嵌套的FreeRTOS端口，它们将在不允许中断嵌套的端口中被废弃。
 
-基本临界段必须保持很短，否则它们将对中断响应时间产生不利影响。对taskENTER_CRITICAL()的每个调用都必须与对taskEXIT_CRITICAL()的调用紧密匹配。因此，不应该使用临界区来保护标准输出(stdout，即计算机写入其输出数据的流)(如清单115所示)，因为向终端写入数据可能是一个相对较长的操作。本章的例子探讨了可选的解决方案。
-
-
-
-关键部分嵌套是安全的，因为内核保留了嵌套深度的计数。只有当嵌套深度返回0时，即每次调用taskEXIT_CRITICAL()都执行一次对taskENTER_CRITICAL()的调用，临界区才会退出。
-
-
-
-调用taskENTER_CRITICAL()和taskEXIT_CRITICAL()是任务改变FreeRTOS运行的处理器的中断启用状态的唯一合法方法。通过任何其他方法改变中断启用状态都会使宏的嵌套计数无效。
-
-
-
-taskENTER_CRITICAL()和taskEXIT_CRITICAL()不会以“FromlSR”结束，所以一定不能从中断服务程序中调用。taskENTER_CRITICAL_FROM_ISR() 是一个中断安全版本的taskENTER_CRITICAL()，和taskEXIT_CRITICAL_FROM_ISR()是一个允许中断嵌套的FreeRTOS端口，它们将在不允许中断嵌套的端口中被废弃。
-
-
-
-taskENTER_CRITICAL_FROM_ISR()返回一个值，这个值必须被传递到匹配的调用taskEXIT_CRITICAL_FROM_ISR()。清单116演示了这一点。
+`taskENTER_CRITICAL_FROM_ISR()`返回一个值，这个值必须被传递到匹配的调用`taskEXIT_CRITICAL_FROM_ISR()`。清单116演示了这一点。
 
 ```groovy
 void vAnInterruptServiceRoutine( void )
@@ -5705,8 +5402,6 @@ UBaseType_t uxSavedInterruptStatus;
 
 清单116.  在中断服务程序中使用临界区
 
-
-
 使用更多的处理时间执行进入并随后退出临界区段的代码，而不是执行实际受临界区段保护的代码，这是一种浪费。基本临界区段进入和退出都非常快，而且总是确定性的，因此当受保护的代码区域非常短时，它们的使用非常理想。
 
 
@@ -5715,11 +5410,7 @@ UBaseType_t uxSavedInterruptStatus;
 
 还可以通过挂起调度器来创建临界区。暂停调度器有时也被称为“锁定”调度器。
 
-
-
 基本临界区保护代码区域不受其他任务和中断的访问。通过暂停调度器实现的临界区仅保护代码区域不被其他任务访问。因为中断仍然处于启用状态。
-
-
 
 如果临界区段太长，不能简单地通过禁用中断来实现，则可以通过暂停调度程序来实现。然而，在调度器挂起时中断活动会使恢复(或“取消挂起”)调度器成为一个相对较长的操作，因此必须考虑在每种情况下使用哪种方法最好。
 
@@ -5731,13 +5422,9 @@ UBaseType_t uxSavedInterruptStatus;
 void vTaskSuspendAll( void );
 ```
 
-清单 117.  vTaskSuspendAll() API函数原型
+清单 117.  `vTaskSuspendAll()` API函数原型
 
-
-
-调度程序通过调用vTaskSuspendAll()被挂起。挂起调度程序可以防止发生上下文切换，但保留中断。如果在调度器挂起时中断请求上下文切换，则请求将被挂起。并且只在恢复(未挂起)调度程序时执行。
-
-
+调度程序通过调用`vTaskSuspendAll()`被挂起。挂起调度程序可以防止发生上下文切换，但保留中断。如果在调度器挂起时中断请求上下文切换，则请求将被挂起。并且只在恢复(未挂起)调度程序时执行。
 
 当调度器挂起时，不能调用FreeRTOS API函数。
 
@@ -5751,25 +5438,17 @@ BaseType_t xTaskResumeAll( void );
 
 清单118.  xTaskResumeAll() API函数原型
 
+通过调用`xTaskResumeAl()`恢复(未挂起)调度器。
 
-
-通过调用xTaskResumeAl()恢复(未挂起)调度器。
-
-
-
-表 40. xTaskResumeAll()的返回值
+表 40. `xTaskResumeAll()`的返回值
 
 | 返回值 | 描述                                                         |
 | ------ | ------------------------------------------------------------ |
-| 返回值 | 在调度器挂起时请求的上下文切换将被挂起并仅在恢复调度器时执行。如果在xTaskResumeAll()返回之前执行了挂起的上下文切换，则返回pdTRUE。否则返回pdFALSE。 |
+| 返回值 | 在调度器挂起时请求的上下文切换将被挂起并仅在恢复调度器时执行。如果在`xTaskResumeAll()`返回之前执行了挂起的上下文切换，则返回pdTRUE。否则返回pdFALSE。 |
 
+对`vTaskSuspendAll()`和`xTaskResumeAl()`的调用嵌套是安全的，因为内核保留了嵌套深度的计数。调度器只有在嵌套深度返回0时才会恢复，也就是在每次调用`vTaskSuspendAll()`都执行一次`xTaskResumeAll()`时。
 
-
-对vTaskSuspendAll()和xTaskResumeAl()的调用嵌套是安全的，因为内核保留了嵌套深度的计数。调度器只有在嵌套深度返回0时才会恢复，也就是在每次调用vTaskSuspendAll()都执行一次xTaskResumeAll()时。
-
-
-
-清单119显示了vPrintString()的实际实现，它挂起调度程序以保护对终端输出的访问。
+清单119显示了`vPrintString()`的实际实现，它挂起调度程序以保护对终端输出的访问。
 
 ```groovy
 void vPrintString( const char *pcString )
@@ -5784,30 +5463,24 @@ void vPrintString( const char *pcString )
 }
 ```
 
-清单119. vPrintString()的实现
+清单119. `vPrintString()`的实现
 
 
 
 ### 互斥锁(和二进制信号量)
 
-互斥锁是一种特殊类型的二进制信号量，用于控制对两个或多个任务共享的资源的访问。MUTEX这个词来源于“互斥”。configUSE_MUTEXES必须在FreeRTOSConfig.h中设置为1，互斥才能可用。
-
-
+互斥锁是一种特殊类型的二进制信号量，用于控制对两个或多个任务共享的资源的访问。MUTEX这个词来源于“互斥”。`configUSE_MUTEXES`必须在`FreeRTOSConfig.h`中设置为1，互斥才能可用。
 
 当在互斥场景中使用互斥时，可以将互斥看作与共享资源相关联的令牌。以便任务合法地访问资源。它必须首先成功地“接受”令牌(作为令牌持有者)。当令牌持有者使用完资源后，它必须“归还”令牌。只有当该令牌被返回时，另一个任务才能成功地获取该令牌，然后安全地访问相同的共享资源。任务不允许访问共享资源，除非它持有令牌。这种机制如图63所示。
-
-
 
 尽管互斥锁和二进制信号量共享许多特性。图63所示的场景(其中使用互斥锁进行互斥)与图53所示的场景(其中使用二进制信号量进行同步)完全不同。主要的区别在于信号量被获取后发生了什么：
 
 - 必须始终返回用于互斥的信号量。
 - 用于同步的信号量通常被丢弃且不返回。
 
-![img](https://cdn.nlark.com/yuque/0/2021/jpeg/23129846/1636013046498-a572266e-5d62-4262-8ab5-36482102960d.jpeg)
+![github](https://cdn.nlark.com/yuque/0/2021/jpeg/23129846/1636013046498-a572266e-5d62-4262-8ab5-36482102960d.jpeg)
 
 图63 使用互斥对象实现的互斥
-
-
 
 该机制纯粹通过应用程序编写人员的规程来工作。没有理由一个任务不能在任何时候访问资源，但是每个任务“同意”不这样做。除非它能成为互斥锁持有者。
 
@@ -5815,31 +5488,27 @@ void vPrintString( const char *pcString )
 
 ### xSemaphoreCreateMutex() API函数
 
-FreeRTOS V9.0.0还包括xSemaphoreCreateMutexStatic()函数，该函数在编译时分配静态创建互斥锁所需的内存:互斥锁是一种信号量类型。所有不同类型的FreeRTOS信号量的句柄都存储在SemaphoreHandle_t类型的变量中。
+FreeRTOS V9.0.0还包括`xSemaphoreCreateMutexStatic()`函数，该函数在编译时分配静态创建互斥锁所需的内存:互斥锁是一种信号量类型。所有不同类型的FreeRTOS信号量的句柄都存储在SemaphoreHandle_t类型的变量中。
 
-
-
-在使用互斥锁之前，必须先创建它。要创建互斥量类型的信号量，请使用xSemaphoreCreateMutex() APl函数。
+在使用互斥锁之前，必须先创建它。要创建互斥量类型的信号量，请使用`xSemaphoreCreateMutex()` APl函数。
 
 ```groovy
 SemaphoreHandle_t xSemaphoreCreateMutex( void );
 ```
 
-清单120. xSemaphoreCreateMutex() API函数原型
+清单120. `xSemaphoreCreateMutex()` API函数原型
 
-
-
-表 41. xSemaphoreCreateMutex()的返回值
+表 41. `xSemaphoreCreateMutex()`的返回值
 
 | 参数名称/返回值 | 描述                                                         |
 | --------------- | ------------------------------------------------------------ |
-| 返回值          | 如果返回NULL，则无法创建互斥锁，因为没有足够的堆内存供FreeRTOS分配互斥锁数据结构。第2章提供了堆内存管理的更多信息。非null返回值表明互斥锁已经成功创建。返回值应该存储为创建的互斥锁的句柄。 |
+| 返回值          | 如果返回`NULL`，则无法创建互斥锁，因为没有足够的堆内存供FreeRTOS分配互斥锁数据结构。第2章提供了堆内存管理的更多信息。非null返回值表明互斥锁已经成功创建。返回值应该存储为创建的互斥锁的句柄。 |
 
 
 
-### 例20. 重写vPrintString()以使用信号灯
+### 示例20. 重写vPrintString()以使用信号灯
 
-本例创建了vPrintString()的新版本，称为prvNewPrintString()，然后从多个任务中调用这个新函数。prvNewPrintString()在功能上与vPrintString()相同，但使用互斥锁来控制对标准输出的访问，而不是通过锁定调度器。清单121显示了prvNewPrintString()的实现。
+本例创建了`vPrintString()`的新版本，称为`prvNewPrintString()`，然后从多个任务中调用这个新函数。`prvNewPrintString()`在功能上与`vPrintString()`相同，但使用互斥锁来控制对标准输出的访问，而不是通过锁定调度器。清单121显示了`prvNewPrintString()`的实现。
 
 ```groovy
 static void prvNewPrintString( const char *pcString )
@@ -5857,11 +5526,9 @@ static void prvNewPrintString( const char *pcString )
 }
 ```
 
-清单121. prvNewPrintString()的实现
+清单121. `prvNewPrintString()`的实现
 
-
-
-prvNewPrintString()由prvPrintTask()实现的任务的两个实例反复调用。每次调用之间使用随机延迟时间。task参数用于向任务的每个实例传递唯一的字符串。清单122显示了prvPrintTask()的实现。
+`prvNewPrintString()`由`prvPrintTask()`实现的任务的两个实例反复调用。每次调用之间使用随机延迟时间。task参数用于向任务的每个实例传递唯一的字符串。清单122显示了`prvPrintTask()`的实现。
 
 ```groovy
 static void prvPrintTask( void *pvParameters )
@@ -5881,21 +5548,15 @@ const TickType_t xMaxBlockTimeTicks = 0x20;
 }
 ```
 
-清单122.  例20中prvPrintTask()的实现
+清单122.  例20中`prvPrintTask()`的实现
 
+正常情况下，`main()`只是创建互斥锁，创建任务，然后启动调度器。实现如清单123所示。
 
-
-正常情况下，main()只是创建互斥锁，创建任务，然后启动调度器。实现如清单123所示。
-
-
-
-prvPrintTask()的两个实例以不同的优先级创建，因此优先级较低的任务有时会被优先级较高的任务抢占。由于使用互斥锁来确保每个任务对终端的访问是互斥的，所以即使发生了抢占，被删除的字符串也将是正确的，并且不会损坏。通过减少任务处于阻塞状态的最大时间，可以增加抢占的频率，该时间是由xMaxBlockTimeTicks常量设置的。
-
-
+`prvPrintTask()`的两个实例以不同的优先级创建，因此优先级较低的任务有时会被优先级较高的任务抢占。由于使用互斥锁来确保每个任务对终端的访问是互斥的，所以即使发生了抢占，被删除的字符串也将是正确的，并且不会损坏。通过减少任务处于阻塞状态的最大时间，可以增加抢占的频率，该时间是由xMaxBlockTimeTicks常量设置的。
 
 使用FreeRTOS Windows端口的示例20的注意事项:
 
-- 调用printf()将生成一个Windows系统调用。Windows系统调用不在FreeRTOS的控制范围之内，并且会带来不稳定性。
+- 调用`printf()`将生成一个Windows系统调用。Windows系统调用不在FreeRTOS的控制范围之内，并且会带来不稳定性。
 - Windows系统调用的执行方式意味着，即使没有使用互斥锁，也很少看到损坏的字符串。
 
 ```groovy
@@ -5921,21 +5582,17 @@ int main( void )
 }
 ```
 
-清单123. 例20的main()的实现
+清单123. 示例20的·main()·的实现
 
+执行示例20时产生的输出如图64所示。图65描述了可能的执行顺序
 
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636015921770-e7998136-2952-4ab0-85cf-b2098474a4c4.png)
 
-执行例20时产生的输出如图64所示。图65描述了可能的执行顺序
-
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636015921770-e7998136-2952-4ab0-85cf-b2098474a4c4.png)
-
-图64. 执行例20时产生的输出
-
-
+图64. 执行示例20时产生的输出
 
 如图64所示，终端上显示的字符串没有损坏。随机排序是任务所使用的随机延迟周期的结果。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636016039460-db7c1686-d562-441a-b61c-13b7c2b2e5d0.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636016039460-db7c1686-d562-441a-b61c-13b7c2b2e5d0.png)
 
 图65. 例20中可能的执行序列
 
@@ -5945,11 +5602,9 @@ int main( void )
 
 图65演示了使用互斥锁提供互斥的一个潜在缺陷。所描述的执行顺序显示了高优先级任务2必须等待低优先级任务1放弃对互斥锁的控制。高优先级的任务被低优先级的任务以这种方式延迟，我们称之为“优先级反转”。如果一个中等优先级的任务在高优先级任务等待信号量的同时开始执行，这种不受欢迎的行为将进一步扩大——结果将是一个高优先级任务在等待一个低优先级任务——而低优先级任务甚至无法执行。图66显示了这种最糟糕的情况。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636016540177-16c01691-37c6-413e-a887-810009f27c71.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636016540177-16c01691-37c6-413e-a887-810009f27c71.png)
 
 图66 最坏情况下的优先权反转情况
-
-
 
 优先级反转可能是一个严重的问题，但在小型嵌入式系统中，通过考虑如何访问资源，通常可以在系统设计时避免这个问题。
 
@@ -5959,15 +5614,11 @@ int main( void )
 
 FreeRTOS互斥体和二进制信号量非常相似，不同之处是互斥体包含一个基本的优先级继承机制。而二进制信号量则不然。优先级继承是一种最小化优先级倒置负面影响的方案。它并不修复优先级倒置，只是通过确保倒置总是有时间限制来减少其影响。但是，优先级继承使系统定时分析变得复杂，依赖它来进行正确的系统操作并不是一个好的实践。
 
-
-
 优先级继承的工作原理是，暂时将互斥锁持有者的优先级提高到试图获取同一个互斥锁的优先级最高的任务的优先级。持有互斥锁的低优先级任务继承了等待互斥锁的任务的优先级。图67演示了这一点。互斥锁持有者的优先级在返回互斥锁时自动重置为初始值。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636016800950-a3500eeb-745b-4217-b4a4-ae26f73ce0ee.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636016800950-a3500eeb-745b-4217-b4a4-ae26f73ce0ee.png)
 
 图67. 优先权继承使优先权反转的影响最小化
-
-
 
 正如刚才看到的，优先级继承功能会影响使用互斥锁的任务的优先级。因此，互斥锁不能在中断服务程序中使用。
 
@@ -5976,8 +5627,6 @@ FreeRTOS互斥体和二进制信号量非常相似，不同之处是互斥体包
 ### 死锁（或致命拥抱）
 
 “死锁”是使用互斥对象进行互斥的另一个潜在陷阱。僵局有时也被称为“致命拥抱”。
-
-
 
 当两个任务都在等待对方持有的资源而无法继续时，就会发生死锁。考虑以下场景，任务A和任务B都需要获取互斥锁X和互斥锁Y来执行一个操作：
 
@@ -5991,11 +5640,7 @@ FreeRTOS互斥体和二进制信号量非常相似，不同之处是互斥体包
 
 在这个场景的最后，任务A正在等待任务B持有的互斥锁，任务B也在等待任务A持有的互斥锁。
 
-
-
 与优先级倒置一样，避免死锁的最佳方法是在设计时考虑它的潜力，并设计系统以确保不会发生死锁。特别是，正如本书前面所述，任务无限期地等待(没有超时)来获得互斥锁通常是不好的做法。相反，使用比期望等待互斥锁的最大时间稍长一点的超时时间——那么在此时间内无法获得互斥锁将是设计错误的症状，可能是死锁。
-
-
 
 在实践中，死锁在小型嵌入式系统中不是一个大问题，因为系统设计人员可以很好地理解整个应用程序，因此可以识别和消除可能发生死锁的区域。
 
@@ -6013,22 +5658,16 @@ FreeRTOS互斥体和二进制信号量非常相似，不同之处是互斥体包
 
 在本场景结束时，任务处于阻塞状态，等待返回互斥锁，但任务已经是互斥锁持有者了。出现死锁，因为任务处于阻止状态以等待其自身。
 
-
-
 这种类型的死锁可以通过使用递归锁来代替标准互斥锁来避免。一个递归锁可以被同一个任务多次使用。并且只有在每次调用“取”递归互斥时执行一次“给”递归后才返回。
-
-
 
 标准互斥体和递归互斥体的创建和使用方式类似:
 
-- 标准互斥对象是使用xSemaphoreCreateMutex()创建的。递归互斥是使用xSemaphoreCreateRecursiveMutex()创建的。这两个API函数具有相同的原型。
-- 标准互斥对象使用xSemaphoreTake()来“获取”。使用xSemaphoreTakeRecursive()“获取”递归互斥。这两个API函数具有相同的原型。
+- 标准互斥对象是使用`xSemaphoreCreateMutex()`创建的。递归互斥是使用`xSemaphoreCreateRecursiveMutex()`创建的。这两个API函数具有相同的原型。
+- 标准互斥对象使用`xSemaphoreTake()`来“获取”。使用`xSemaphoreTakeRecursive()`“获取”递归互斥。这两个API函数具有相同的原型。
 
-- 标准互斥对象使用xsemaphoregve()来“给定”。递归互斥是使用xSemaphoreTakeRecursive()给出的。这两个API函数具有相同的原型。
+- 标准互斥对象使用`xsemaphoregve()`来“给定”。递归互斥是使用`xSemaphoreTakeRecursive()`给出的。这两个API函数具有相同的原型。
 
-
-
-清单124. 演示了如何创建和使用递归锁。
+清单124. 演示了如何创建和使用递归锁
 
 ```groovy
 /*递归互斥是SemaphoreHandle_t类型的变量。 */
@@ -6077,22 +5716,16 @@ const TickType_t xMaxBlock20ms = pdMS_TO_TICKS( 20 );
 
 如果两个具有不同优先级的任务使用同一个互斥锁，那么FreeRTOS调度策略会明确任务执行的顺序;能够运行的最高优先级任务将被选择为进入运行状态的任务。例如，如果高优先级任务处于阻塞状态，等待低优先级任务持有的互斥锁，那么一旦低优先级任务返回互斥锁，高优先级任务就会抢占低优先级任务。高优先级的任务将成为互斥锁的持有者。在图67中已经看到了这个场景。
 
-
-
 然而，当任务具有相同的优先级时，通常会对任务的执行顺序做出错误的假设。如果任务1和任务2有相同的优先级。任务1处于阻塞状态，等待由任务2持有的互斥，那么当任务2 "给出 "突变时，任务1不会抢占任务2。相反，任务2将保持在 运行状态，而任务1将简单地从阻塞状态移动到就绪状态。这种情况由图68显示了，其中垂直线标记了勾号中断发生的时间。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636018020725-90971f22-7bdb-457e-a772-b0aa1f623fe6.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636018020725-90971f22-7bdb-457e-a772-b0aa1f623fe6.png)
 
 图68 具有相同优先级的任务使用同一个互斥锁时可能的执行顺序
 
-
-
 在图68所示的场景中，当互斥锁可用时，FreeRTOS调度器不会让任务一成为运行状态任务，因为:
 
-1. 任务1和任务2具有相同的优先级，所以除非任务2进入阻塞状态，否则在下一次tick中断之前不会切换到任务1(假设configUSE TIME SLICING在FreeRTOSConfig.h中设置为1)。
+1. 任务1和任务2具有相同的优先级，所以除非任务2进入阻塞状态，否则在下一次tick中断之前不会切换到任务1(假设`configUSE TIME SLICING`在`FreeRTOSConfig.h`中设置为1)。
 2. 如果一个任务在紧循环中使用了一个互斥锁，并且每次任务给出互斥锁时都会发生上下文切换，那么这个任务只会在很短的时间内保持运行状态。如果两个或多个任务在一个紧循环中使用同一个互斥锁，那么在任务之间快速切换会浪费处理时间。
-
-
 
 如果一个互斥锁在一个紧循环中被多个任务使用，并且使用互斥锁的任务具有相同的优先级，那么必须小心确保任务收到大约相等的处理时间。图69演示了任务可能无法获得相同数量的处理时间的原因。它显示了以相同优先级创建清单125所示任务的两个实例时可能发生的执行序列。
 
@@ -6121,29 +5754,19 @@ char cTextBuffer[ 128 ];
 
 清单125. 一个在紧密循环中使用互斥的任务
 
-
-
 清单125中的注释注意到，创建字符串是一个快速的操作，而更新显示则是一个缓慢的操作。因此，当显示被更新时，互斥锁被持有，任务将在大部分运行时间内持有互斥锁。
-
-
 
 在图69中，垂直线标记了记号中断发生的时间。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636018507067-3d56d6a9-cf05-44e0-a084-80d0db8b5523.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636018507067-3d56d6a9-cf05-44e0-a084-80d0db8b5523.png)
 
 图69 任务的两个实例可能发生的执行序列如清单125所示，以相同的优先级创建
 
-
-
-图69中的第7步显示任务1重新进入阻塞状态，这发生在 xSemaphoreTake() API函数中发生。
-
-
+图69中的第7步显示任务1重新进入阻塞状态，这发生在 `xSemaphoreTake()` API函数中发生。
 
 图69表明，任务1将被阻止获得互斥锁，直到时间片的开始与任务2不是互斥锁持有者的短时间的重合。
 
-
-
-图69中所示的情况可以通过在调用taskYIELD()后添加一个调用来避免。调用xSemaphoreGive()后，可以避免这种情况。这在清单126中得到了证明，如果在任务持有互斥锁时taskYIELD()被调用，那么它就会被调用。如果在任务持有互斥锁的时候，标记计数发生了变化，就会调用taskYIELD()。
+图69中所示的情况可以通过在调用`taskYIELD()`后添加一个调用来避免。调用`xSemaphoreGive()`后，可以避免这种情况。这在清单126中得到了证明，如果在任务持有互斥锁时`taskYIELD()`被调用，那么它就会被调用。如果在任务持有互斥锁的时候，标记计数发生了变化，就会调用`taskYIELD()`。
 
 ```groovy
 void vFunction( void *pvParameter )
@@ -6186,33 +5809,23 @@ TickType_t xTimeAtWhichMutexWasTaken;
 
 看门人任务提供了一种干净的实现互斥的方法，并且没有优先级倒置或死锁的风险。
 
-
-
 看门人任务是对资源拥有唯一所有权的任务。只有看门人任务被允许直接访问资源，其他需要访问资源的任务只能通过使用看门人的服务间接访问资源。
 
 
 
 ### 示例21. 重写vPrintString()以使用看门人任务
 
-示例21提供了vPrintString()的另一种替代实现。这一次，使用一个看门人任务来管理对标准输出的访问。当任务想要将消息写入标准输出时，它不会直接调用print函数，而是将消息发送给看门人。
-
-
+示例21提供了`vPrintString()`的另一种替代实现。这一次，使用一个看门人任务来管理对标准输出的访问。当任务想要将消息写入标准输出时，它不会直接调用print函数，而是将消息发送给看门人。
 
 看门人任务使用FreeRTOS队列将访问序列化到标准输出。任务的内部实现不必考虑互斥，因为它是唯一允许直接访问标准输出的任务。
 
-
-
 看门人任务大部分时间处于阻塞状态，等待消息到达队列。当消息到达时，看门人只需将消息写入标准输出，然后返回阻塞状态以等待下一条消息。看门人任务的实现如清单128所示。
-
-
 
 中断可以发送到队列，因此中断服务程序也可以安全地使用看门人的服务向终端写入消息。在本例中，使用了一个钩子函数，每200次写一条消息。
 
-
-
 滴答钩子(或滴答回调)是内核在每次滴答中断期间调用的函数。使用滴答钩子函数:
 
-1. 在FreeRTOSConfig.h中设置configUSE_TICK_HOOK为1。
+1. 在`FreeRTOSConfig.h`中设置configUSE_TICK_HOOK为1。
 2. 提供钩子函数的实现，使用清单127所示的准确的函数名称和原型如清单127所示。
 
 ```groovy
@@ -6221,13 +5834,9 @@ void vApplicationTickHook( void );
 
 清单127.  钩子函数的名称和原型
 
+钩子函数在勾选中断的上下文中执行，因此必须保持非常短的时间。所以必须保持非常短，必须只使用适量的堆栈空间，并且不能调用任何不以“`FromISR()`”结尾的FreeRTOS API 函数，而不是以 “`FromISR() `”结尾。
 
-
-钩子函数在勾选中断的上下文中执行，因此必须保持非常短的时间。所以必须保持非常短，必须只使用适量的堆栈空间，并且不能调用任何不以“FromISR()”结尾的FreeRTOS API 函数，而不是以 “FromISR() ”结尾。
-
-
-
-调度器将总是在滴答钩子函数之后立即执行，所以中断安全。从滴答钩子调用的FreeRTOS API函数不需要使用其 pxHigherPriorityTaskWoken参数，并且该参数可以被设置为NULL。
+调度器将总是在滴答钩子函数之后立即执行，所以中断安全。从滴答钩子调用的FreeRTOS API函数不需要使用其 pxHigherPriorityTaskWoken参数，并且该参数可以被设置为`NULL`。
 
 ```groovy
 static void prvStdioGatekeeperTask( void *pvParameters )
@@ -6251,8 +5860,6 @@ char *pcMessageToPrint;
 
 清单128.  看门人任务
 
-
-
 写入队列的任务如清单129所示。与前面一样，将创建任务的两个独立实例，并使用任务参数将任务写入队列的字符串传递给任务。
 
 ```groovy
@@ -6275,9 +5882,7 @@ const TickType_t xMaxBlockTimeTicks = 0x20;
 }
 ```
 
-清单129.  例21的打印任务实现
-
-
+清单129.  示例21的打印任务实现
 
 滴答钩子函数对自己被调用的次数进行计数，每次计数达到200时，就向看门人任务发送消息。仅出于演示目的，滴答钩子写到队列的前面，而任务写到队列的后面。滴答钩子实现如清单130所示。
 
@@ -6303,9 +5908,7 @@ static int iCount = 0;
 
 清单130.  滴答钩子函数的实现
 
-
-
-正常情况下，main()创建运行示例所需的队列和任务，然后启动调度程序。main()的实现如清单131所示。
+正常情况下，`main()`创建运行示例所需的队列和任务，然后启动调度程序。`main()`的实现如清单131所示。
 
 ```groovy
 /*定义任务和中断将通过看门人打印出来的字符串。 */
@@ -6344,17 +5947,13 @@ int main( void )
 }
 ```
 
-清单131.  例21的main()的实现
-
-
+清单131.  示例21的`main()`的实现
 
 执行示例21时产生的输出如图70所示。可以看到，来自任务的字符串和来自中断的字符串都正确输出，没有损坏。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636078578045-f89e7516-8666-4c7d-9fa8-aabc2e5f588e.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636078578045-f89e7516-8666-4c7d-9fa8-aabc2e5f588e.png)
 
 图70  执行例21时产生的输出
-
-
 
 看门人任务的优先级比打印任务低，因此发送给看门人的消息会一直留在队列中，直到两个打印任务都处于阻塞状态。在某些情况下，为看门人分配更高的优先级是合适的，这样消息就可以立即得到处理——但是这样做的代价是，看门人会延迟较低优先级的任务，直到完成对受保护资源的访问。
 
@@ -6373,24 +5972,16 @@ int main( void )
 - 它们允许任务在阻塞状态中等待单个事件的发生。
 - 当事件发生时，它们解除阻塞单个任务——解除阻塞的任务是等待事件的最高优先级的任务。
 
-
-
 事件组是FreeRTOS的另一个特性，它允许事件与任务通信。与队列和信号量不同：
 
 - 事件组允许任务在阻塞状态下等待多个事件的组合发生。
 - 事件组在事件发生时解除等待同一事件或事件组合的所有任务的阻塞。
 
-
-
 事件组的这些独特的性质使其有用的多个任务同步广播事件的多个任务,允许任务阻塞状态等待任何发生的一系列事件之一,并允许一个任务在阻塞状态等多个操作完成。
-
-
 
 事件组还提供了减少应用程序使用的RAM的机会，因为通常可以用单个事件组替换许多二进制信号量。
 
-
-
-事件组功能是可选的。要包含事件组功能，构建FreeRTOS源文件event_groups.c作为项目的一部分。
+事件组功能是可选的。要包含事件组功能，构建FreeRTOS源文件`event_groups.c`作为项目的一部分。
 
 
 
@@ -6414,27 +6005,19 @@ int main( void )
 
 事件 "标志 "是一个布尔值（1或0），用于指示一个事件是否发生。事件 "组 "是一组事件标志。
 
-
-
 事件标志只能为1或0，允许事件标志的状态存储在单个位中，事件组中所有事件标志的状态存储在单个变量中；事件组中每个事件标志的状态由类型为EventBits_t的变量中的单个位表示。因此，事件标志也被称为事件“位”。如果EventBits_t变量中的一位被设为1，则该位表示的事件已经发生。如果在EventBits_t变量中一个位被设置为0。那么由该位表示的事件没有发生。
-
-
 
 图71显示了如何将单个事件标志映射到类型变量中的单个位EventBits_t。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636082654638-c4484f4f-5c5b-4348-bcbd-3d96004c940b.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636082654638-c4484f4f-5c5b-4348-bcbd-3d96004c940b.png)
 
 图71 EventBits_t类型变量中的事件标志到位号的映射
 
-
-
 例如，如果一个事件组的值是0x92(二进制1001 0010)，那么只有事件位1、4和7被设置，因此只有由1、4和7表示的事件发生。图72显示了EventBits_t类型的变量，设置了事件位1、4和7，并清除了所有其他事件位，使事件组的值为0x92。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636082893303-94a007a8-cf5e-46b1-a4f5-caab3caaed2c.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636082893303-94a007a8-cf5e-46b1-a4f5-caab3caaed2c.png)
 
 图72 一个事件组，其中只设置了1、4和7位，并且清除了所有其他事件标志，使事件组的值为0x92
-
-
 
 由应用程序编写器为事件组中的单个位分配意义。例如，应用程序编写器可以创建一个事件组，然后：
 
@@ -6443,16 +6026,14 @@ int main( void )
 
 - 将事件组中的第2位定义为“终止当前网络连接”。
 
-
-
 关于EventBits_t数据类型的更多信息
 
-事件组中的事件位数依赖于FreeRTOSConfig.h1中的configUSE_16_BIT_ TICKS编译时配置常量：
+事件组中的事件位数依赖于`FreeRTOSConfig.h`中的`configUSE_16_BIT_ TICKS`编译时配置常量：
 
-- 如果configUSE_16_BIT_TICKS为1，则每个事件组包含8个可用的事件位。
-- 如果configUSE_16_BIT_TICKS为0，则每个事件组包含24个可用的事件位。
+- 如果`configUSE_16_BIT_TICKS`为1，则每个事件组包含8个可用的事件位。
+- 如果`configUSE_16_BIT_TICKS`为0，则每个事件组包含24个可用的事件位。
 
-FreeRTOSConfig.h1：configUSE_16_BIT_TICKS配置用于保存RTOS滴答数的类型，因此似乎与事件组特性无关。它对EventBits_t类型的影响是FreeRTOS内部实现的结果，当FreeRTOS在一个能够比32位tvpes更有效地处理16位类型的架构上执行时，configUSE_16_BIT_TICKS应该只设置为1。
+> FreeRTOSConfig.h：configUSE_16_BIT_TICKS配置用于保存RTOS滴答数的类型，因此似乎与事件组特性无关。它对EventBits_t类型的影响是FreeRTOS内部实现的结果，当FreeRTOS在一个能够比32位tvpes更有效地处理16位类型的架构上执行时，configUSE_16_BIT_TICKS应该只设置为1。
 
 
 
@@ -6466,15 +6047,9 @@ FreeRTOSConfig.h1：configUSE_16_BIT_TICKS配置用于保存RTOS滴答数的类�
 
 FreeRTOS+TCP TCP/IP栈的实现提供了一个实例，说明如何使用事件组同时简化设计，并最小化资源使用。
 
-
-
 一个TCP套接字必须响应许多不同的事件。事件的例子包括接受事件、绑定事件、读取事件和关闭事件。套接字在任何给定时间所期望的事件取决于套接字的状态。例如，如果套接字已经创建，但还没有绑定到地址，那么它可以预期接收绑定事件，但不会预期接收读事件(如果没有地址，它就无法读取数据)。
 
-
-
 一个FreeRTOS+TCP套接字的状态保存在一个叫做FreeRTOS_Socket_t的结构中。该结构包含一个事件组，该事件组为套接字必须处理的每个事件定义一个事件位。FreeRTOS+TCP API调用这个阻塞来等待一个事件或一组事件，只是在事件组上阻塞。
-
-
 
 事件组还包含一个中止位，允许TCP连接被终止，不管套接字当时在等待哪个事件。
 
@@ -6484,62 +6059,52 @@ FreeRTOS+TCP TCP/IP栈的实现提供了一个实例，说明如何使用事件�
 
 ### xEventGroupCreate() API函数
 
-FreeRTOS V9.0.0还包括xEventGroupCreateStatic()函数，该函数在编译时分配静态创建事件组所需的内存:在使用事件组之前，必须显式地创建它。
+FreeRTOS V9.0.0还包括`xEventGroupCreateStatic()`函数，该函数在编译时分配静态创建事件组所需的内存:在使用事件组之前，必须显式地创建它。
 
-
-
-使用EventGroupHandle_t类型的变量引用事件组。API函数xEventGroupCreate()用于创建事件组，并返回一个EventGroupHandle_t来引用它创建的事件组。
+使用EventGroupHandle_t类型的变量引用事件组。API函数`xEventGroupCreate()`用于创建事件组，并返回一个EventGroupHandle_t来引用它创建的事件组。
 
 ```groovy
 EventGroupHandle_t xEventGroupCreate( void );
 ```
 
-清单 132.  xEventGroupCreate() API函数原型
+清单 132.  `xEventGroupCreate()` API函数原型
 
-
-
-表 42. xEventGroupCreate() 的返回值
+表 42. `xEventGroupCreate() `的返回值
 
 | 参数名 | 描述                                                         |
 | :----- | ------------------------------------------------------------ |
-| 返回值 | 如果返回NULL，则不能创建事件组，因为没有足够的堆内存供FreeRTOS分配事件组数据结构。第2章提供了堆内存管理的更多信息。如果返回非null值，则表示事件组创建成功。返回值应该存储为创建的事件组的句柄。 |
+| 返回值 | 如果返回`NULL`，则不能创建事件组，因为没有足够的堆内存供FreeRTOS分配事件组数据结构。第2章提供了堆内存管理的更多信息。如果返回非null值，则表示事件组创建成功。返回值应该存储为创建的事件组的句柄。 |
 
 
 
 ### xEventGroupSetBits() API函数
 
-xEventGroupSetBits() API函数在事件组中设置一个或多个位，通常用于通知任务，由被设置的位表示的事件已经发生。
+`xEventGroupSetBits()` API函数在事件组中设置一个或多个位，通常用于通知任务，由被设置的位表示的事件已经发生。
 
-注意:永远不要在中断服务程序中调用xEventGroupSetBits()。应该使用中断安全版本xEventGroupSetBitsFromISR()来代替它。
+> 注意:永远不要在中断服务程序中调用`xEventGroupSetBits()`。应该使用中断安全版本`xEventGroupSetBitsFromISR()`来代替它。
 
 ```groovy
 EventBits_t xEventGroupSetBits( EventGroupHandle_t xEventGroup,
 								const EventBits_t uxBitsToSet );
 ```
 
-清单133.  xEventGroupSetBits() API函数原型
+清单133.  `xEventGroupSetBits()` API函数原型
 
-
-
-表 43.  xEventGroupSetBits()参数和返回值
+表 43.  `xEventGroupSetBits()`参数和返回值
 
 | 参数名      | 描述                                                         |
 | ----------- | ------------------------------------------------------------ |
-| xEventGroup | 要在其中设置位的事件组的句柄。事件组句柄已经从用于创建事件组的xEventGroupCreate()调用中返回。 |
+| xEventGroup | 要在其中设置位的事件组的句柄。事件组句柄已经从用于创建事件组的`xEventGroupCreate()`调用中返回。 |
 | uxBitsToSet | 一个位掩码，用于指定事件组中的事件位或事件位设置为1。事件组的值通过用uxBitsToSet传递的值按位或事件组的现有值来更新。例如，将uxBitsToSet设置为0x04(二进制0100)将导致事件组中的事件位3被设置(如果它还没有被设置)，而事件组中的所有其他事件位保持不变。 |
-| 返回值      | 调用xEventGroupSetBits()返回时事件组的值。注意，返回的值不一定是uxBitsToSet指定的位，因为这些位可能已经被另一个任务再次清除。 |
+| 返回值      | 调用`xEventGroupSetBits()`返回时事件组的值。注意，返回的值不一定是uxBitsToSet指定的位，因为这些位可能已经被另一个任务再次清除。 |
 
 
 
 ### xEventGroupSetBitsFromlSR() API函数
 
-xEventGroupSetBitsFromlSR()是xEventGroupSetBits()的中断安全版本。
-
-
+`xEventGroupSetBitsFromlSR()`是`xEventGroupSetBits()`的中断安全版本。
 
 给出信号量是一个确定性操作，因为预先知道给出信号量最多会导致一个任务离开阻塞状态。当在事件组中设置位时，不知道有多少任务将离开阻塞状态，因此在事件组中设置位不是确定性操作。
-
-
 
 FreeRTOS设计和实现标准不允许不确定的操作在一个中断服务程序执行,或者当中断禁用这个原因，xEventGroupSetBitsFromlSR()不直接设置事件比特在中断服务程序,而是延缓RTOS守护进程的行动任务。
 
@@ -6551,20 +6116,18 @@ BaseType_t xEventGroupSetBitsFromISR( EventGroupHandle_t xEventGroup,
 
 清单 134.  xEventGroupSetBitsFromISR() API函数原型
 
-
-
 表 44. xEventGroupSetBitsFromISR()参数和返回值
 
 | 参数名                    | 描述                                                         |
 | ------------------------- | ------------------------------------------------------------ |
-| xEventGroup               | 要在其中设置位的事件组的句柄。事件组句柄已经从用于创建事件组的XEventGroupCreate()调用中返回。 |
+| xEventGroup               | 要在其中设置位的事件组的句柄。事件组句柄已经从用于创建事件组的`XEventGroupCreate()`调用中返回。 |
 | uxBitsToSet               | 一个位掩码，用于指定事件组中的事件位或事件位设置为1。事件组的值通过用uxBitsToSet传递的值按位或事件组的现有值来更新。例如，将uxBitsToSet设置为0x05(二进制0101)将导致事件组中的事件位3和事件位0被设置(如果它们还没有被设置)，而事件组中的所有其他事件位保持不变。 |
-| pxHigherPriorityTaskWoken | xEventGroupSetBitsFromlSR()不直接在中断服务例程中设置事件位，而是通过在定时器命令队列上发送命令，将操作推迟给RTOS守护进程任务。如果守护任务处于阻塞状态以等待定时器命令队列上的数据可用，那么写入定时器命令队列将导致守护任务离开阻塞状态。如果守护进程任务的优先级高于当前正在执行的任务(被中断的任务)的优先级，那么，xEventGroupSetBitsFromlSR()将在内部将*pxHigherPriorityTaskWoken设置为pdTRUE。如果xEventGroupSetBitsFromlSR()将这个值设置为pdTRUE，那么应该在中断退出之前执行上下文切换。这将确保中断直接返回到守护任务，因为守护任务将是最高优先级的就绪状态任务。 |
+| pxHigherPriorityTaskWoken | `xEventGroupSetBitsFromlSR()`不直接在中断服务例程中设置事件位，而是通过在定时器命令队列上发送命令，将操作推迟给RTOS守护进程任务。如果守护任务处于阻塞状态以等待定时器命令队列上的数据可用，那么写入定时器命令队列将导致守护任务离开阻塞状态。如果守护进程任务的优先级高于当前正在执行的任务(被中断的任务)的优先级，那么，`xEventGroupSetBitsFromlSR()`将在内部将`*pxHigherPriorityTaskWoken`设置为pdTRUE。如果`xEventGroupSetBitsFromlSR()`将这个值设置为pdTRUE，那么应该在中断退出之前执行上下文切换。这将确保中断直接返回到守护任务，因为守护任务将是最高优先级的就绪状态任务。 |
 | 返回值                    | 有两个可能的返回值：pdPASSpdPASS只在数据成功发送到定时器命令队列时返回。pdFALSE如果设置位命令不能写入定时器命令队列，因为队列已经满了，将返回pdFALSE， |
 
 ### xEventGroupWaitBits() API函数
 
-xEventGroupWaitBits() APl函数允许任务读取事件组的值，并且可以选择在阻塞状态等待事件组中的一个或多个事件位被设置，如果这些事件位还没有设置。
+`xEventGroupWaitBits()` APl函数允许任务读取事件组的值，并且可以选择在阻塞状态等待事件组中的一个或多个事件位被设置，如果这些事件位还没有设置。
 
 ```groovy
 EventBits_t xEventGroupWaitBits( const EventGroupHandle_t xEventGroup,
@@ -6574,26 +6137,18 @@ EventBits_t xEventGroupWaitBits( const EventGroupHandle_t xEventGroup,
  								 TickType_t xTicksToWait );
 ```
 
-清单135.  xEventGroupWaitBits() API函数原型
-
-
+清单135.  `xEventGroupWaitBits()` API函数原型
 
 调度程序用来确定任务是否进入阻塞状态，以及任务何时离开阻塞状态的条件称为“解封条件”。解封条件由uxBitsToWaitFor和xWaitForAllBits参数值的组合指定：
 
 - uxBitsToWaitFor指定要测试事件组中的哪个事件位
 - xWaitForAllBits指定是使用位数OR测试，还是位数AND测试。
 
+如果在调用`xEventGroupWaitBits()`时，任务的解锁条件得到满足，那么该任务将不会进入阻塞状态。
 
+表45提供了导致任务进入阻塞状态或退出阻塞状态的条件示例。表45只显示了事件组和`uxBitsToWaitFor`值中最不重要的四个二进制位——这两个值的其他位被假定为零。
 
-如果在调用xEventGroupWaitBits()时，任务的解锁条件得到满足，那么该任务将不会进入阻塞状态。
-
-
-
-表45提供了导致任务进入阻塞状态或退出阻塞状态的条件示例。表45只显示了事件组和uxBitsToWaitFor值中最不重要的四个二进制位——这两个值的其他位被假定为零。
-
-
-
-表45 uxBitsToWaitFor和xWaitForAllBits参数的影响
+表45 `uxBitsToWaitFor`和`xWaitForAllBits`参数的影响
 
 | Existing Event Group Value | uxBitsToWaitFor value | xWaitForAllBitsvalue | Resultant Behavior                                           |
 | -------------------------- | --------------------- | -------------------- | ------------------------------------------------------------ |
@@ -6602,33 +6157,27 @@ EventBits_t xEventGroupWaitBits( const EventGroupHandle_t xEventGroup,
 | 0100                       | 0110                  | pdFALSE              | 调用任务不会进入阻塞状态，因为xWaitForAllBits是pdFALSE，并且uxBitsToWaitFor指定的两个位中的一个已经在事件组中设置。 |
 | 0100                       | 0110                  | pdTRUE               | 由于xWaitForAllBits为pdTRUE，并且uxBitsToWaitFor指定的两个位中只有一个已经在事件组中设置，因此调用任务将进入阻塞状态。当事件组中的第2位和第3位都被设置时，任务将离开阻塞状态。 |
 
-
-
 调用任务使用uxBitsToWaitFor参数指定要测试的位，调用任务很可能需要在满足解封条件后将这些位清除为零。事件位可以使用xEventGroupClearBits() API函数来清除，但如果使用该函数手动清除事件位将导致应用程序代码中的竞争条件：
 
 - 使用同一事件组的任务不止一个。
 - 位由不同的任务或中断服务程序在事件组中设置。
 
+提供了`xClearOnExit`参数以避免这些潜在的竞争条件。如果`xClearOnExit`设置为pdTRUE，那么对调用任务来说，事件位的测试和清除似乎是一个原子操作(不能被其他任务或中断中断)。
 
+表46 `xEventGroupWaitBits()`参数和返回值
 
-提供了xClearOnExit参数以避免这些潜在的竞争条件。如果xClearOnExit设置为pdTRUE，那么对调用任务来说，事件位的测试和清除似乎是一个原子操作(不能被其他任务或中断中断)。
-
-
-
-表46 xEventGroupWaitBits()参数和返回值
-
-| 参数名          | 描述                                                         |
-| --------------- | ------------------------------------------------------------ |
-| xEventGroup     | 事件组的句柄，其中包含正在读取的事件位。事件组句柄已经从用于创建事件组的xEventGroupCreate()调用中返回。 |
-| uxBitsToWaitFor | 指定事件组中要测试的事件位或事件位的位掩码。例如，如果调用任务想要等待事件位0和/或事件位2在事件组中被设置，那么将uxBitsToWaitFor设置为0x05(二进制0101)。更多的例子请参见表45。 |
-| xClearOnExit    | 如果调用任务的解封条件已经被满足，并且xClearOnExit被设置为pdTRUE，那么在调用任务退出xEventGroupWaitBits() API函数之前，uxBitsToWaitFor指定的事件位将被清除回事件组中的0。如果xClearOnExit设置为pdFALSE，则事件组中的事件位的状态不会被xEventGroupWaitBits() API函数修改。 |
-| xWaitForAllBits | uxBitsToWaitFor参数指定要在事件组中测试的事件位。xWaitForAllBits指定当uxBitsToWaitFor参数指定的一个或多个事件位被设置时，或者只有当uxBitsToWaitFor参数指定的所有事件位被设置时，调用任务才应该从阻塞状态中删除。如果xWaitForAllBits为pdFALSE,那么一个任务进入阻塞状态等待其开启条件满足时将阻塞状态的任何部分规定uxBitsToWaitFor成为集(或指定的超时xTicksToWait参数到期)。示例请参见表45。 |
-| xTicksToWait    | 任务保持阻塞状态以等待其解除阻塞条件满足的最大时间。如果xTicksTolWait为零，或者在调用xEventGroupWaitBits()时满足解封条件，则xEventGroupWaitBits()将立即返回。块时间以滴答周期指定，因此它所代表的绝对时间依赖于滴答频率。宏pdMS_TO_TICKS()可用于将以毫秒为单位指定的时间转换为以ticks为单位指定的时间。将xTicksToWait设置为portMAX_DELAY将导致任务无限期等待(不会超时)，前提是在FreeRTOSConfig.h中将INCLUDE_vTaskSuspend设置为1。 |
-| Returned Value  | 如果xEventGroupWaitBits()返回是因为调用任务的解封条件被满足，那么返回值是调用任务的解封条件被满足时的事件组的值(在xClearOnExit为pdTRUE时自动清除任何位之前)。在这种情况下，返回值也将满足解封条件。如果xEventGroupWaitBits()返回是因为xTicksToWait参数指定的块时间过期，那么返回的值是块时间过期时事件组的值。在这种情况下，返回值将不满足解封条件。 |
+| 参数名            | 描述                                                         |
+| ----------------- | ------------------------------------------------------------ |
+| `xEventGroup`     | 事件组的句柄，其中包含正在读取的事件位。事件组句柄已经从用于创建事件组的`xEventGroupCreate()`调用中返回。 |
+| `uxBitsToWaitFor` | 指定事件组中要测试的事件位或事件位的位掩码。例如，如果调用任务想要等待事件位0和/或事件位2在事件组中被设置，那么将`uxBitsToWaitFor`设置为0x05(二进制0101)。更多的例子请参见表45。 |
+| `xClearOnExit`    | 如果调用任务的解封条件已经被满足，并且`xClearOnExit`被设置为pdTRUE，那么在调用任务退出`xEventGroupWaitBits()` API函数之前，`uxBitsToWaitFor`指定的事件位将被清除回事件组中的0。如果`xClearOnExit`设置为pdFALSE，则事件组中的事件位的状态不会被`xEventGroupWaitBits()` API函数修改。 |
+| `xWaitForAllBits` | uxBitsToWaitFor参数指定要在事件组中测试的事件位。xWaitForAllBits指定当uxBitsToWaitFor参数指定的一个或多个事件位被设置时，或者只有当uxBitsToWaitFor参数指定的所有事件位被设置时，调用任务才应该从阻塞状态中删除。如果xWaitForAllBits为pdFALSE,那么一个任务进入阻塞状态等待其开启条件满足时将阻塞状态的任何部分规定uxBitsToWaitFor成为集(或指定的超时xTicksToWait参数到期)。示例请参见表45。 |
+| `xTicksToWait`    | 任务保持阻塞状态以等待其解除阻塞条件满足的最大时间。如果xTicksTolWait为零，或者在调用xEventGroupWaitBits()时满足解封条件，则xEventGroupWaitBits()将立即返回。块时间以滴答周期指定，因此它所代表的绝对时间依赖于滴答频率。宏pdMS_TO_TICKS()可用于将以毫秒为单位指定的时间转换为以ticks为单位指定的时间。将xTicksToWait设置为portMAX_DELAY将导致任务无限期等待(不会超时)，前提是在FreeRTOSConfig.h中将INCLUDE_vTaskSuspend设置为1。 |
+| 返回值            | 如果`xEventGroupWaitBits()`返回是因为调用任务的解封条件被满足，那么返回值是调用任务的解封条件被满足时的事件组的值(在`xClearOnExit`为pdTRUE时自动清除任何位之前)。在这种情况下，返回值也将满足解封条件。如果`xEventGroupWaitBits()`返回是因为`xTicksToWait`参数指定的块时间过期，那么返回的值是块时间过期时事件组的值。在这种情况下，返回值将不满足解封条件。 |
 
 
 
-### 例22. 实验事件组
+### 示例22. 实验事件组
 
 这个例子演示了如何进行：
 
@@ -6638,11 +6187,7 @@ EventBits_t xEventGroupWaitBits( const EventGroupHandle_t xEventGroup,
 - 从任务中设置事件组中的位。
 - 阻塞事件组。
 
-
-
-xEventGroupWaitBits() xWaitForAllBits参数的效果是通过首先执行xWaitForAllBits设置为pdFALSE的示例，然后执行xWaitForAllBits设置为pdTRUE的示例来演示的。
-
-
+`xEventGroupWaitBits()` xWaitForAllBits参数的效果是通过首先执行xWaitForAllBits设置为pdFALSE的示例，然后执行xWaitForAllBits设置为pdTRUE的示例来演示的。
 
 事件位0和事件位1由一个任务设置。事件位2是由中断服务程序设置的。例程设置。这三个位通过#define语句被赋予描述性的名字，如清单136所示。
 
@@ -6653,11 +6198,9 @@ xEventGroupWaitBits() xWaitForAllBits参数的效果是通过首先执行xWaitFo
 #define mainISR_BIT         ( 1UL << 2UL ) /* 事件位2，由ISR设置。 */
 ```
 
-清单136. 例22中使用的事件位定义
+清单136. 示例22中使用的事件位定义
 
-
-
-清单137显示了设置事件位0和事件位1的任务的实现。它位于一个循环中，反复设置一个位，然后再设置另一个位，每次调用xEventGroupSetBits()之间有200毫秒的延迟。在设置每个位之前打印一个字符串，以允许在控制台中看到执行序列。
+清单137显示了设置事件位0和事件位1的任务的实现。它位于一个循环中，反复设置一个位，然后再设置另一个位，每次调用`xEventGroupSetBits()`之间有200毫秒的延迟。在设置每个位之前打印一个字符串，以允许在控制台中看到执行序列。
 
 ```groovy
 static void vEventBitSettingTask( void *pvParameters )
@@ -6684,11 +6227,7 @@ const TickType_t xDelay200ms = pdMS_TO_TICKS( 200UL ), xDontBlock = 0;
 
 清单137.  例22中设置事件组中两个比特的任务
 
-
-
-清单138显示了在事件组中设置第2位的中断服务例程的实现。同样，在设置位之前打印一个字符串，以允许在控制台中看到执行序列。但是，在这种情况下，因为控制台输出不应该直接在中断服务例程中执行，所以使用xTimerPendFunctionCallFromISR()在RTOS守护进程任务的上下文中执行输出。
-
-
+清单138显示了在事件组中设置第2位的中断服务例程的实现。同样，在设置位之前打印一个字符串，以允许在控制台中看到执行序列。但是，在这种情况下，因为控制台输出不应该直接在中断服务例程中执行，所以使用`xTimerPendFunctionCallFromISR()`在RTOS守护进程任务的上下文中执行输出。
 
 与前面的示例一样，中断服务程序是由一个简单的周期性任务触发的，该任务强制软件中断。在本例中，中断每500毫秒产生一次。
 
@@ -6718,13 +6257,9 @@ BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 清单138.  例22中设置事件组中第2位的ISR
 
+清单139显示了调用`xEventGroupWaitBits()`来阻塞事件组的任务的实现。任务为事件组中设置的每个位打印一个字符串。
 
-
-清单139显示了调用xEventGroupWaitBits()来阻塞事件组的任务的实现。任务为事件组中设置的每个位打印一个字符串。
-
-
-
-xEventGroupWaitBits() xClearOnExit参数被设置为pdTRUE，因此导致调用xEventGroupWaitBits()返回的事件位或位将在xEventGroupWaitBits()返回之前被自动清除。
+`xEventGroupWaitBits()` xClearOnExit参数被设置为pdTRUE，因此导致调用`xEventGroupWaitBits()`返回的事件位或位将在`xEventGroupWaitBits()`返回之前被自动清除。
 
 ```groovy
 static void vEventBitReadingTask( void *pvParameters )
@@ -6769,9 +6304,7 @@ const EventBits_t xBitsToWaitFor = ( mainFIRST_TASK_BIT  |
 
 清单139. 例22中等待事件位被设置而阻塞的任务
 
-
-
-main()函数在启动调度程序之前创建事件组和任务。有关它的实现，请参见清单140。从事件组中进行读操作的任务优先级高于向事件组中进行写操作的任务优先级，确保每次满足读任务的解阻塞条件时，读任务都会抢占写任务。
+`main()`函数在启动调度程序之前创建事件组和任务。有关它的实现，请参见清单140。从事件组中进行读操作的任务优先级高于向事件组中进行写操作的任务优先级，确保每次满足读任务的解阻塞条件时，读任务都会抢占写任务。
 
 ```groovy
 int main(void)
@@ -6802,21 +6335,17 @@ int main(void)
 
 清单140. 创建例22中的事件组和任务
 
+在执行示例22时，将`xEventGroupWaitBits()` xWaitForAllBits参数设置为pdFALSE，所产生的输出如图73所示。在图73中，可以看到，由于调用`xEventGroupWaitBits()`中的xWaitForAllBits参数被设置为pdFALSE，从事件组中读取的任务将离开阻塞状态，并在每次设置任何事件位时立即执行。
 
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636101093971-7eb3bbab-0706-410b-a4db-9aac8e2f3dc6.png)
 
-在执行示例22时，将xEventGroupWaitBits() xWaitForAllBits参数设置为pdFALSE，所产生的输出如图73所示。在图73中，可以看到，由于调用xEventGroupWaitBits()中的xWaitForAllBits参数被设置为pdFALSE，从事件组中读取的任务将离开阻塞状态，并在每次设置任何事件位时立即执行。
+图73 示例22执行`xWaitForAllBits`设置为pdFALSE时产生的输出
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636101093971-7eb3bbab-0706-410b-a4db-9aac8e2f3dc6.png)
+在执行示例22时，将`xEventGroupWaitBits()` xWaitForAllBits参数设置为pdTRUE，所产生的输出如图74所示。在图74中可以看到，因为`xWaitForAllBits`参数被设置为pdTRUE，从事件组中读取的任务只有在设置了所有三个事件位之后才会离开状态阻塞。
 
-图73 示例22执行xWaitForAllBits设置为pdFALSE时产生的输出
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636101269447-89193a38-41d7-4f19-be10-3e4ac2e23fb6.png)
 
-
-
-在执行示例22时，将xEventGroupWaitBits() xWaitForAllBits参数设置为pdTRUE，所产生的输出如图74所示。在图74中可以看到，因为xWaitForAllBits参数被设置为pdTRUE，从事件组中读取的任务只有在设置了所有三个事件位之后才会离开状态阻塞。
-
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636101269447-89193a38-41d7-4f19-be10-3e4ac2e23fb6.png)
-
-图74 将xWaitForAlBits设置为pdTRUE执行示例22时产生的输出
+图74 将`xWaitForAlBits`设置为pdTRUE执行示例22时产生的输出
 
 
 
@@ -6824,17 +6353,11 @@ int main(void)
 
 有时，应用程序的设计需要两个或多个任务来彼此同步。例如，考虑这样一种设计:任务A接收一个事件，然后将该事件所需的一些处理委托给另外三个任务:任务B、任务C和任务D。如果任务A无法接收到另一个事件，直到任务B、C和D都完成了对前一个事件的处理，那么这四个任务就需要彼此同步。每个任务的同步点将在该任务完成其处理之后，并且不能继续进行，直到其他每个任务都完成了同样的处理。只有当所有四个任务都到达它们的同步点时，任务A才能接收到另一个事件。
 
-
-
 需要这种类型的任务同步的一个不那么抽象的例子可以在一个FreeRTOS+TCP演示项目中找到。演示在两个任务之间共享一个TCP套接字;一个任务向套接字发送数据，另一个任务从同一个套接字1接收数据。在确定其他任务不会再次尝试访问该套接字之前，关闭TCP套接字对任何一个任务来说都是不安全的。如果两个任务中有一个希望关闭套接字，那么它必须通知另一个任务它的意图，然后等待另一个任务停止使用该套接字，然后再继续。清单140所示的伪代码演示了将数据发送到希望关闭套接字的任务的场景。
-
-
 
 清单140所展示的情景是微不足道的，因为只有两个任务需要互相同步，但很容易看出，如果有其他任务在执行同步，该方案会变得更复杂，需要更多的任务加入同步，如果其他的任务在执行依赖于套接字的处理的话。处理依赖于套接字被打开。
 
-
-
-套接字1 ：在编写本文的时候，这是在任务之间共享单个FreeRTOS+TCP套接字的唯一方法。
+> 套接字：在编写本文的时候，这是在任务之间共享单个FreeRTOS+TCP套接字的唯一方法。
 
 ```groovy
 void SocketTxTask(void *pvParameters)
@@ -6902,8 +6425,6 @@ xSocket_t xSocket;
 
 清单141.两个任务的伪代码，它们彼此同步以确保在套接字关闭之前，任何一个任务都不再使用共享的TCP套接字
 
-
-
 事件组可用于创建同步点:
 
 - 必须参与同步的每个任务在事件组中被分配一个唯一的事件位。
@@ -6911,18 +6432,14 @@ xSocket_t xSocket;
 
 - 设置了自己的事件位后，每个任务阻塞在事件组上，等待代表所有其他同步任务的事件位也被设置。
 
-
-
-但是，xEventGroupSetBits()和xEventGroupWaitBits() API函数不能在此场景中使用。如果使用它们，那么位的设置(指示一个任务已经到达它的同步点)和位的测试(确定其他同步任务是否已经到达它们的同步点)将作为两个独立的操作执行。为了了解为什么这是一个问题，考虑一个场景，任务A任务B和任务C尝试使用事件组进行同步:
+但是，`xEventGroupSetBits()`和`xEventGroupWaitBits()` API函数不能在此场景中使用。如果使用它们，那么位的设置(指示一个任务已经到达它的同步点)和位的测试(确定其他同步任务是否已经到达它们的同步点)将作为两个独立的操作执行。为了了解为什么这是一个问题，考虑一个场景，任务A任务B和任务C尝试使用事件组进行同步:
 
 1. 任务A和任务B已经到达同步点，事件位已经在事件组中设置，处于阻塞状态，等待任务C的事件位也被设置。
-2. 任务C到达同步点后，使用xEventGroupSetBits()设置其在事件组中的位。一旦任务C的位被设置，任务A和任务B就会离开阻塞状态，并清除所有三个事件位。
+2. 任务C到达同步点后，使用`xEventGroupSetBits()`设置其在事件组中的位。一旦任务C的位被设置，任务A和任务B就会离开阻塞状态，并清除所有三个事件位。
 
-1. 任务C然后调用xEventGroupWaitBits()等待这三个事件比特成为集,但到那时,所有三个事件已经被清除,任务和任务B离开各自的同步点,所以同步失败了。
+1. 任务C然后调用`xEventGroupWaitBits()`等待这三个事件比特成为集,但到那时,所有三个事件已经被清除,任务和任务B离开各自的同步点,所以同步失败了。
 
-
-
-要成功地使用事件组创建同步点，事件位的设置和后续事件位的测试必须作为一个单独的不可中断操作执行。为此提供了xEventGroupSync() API函数。
+要成功地使用事件组创建同步点，事件位的设置和后续事件位的测试必须作为一个单独的不可中断操作执行。为此提供了`xEventGroupSync()` API函数。
 
 
 
@@ -6930,9 +6447,7 @@ xSocket_t xSocket;
 
 提供xEventGroupSync()允许两个或多个任务使用事件组彼此同步。该功能允许任务在一个事件组中设置一个或多个事件位，然后等待在同一事件组中设置多个事件位的组合，作为一个单独的不可中断操作。
 
-
-
-xEventGroupSync() uxBitsTolaitFor参数指定调用任务的解除阻塞条件。如果xEventGroupSync()返回是因为满足了不阻塞条件，uxBitsTolaitFor指定的事件位将在xEventGroupSync()返回之前被清除回零。
+`xEventGroupSync()` uxBitsTolaitFor参数指定调用任务的解除阻塞条件。如果`xEventGroupSync()`返回是因为满足了不阻塞条件，uxBitsTolaitFor指定的事件位将在`xEventGroupSync()`返回之前被清除回零。
 
 ```groovy
 EventBits_t xEventGroupSync(EventGroupHandle_t xEventGroup,
@@ -6941,11 +6456,9 @@ EventBits_t xEventGroupSync(EventGroupHandle_t xEventGroup,
                             TickType_t xTicksToWait);
 ```
 
-清单142. xEventGroupSync() API函数原型
+清单142. `xEventGroupSync()` API函数原型
 
-
-
-表47. xEventGroupSync()参数和返回值
+表47. `xEventGroupSync()`参数和返回值
 
 | 参数名          | 描述                                                         |
 | --------------- | ------------------------------------------------------------ |
@@ -6953,19 +6466,15 @@ EventBits_t xEventGroupSync(EventGroupHandle_t xEventGroup,
 | uxBitsToSet     | 一个位掩码，用于指定事件组中的事件位或事件位设置为1。事件组的值通过用uxBitsToSet传递的值按位或事件组的现有值来更新。例如，将uxBitsToSet设置为0x04(二进制0100)将导致事件3位被设置(如果它还没有被设置)，而事件组中的所有其他事件位保持不变。 |
 | uxBitsToWaitFor | 指定事件组中要测试的事件位或事件位的位掩码。例如，如果调用任务想要等待事件位0，1和2在事件组中被设置，那么将uxBitsToWaitFor设置为0x07(二进制111). |
 | xTicksToWait    | 任务保持阻塞状态以等待其解除阻塞条件满足的最大时间。如果xTicksToWait为零，或者在调用xEventGroupSync()时满足解除条件，则xEventGroupSync()将立即返回。块时间以滴答周期指定，因此它所代表的绝对时间依赖于滴答频率。宏pdMS_TO_TICKS()可用于将以毫秒为单位的时间转换为以节拍为单位的时间。将xTicksToWait设置为portMAX_DELAY将导致任务无限期等待(不会超时)，前提是在FreeRTOSConfig.h中将INCLUDE_vTaskSuspend设置为1。 |
-| Returned Value  | 如果xEventGroupSync()返回是因为调用任务的阻塞条件被满足，那么返回的值是调用任务的阻塞条件被满足时的事件组的值(在任何位被自动清除回零之前)。在这种情况下，返回值也将满足调用任务的阻塞条件。如果xEventGroupSync()返回是因为xTicksToWait参数指定的块时间过期，那么返回的值是块时间过期时事件组的值。在这种情况下，返回值将不满足调用任务的阻塞条件。 |
+| 返回值          | 如果xEventGroupSync()返回是因为调用任务的阻塞条件被满足，那么返回的值是调用任务的阻塞条件被满足时的事件组的值(在任何位被自动清除回零之前)。在这种情况下，返回值也将满足调用任务的阻塞条件。如果xEventGroupSync()返回是因为xTicksToWait参数指定的块时间过期，那么返回的值是块时间过期时事件组的值。在这种情况下，返回值将不满足调用任务的阻塞条件。 |
 
 
 
-### 例23. 同步任务
+### 示例23. 同步任务
 
-例23使用xEventGroupSync()同步一个任务实现的三个实例。任务参数用于将任务调用xEventGroupSync()时设置的事件位传递给每个实例。
+示例23使用`xEventGroupSync()`同步一个任务实现的三个实例。任务参数用于将任务调用xEventGroupSync()时设置的事件位传递给每个实例。
 
-
-
-任务在调用xEventGroupsync()之前打印一条消息，在调用xEventGroupsync()返回之后再次打印一条消息。每条消息都包含一个时间戳。这允许在生成的输出中观察执行顺序。伪随机延迟用于防止所有任务同时到达同步点。
-
-
+任务在调用`xEventGroupsync()`之前打印一条消息，在调用`xEventGroupsync()`返回之后再次打印一条消息。每条消息都包含一个时间戳。这允许在生成的输出中观察执行顺序。伪随机延迟用于防止所有任务同时到达同步点。
 
 有关任务的实现，请参见清单143。
 
@@ -7011,11 +6520,9 @@ static void vSyncingTask(void *pvParameters)
 }
 ```
 
-清单143.  例23中使用的任务的实现
+清单143.  示例23中使用的任务的实现
 
-
-
-main()函数创建事件组，创建所有三个任务，然后启动调度程序。有关它的实现，请参见清单144。
+`main()`函数创建事件组，创建所有三个任务，然后启动调度程序。有关它的实现，请参见清单144。
 
 ```groovy
 /* 事件组中的事件位的定义。 */
@@ -7045,19 +6552,15 @@ int main(void)
 }
 ```
 
-清单144. 例23中使用的main()函数
-
-
+清单144. 示例23中使用的main()函数
 
 执行示例23时产生的输出如图75所示。可以看到，即使每个任务在不同的(伪随机)时间到达同步点，每个任务在同一时间退出同步点1(这是最后一个任务到达同步点的时间)。
 
-
-
-同步点1：图75显示了在FreeRTOS Windows端口中运行的示例，它不提供真正的实时行为(特别是当使用Windows系统调用打印到控制台时)，因此会显示一些时间变化。
+> 同步点：图75显示了在FreeRTOS Windows端口中运行的示例，它不提供真正的实时行为(特别是当使用Windows系统调用打印到控制台时)，因此会显示一些时间变化。
 
 
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636106241870-6e67e703-5286-4d20-ad9b-6e847b751628.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636106241870-6e67e703-5286-4d20-ad9b-6e847b751628.png)
 
 图75执行示例23时产生的输出
 
@@ -7081,7 +6584,7 @@ int main(void)
 
 当使用通信对象时，事件和数据不会直接发送给接收任务或接收ISR，而是发送给通信对象。同样，任务和ISR从通信对象接收事件和数据，而不是直接从发送事件或数据的任务或ISR接收事件和数据。如图76所示。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636334710668-2719753a-8da1-41d1-b629-77bf4ee588a9.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636334710668-2719753a-8da1-41d1-b629-77bf4ee588a9.png)
 
 图76 用于将事件从一个任务发送到另一个任务的通信对象
 
@@ -7091,19 +6594,13 @@ int main(void)
 
 任务通知允许任务与其他任务交互，并与ISR同步，不需要单独的通信对象。通过使用任务通知，任务或ISR可以直接向接收任务发送事件。如图77所示。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636335089505-b72e3997-de68-4788-8626-f2939872cc4f.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636335089505-b72e3997-de68-4788-8626-f2939872cc4f.png)
 
 图77 用于将事件从一个任务直接发送到另一个任务的任务通知
 
+任务通知功能是可选的。要包含任务通知功能，请在`FreeRTOSConfig.h `中将`configUSE_TASK_NOTIFICATIONS` 设置为1。
 
-
-任务通知功能是可选的。要包含任务通知功能，请在FreeRTOSConfig.h 中将configUSE_TASK_NOTIFICATIONS 设置为1。
-
-
-
-当configUSE_TASK_NOTIFICATIONS被设置为1时，每个任务有一个 "通知状态"。可以是 "待定 "或 "未定"，还有一个 "通知值"，它是一个32位无符号整数。无符号整数。当一个任务收到一个通知时，它的通知状态被设置为待定。当一个任务读取其通知值时，其通知状态被设置为非待定。
-
-
+当`configUSE_TASK_NOTIFICATIONS`被设置为1时，每个任务有一个 "通知状态"。可以是 "待定 "或 "未定"，还有一个 "通知值"，它是一个32位无符号整数。无符号整数。当一个任务收到一个通知时，它的通知状态被设置为待定。当一个任务读取其通知值时，其通知状态被设置为非待定。
 
 任务可以在阻塞状态下等待其通知状态变为挂起（可选超时）。
 
@@ -7115,12 +6612,13 @@ int main(void)
 
 - 任务的通知状态和通知值。
 - 何时以及如何使用任务通知来代替通信对象(如信号量)。
-
 - 使用任务通知代替通信对象的优点。
 
 
 
 ## 任务通知；优势和限制
+
+
 
 ### 任务通知的性能优势
 
@@ -7144,15 +6642,11 @@ int main(void)
 
 任务通知可以用于从ISR向任务发送事件和数据，但不能用于从任务向ISR发送事件或数据。
 
-
-
 - 启用多个接收任务
 
 通信对象可以被任何知道其句柄(可能是队列句柄、信号量句柄或事件组句柄)的任务或ISR访问。任意数量的任务和isr都可以处理发送到任何给定通信对象的事件或数据。
 
 任务通知直接发送到接收任务，因此只能由将通知发送到的任务。然而，这在实际情况中很少是一个限制因为，虽然有多个任务和isr向同一个通信对象发送消息是很常见的，但有多个任务和isr从同一个对象接收消息是很少见的沟通对象。
-
-
 
 - 缓冲多个数据项
 
@@ -7160,15 +6654,11 @@ int main(void)
 
 任务通知通过更新接收任务的通知值向任务发送数据。任务的通知值一次只能保存一个值。
 
-
-
 - 向多个任务广播
 
 事件组是一种通信方式，可用于一次向多个任务发送事件。
 
 任务通知直接发送给接收任务，只能由接收任务处理。
-
-
 
 - 在阻塞状态下等待发送完成
 
@@ -7180,108 +6670,90 @@ int main(void)
 
 ## 使用任务通知
 
+
+
 ### 任务通知API选项
 
-任务通知是一个非常强大的特性，经常可以用来代替二进制信号量、计数信号量、事件组，有时甚至是队列。这种广泛的使用场景可以通过使用xTaskNotify() API函数发送任务通知和使用xTaskNotifyWait() API函数接收任务通知来实现。
+任务通知是一个非常强大的特性，经常可以用来代替二进制信号量、计数信号量、事件组，有时甚至是队列。这种广泛的使用场景可以通过使用`xTaskNotify()` API函数发送任务通知和使用`xTaskNotifyWait()` API函数接收任务通知来实现。
 
-
-
-但是，在大多数情况下，不需要xTaskNotify()和xTaskNotifyWait() API函数提供的全部灵活性，简单的函数就足够了。因此，提供了xTaskNotifyGive() API函数作为xTaskNotify的一个更简单但更不灵活的替代方案，而ulTaskNotifyTake() API函数作为xTaskNotifyWait()的一个更简单但更不灵活的替代方案。
+但是，在大多数情况下，不需要`xTaskNotify()`和`xTaskNotifyWait()` API函数提供的全部灵活性，简单的函数就足够了。因此，提供了`xTaskNotifyGive()` API函数作为xTaskNotify的一个更简单但更不灵活的替代方案，而`ulTaskNotifyTake()` API函数作为`xTaskNotifyWait()`的一个更简单但更不灵活的替代方案。
 
 
 
 ### xTaskNotifyGive() API函数
 
-xTaskNotifyGive()直接向任务发送通知，并增加(向)接收任务的通知值。调用xTaskNotifyGive()将把接收任务的通知状态设置为挂起(如果它还没有挂起)。
+`xTaskNotifyGive()`直接向任务发送通知，并增加(向)接收任务的通知值。调用`xTaskNotifyGive()`将把接收任务的通知状态设置为挂起(如果它还没有挂起)。
 
-
-
-提供了xTaskNotifyGive()1的API函数，允许任务通知作为二进制或计数信号量的轻量级和更快的替代。
+提供了`xTaskNotifyGive()`的API函数，允许任务通知作为二进制或计数信号量的轻量级和更快的替代。
 
 ```groovy
 BaseType_t xTaskNotifyGive( TaskHandle_t xTaskToNotify );
 ```
 
-清单 145. xTaskNotifyGive() API函数原型
+清单 145. `xTaskNotifyGive()` API函数原型
 
+> `xTaskNotifyGive()`实际上是作为宏实现的，而不是一个函数。为了简单起见，本书将它称为一个函数。
 
-
-xTaskNotifyGive()1实际上是作为宏实现的，而不是一个函数。为了简单起见，本书将它称为一个函数。
-
-
-
-表48. xTaskNotifyGive()参数和返回值
+表48. `xTaskNotifyGive()`参数和返回值
 
 | 参数名称/返回的值 | 描述                                                         |
 | ----------------- | ------------------------------------------------------------ |
-| xTaskToNotify     | 被发送通知的任务的句柄——有关获取任务句柄的信息，请参阅xTaskCreate() API函数的pxCreatedTask参数。 |
-| Returned value    | xTaskNotifyGive()是一个调用xTaskNotify()的宏。宏传递给xTaskNotify()的参数被设置为pdPASS是唯一可能的返回值。xTaskNotify()将在本书后面进行描述。 |
+| `xTaskToNotify`   | 被发送通知的任务的句柄——有关获取任务句柄的信息，请参阅`xTaskCreate()` API函数的`pxCreatedTask`参数。 |
+| 返回值            | `xTaskNotifyGive()`是一个调用`xTaskNotify()`的宏。宏传递给`xTaskNotify()`的参数被设置为pdPASS是唯一可能的返回值。`xTaskNotify()`将在本书后面进行描述。 |
 
 
 
 ### vTaskNotifyGiveFromISR() API函数
 
-vTaskNotifyGiveFromlSR()是xTaskNotifyGive()的一个版本，可以在中断服务例程中使用。
+`vTaskNotifyGiveFromlSR()`是`xTaskNotifyGive()`的一个版本，可以在中断服务例程中使用。
 
 ```groovy
 void vTaskNotifyGiveFromISR( TaskHandle_t xTaskToNotify, 
  							 BaseType_t *pxHigherPriorityTaskWoken );
 ```
 
-清单146. vTaskNotifyGiveFromISR() API函数原型
+清单146. `vTaskNotifyGiveFromISR()` API函数原型
 
+表 49. `vTaskNotifyGiveFromISR()`参数和返回值
 
-
-表49. vTaskNotifyGiveFromISR()参数和返回值
-
-| 参数名称/返回的值         | 描述                                                         |
-| ------------------------- | ------------------------------------------------------------ |
-| xTaskToNotify             | 被发送通知的任务的句柄——有关获取任务句柄的信息，请参阅xTaskCreate() API函数的pxCreatedTask参数。 |
-| pxHigherPriorityTaskWoken | 如果正在发送通知的任务处于阻塞状态等待接收通知，则发送通知将导致任务离开阻塞状态。如果调用vTaskNotifyGiveFromISR()导致任务离开阻塞状态，并且未阻塞的任务的优先级高于当前正在执行的任务(被中断的任务)的优先级，那么，vTaskNotifyGiveFromISR()将在内部将*pxhigherpriorityTaskWoken设置为pdTRUE。如果vTaskNotifyGiveFromlSR()将这个值设置为pdTRUE，那么应该在中断退出之前执行上下文切换。这将确保中断直接返回到最高优先级的就绪状态任务。和所有中断安全API函数一样，pxHigherPriorityTaskWoken参数在使用之前必须设置为pdFALSE。 |
+| 参数名称/返回的值           | 描述                                                         |
+| --------------------------- | ------------------------------------------------------------ |
+| `xTaskToNotify`             | 被发送通知的任务的句柄——有关获取任务句柄的信息，请参阅`xTaskCreate()` API函数的pxCreatedTask参数。 |
+| `pxHigherPriorityTaskWoken` | 如果正在发送通知的任务处于阻塞状态等待接收通知，则发送通知将导致任务离开阻塞状态。如果调用`vTaskNotifyGiveFromISR()`导致任务离开阻塞状态，并且未阻塞的任务的优先级高于当前正在执行的任务(被中断的任务)的优先级，那么，`vTaskNotifyGiveFromISR()`将在内部将`*pxhigherpriorityTaskWoken`设置为pdTRUE。如果`vTaskNotifyGiveFromlSR()`将这个值设置为pdTRUE，那么应该在中断退出之前执行上下文切换。这将确保中断直接返回到最高优先级的就绪状态任务。和所有中断安全API函数一样，`pxHigherPriorityTaskWoken`参数在使用之前必须设置为pdFALSE。 |
 
 
 
 ### ulTaskNotifyTake() API函数
 
-ulTaskNotifyTake()允许任务在阻塞状态中等待它的通知值大于0，并且在返回之前减少(减去1)或清除任务的通知值。
+`ulTaskNotifyTake()`允许任务在阻塞状态中等待它的通知值大于0，并且在返回之前减少(减去1)或清除任务的通知值。
 
-
-
-提供了ulTaskNotifyTake() API函数，以允许任务通知作为二进制或计数信号量的轻量级和更快的替代方法。
+提供了`ulTaskNotifyTake()` API函数，以允许任务通知作为二进制或计数信号量的轻量级和更快的替代方法。
 
 ```groovy
 uint32_t ulTaskNotifyTake( BaseType_t xClearCountOnExit, TickType_t xTicksToWait );
 ```
 
-清单147.  ulTaskNotifyTake() API函数原型
+清单147.  `ulTaskNotifyTake()` API函数原型
+
+表 50. `ulTaskNotifyTake()`参数和返回值
+
+| 参数名称/返回值     | 描述                                                         |
+| ------------------- | ------------------------------------------------------------ |
+| `xClearCountOnExit` | 如果`xClearCountOnExit`设置为pdTRUE，那么在调用`ulTaskNotifyTake()`返回之前，调用任务的通知值将被清除为零。如果`xClearCountOnExit`设置为pdFALSE，并且调用任务的通知值大于零，那么调用任务的通知值将在调用`ulTaskNotifyTake()`返回之前递减。 |
+| `xTicksToWait`      | 调用任务在等待其通知值大于零时应保持在状态阻塞的最大时间量。块时间以滴答周期指定，因此它所代表的绝对时间依赖于滴答频率。宏`pdMS_TO_TICKS()`可用于将以毫秒为单位指定的时间转换为以节拍为单位指定的时间。设置xTicksToWait为portMAX_DELAY将导致任务无限期等待(不会超时)在`FreeRTOSConfig.h`中将INCLUDE_vTaskSuspend设置为1。 |
+| 返回值              | 返回值是调用任务的通知值，在它被清除为零或减少之前，由`xClearCountOnExit`参数的值指定。如果一块指定时间(xTicksToWait不是零),返回值不为零,那么它有可能调用任务是放置进入阻塞状态,等待其通知值大于零,和它的值更新阻塞时间到期前通知。如果指定了块时间(`xTicksToWait`不为零)，并且返回值为零，然后调用任务被置于阻塞状态，等待其通知值大于零，但指定的阻塞时间在此之前已过期。 |
 
 
 
-表50. ulTaskNotifyTake()参数和返回值
+### 示例24. 方法1使用任务通知来代替信号量
 
-| 参数名称/返回值   | 描述                                                         |
-| ----------------- | ------------------------------------------------------------ |
-| xClearCountOnExit | 如果xClearCountOnExit设置为pdTRUE，那么在调用ulTaskNotifyTake()返回之前，调用任务的通知值将被清除为零。如果xClearCountOnExit设置为pdFALSE，并且调用任务的通知值大于零，那么调用任务的通知值将在调用ulTaskNotifyTake()返回之前递减。 |
-| xTicksToWait      | 调用任务在等待其通知值大于零时应保持在状态阻塞的最大时间量。块时间以滴答周期指定，因此它所代表的绝对时间依赖于滴答频率。宏pdMS_TO_TICKS()可用于将以毫秒为单位指定的时间转换为以节拍为单位指定的时间。设置xTicksToWait为portMAX_DELAY将导致任务无限期等待(不会超时)在FreeRTOSConfig.h中将INCLUDE_vTaskSuspend设置为1。 |
-| 返回值            | 返回值是调用任务的通知值，在它被清除为零或减少之前，由xClearCountOnExit参数的值指定。如果一块指定时间(xTicksToWait不是零),返回值不为零,那么它有可能调用任务是放置进入阻塞状态,等待其通知值大于零,和它的值更新阻塞时间到期前通知。如果指定了块时间(xTicksToWait不为零)，并且返回值为零，然后调用任务被置于阻塞状态，等待其通知值大于零，但指定的阻塞时间在此之前已过期。 |
+示例16使用了一个二进制信号量来解除中断服务程序中的任务阻塞——有效地将任务与中断同步。这个示例复制了示例16的功能，但是使用了一个直接到任务通知来代替二进制信号量。
 
+清单148显示了与中断同步的任务的实现。在示例16中使用的对`xSemaphoreTake()`的调用已经被对`ulTaskNotifyTake()`的调用所取代。
 
+`ulTaskNotifyTake()` xClearCountOnExit参数被设置为pdTRUE，这会导致接收任务的通知值在`ulTaskNotifyTake()`返回之前被清除为零。因此，有必要处理在每次调用`ulTaskNotifyTake()`之间已经可用的所有事件。在示例16中，因为使用了一个二进制信号量，所以挂起事件的数量必须从硬件中确定，这并不总是实际的。在示例24中，从`ulTaskNotifyTake()`返回挂起事件的数量。
 
-### 例24. 方法1使用任务通知来代替信号量
-
-例16使用了一个二进制信号量来解除中断服务程序中的任务阻塞——有效地将任务与中断同步。这个示例复制了示例16的功能，但是使用了一个直接到任务通知来代替二进制信号量。
-
-
-
-清单148显示了与中断同步的任务的实现。在示例16中使用的对xSemaphoreTake()的调用已经被对ulTaskNotifyTake()的调用所取代。
-
-
-
-ulTaskNotifyTake() xClearCountOnExit参数被设置为pdTRUE，这会导致接收任务的通知值在ulTaskNotifyTake()返回之前被清除为零。因此，有必要处理在每次调用ulTaskNotifyTake()之间已经可用的所有事件。在示例16中，因为使用了一个二进制信号量，所以挂起事件的数量必须从硬件中确定，这并不总是实际的。在示例24中，从ulTaskNotifyTake()返回挂起事件的数量。
-
-
-
-在调用ulTaskNotifyTake之间发生的中断事件被锁定在任务的通知值中，如果调用的任务已经有挂起的通知，那么对ulTaskNotifyTake()的调用将立即返回。
+在调用`ulTaskNotifyTake`之间发生的中断事件被锁定在任务的通知值中，如果调用的任务已经有挂起的通知，那么对`ulTaskNotifyTake()`的调用将立即返回。
 
 ```groovy
 /* 周期性任务生成软件中断的速率。 */
@@ -7317,11 +6789,7 @@ uint32_t ulEventsToProcess;
 
 清单148。中断处理所涉及的任务的实现 的实现（与中断同步的任务）。
 
-
-
 用于生成软件中断的周期任务在中断生成之前打印一条消息，并在中断生成之后再次打印一条消息。这允许在生成的输出中观察执行顺序。
-
-
 
 清单149显示了中断处理程序。除了直接向延迟中断处理的任务发送通知外，这几乎不做什么。
 
@@ -7347,36 +6815,30 @@ BaseType_t xHigherPriorityTaskWoken;
 
 清单149. 例24中使用的中断服务例程的实现
 
+执行示例24时产生的输出如图78所示。正如预期的那样，它与执行示例16时产生的结果相同。`vHandlerTask()`在生成中断后立即进入运行状态，因此任务的输出将分割周期性任务产生的输出。图79提供了进一步的解释。
 
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636340508634-f4ae301a-d216-4a7a-ac50-4045d007b87a.png)
 
-执行示例24时产生的输出如图78所示。正如预期的那样，它与执行示例16时产生的结果相同。vHandlerTask()在生成中断后立即进入运行状态，因此任务的输出将分割周期性任务产生的输出。图79提供了进一步的解释。
-
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636340508634-f4ae301a-d216-4a7a-ac50-4045d007b87a.png)
-
-图78  执行例16时产生的输出
-
-
-
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636340626206-22890559-016b-4f87-8268-e7af8d15f79f.png)
-
-图79  执行例24时的执行顺序
+图78  执行示例16时产生的输出
 
 
 
-### 25例. 方法2使用任务通知来代替信号量
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129846/1636340626206-22890559-016b-4f87-8268-e7af8d15f79f.png)
 
-在例24中，ulTaskNotifyTake() xClearOnExit参数被设置为pdTRUE。示例25稍微修改了示例24，以演示将ulTaskNotifyTake() xClearOnExit参数改为pdFALSE时的行为。
+图79  执行示例24时的执行顺序
 
 
 
-当xClearOnExit为pdFALSE时，调用ulTaskNotifyTake()只会减少(减少1)调用任务的通知值，而不是将其清除为零。因此，通知计数是已发生事件的数量与已处理事件的数量之间的差值。这允许vHandlerTask()的结构以两种方式简化：
+### 示例25. 方法2使用任务通知来代替信号量
+
+在示例24中，`ulTaskNotifyTake()` xClearOnExit参数被设置为pdTRUE。示例25稍微修改了示例24，以演示将`ulTaskNotifyTake()` xClearOnExit参数改为pdFALSE时的行为。
+
+当`xClearOnExit`为pdFALSE时，调用`ulTaskNotifyTake()`只会减少(减少1)调用任务的通知值，而不是将其清除为零。因此，通知计数是已发生事件的数量与已处理事件的数量之间的差值。这允许`vHandlerTask()`的结构以两种方式简化：
 
 1. 等待处理的事件数量保存在通知值中，因此不需要保存在局部变量中。
-2. 每次调用ulTaskNotifyTake()之间只需要处理一个事件。
+2. 每次调用`ulTaskNotifyTake()`之间只需要处理一个事件。
 
-
-
-示例25中使用的vHandlerTask()的实现如清单150所示。
+示例25中使用的`vHandlerTask()`的实现如清单150所示。
 
 ```groovy
 static void vHandlerTask(void *pvParameters)
@@ -7401,9 +6863,7 @@ const TickType_t xMaxExpectedBlockTime = xInterruptFrequency + pdMS_TO_TICKS(10)
 }
 ```
 
-清单150. 例25中中断处理延迟到的任务的实现(与中断同步的任务)。
-
-
+清单150. 示例25中中断处理延迟到的任务的实现(与中断同步的任务)。
 
 出于演示的目的，中断服务程序也被修改为每个中断发送多个任务通知，这样做，模拟在高频率下发生的多个中断。示例25中使用的中断服务例程的实现如清单151所示。
 
@@ -7425,37 +6885,29 @@ BaseType_t xHigherPriorityTaskWoken;
 
 清单151. 例25中使用的中断服务例程的实现
 
+执行示例25时产生的输出如图80所示。可以看到，`vHandlerTask()`在每次生成中断时处理所有这三个事件。
 
+![github](https://cdn.nlark.com/yuque/0/2021/jpeg/23129846/1636341690974-60c2b176-1dc3-48b8-90f4-aed271d6d082.jpeg)
 
-执行示例25时产生的输出如图80所示。可以看到，vHandlerTask()在每次生成中断时处理所有这三个事件。
-
-![img](https://cdn.nlark.com/yuque/0/2021/jpeg/23129846/1636341690974-60c2b176-1dc3-48b8-90f4-aed271d6d082.jpeg)
-
-图80  执行例25时产生的输出
+​																												图80  执行例25时产生的输出
 
 
 
 ### xTaskNotify()和xTaskNotifyFromlSR() API函数
 
-xTaskNotify()是xTaskNotifyGive()的一个更强大的版本，可以用以下任何一种方式来更新接收任务的通知值：
+`xTaskNotify()`是`xTaskNotifyGive()`的一个更强大的版本，可以用以下任何一种方式来更新接收任务的通知值：
 
-- 增加接收任务的通知值（向其中添加一个），在这种情况下，xTaskNotify()相当于xTaskNotifyGive()。
+- 增加接收任务的通知值（向其中添加一个），在这种情况下，`xTaskNotify()`相当于`xTaskNotifyGive()`。
 - 在接收任务的通知值中设置一个或多个位。这允许将任务的通知值用作事件组的更轻的权重和更快的替代。
 
 - 向接收任务的通知值中写入一个全新的数字，但只有当接收任务在上次更新后已经读取了它的通知值时才可以。这允许任务的通知值提供类似于长度为1的队列所提供的功能。
-- 向接收任务的通知值中写入一个全新的数字，即使接收任务自上次更新后还没有读到它的通知值。这允许任务的通知值提供与xQueueOverwrite() API函数类似的功能。结果行为有时被称为“邮箱”。
+- 向接收任务的通知值中写入一个全新的数字，即使接收任务自上次更新后还没有读到它的通知值。这允许任务的通知值提供与`xQueueOverwrite()` API函数类似的功能。结果行为有时被称为“邮箱”。
 
+`xTaskNotify()`比`xTaskNotifyGive()`更灵活和强大，而且由于这种额外的灵活性和强大功能，它使用起来也有点复杂。
 
+`xTaskNotifyFromISR()`是`xTaskNotify()`的一个版本，可以在中断服务例程中使用，因此有一个额外的`pxHigherPriorityTaskWoken`参数。
 
-xTaskNotify()比xTaskNotifyGive()更灵活和强大，而且由于这种额外的灵活性和强大功能，它使用起来也有点复杂。
-
-
-
-xTaskNotifyFromISR()是xTaskNotify()的一个版本，可以在中断服务例程中使用，因此有一个额外的pxHigherPriorityTaskWoken参数。
-
-
-
-调用xTaskNotify()将始终将接收任务的通知状态设置为挂起(如果它还没有挂起)。
+调用`xTaskNotify()`将始终将接收任务的通知状态设置为挂起(如果它还没有挂起)。
 
 ```groovy
 BaseType_t xTaskNotify(TaskHandle_t xTaskToNotify,
@@ -7468,36 +6920,32 @@ BaseType_t xTaskNotifyFromISR(TaskHandle_t xTaskToNotify,
                               BaseType_t *pxHigherPriorityTaskWoken);
 ```
 
-清单152.  xTaskNotify()和xTaskNotifyFromISR() API函数的原型
+清单152.  `xTaskNotify()`和`xTaskNotifyFromISR()` API函数的原型
 
-
-
-表 51.  xTaskNotify()参数和返回值
+表 51.  `xTaskNotify()`参数和返回值
 
 | 参数名称/返回值 | 描述                                                         |
 | --------------- | ------------------------------------------------------------ |
-| xTaskToNotify   | 被发送通知的任务的句柄——有关获取任务句柄的信息，请参阅xTaskCreate() API函数的pxCreatedTask参数。 |
-| ulValue         | ulValue的使用方式取决于eNotifyAction值。见表52。             |
-| eNotifyAction   | 指定如何更新接收任务的通知值的枚举类型返回值                 |
-| 返回值          | xTaskNotify()将返回pdPASS，除了表52中提到的一种情况。        |
+| `xTaskToNotify` | 被发送通知的任务的句柄——有关获取任务句柄的信息，请参阅`xTaskCreate()` API函数的pxCreatedTask参数。 |
+| `ulValue`       | `ulValue`的使用方式取决于`eNotifyAction`值。见表52。         |
+| `eNotifyAction` | 指定如何更新接收任务的通知值的枚举类型返回值                 |
+| 返回值          | `xTaskNotify()`将返回pdPASS，除了表52中提到的一种情况。      |
 
+表 52. 有效的`xTaskNotify()` eNotifyAction参数值，以及它们对接收任务的通知值的结果影响
 
-
-表 52. 有效的xTaskNotify() eNotifyAction参数值，以及它们对接收任务的通知值的结果影响
-
-| 参数名称/返回值           | 描述                                                         |
-| ------------------------- | ------------------------------------------------------------ |
-| eNoAction                 | 接收任务的通知状态被设置为挂起，而它的通知值不被更新。没有使用xTaskNotify() uIValue参数。eNoAction操作允许任务通知作为二进制信号量的更快和更轻的替代。 |
-| eSetBits                  | 接收任务的通知值是按位或通过xTaskNotify()的ulValue参数传递的值。例如，ulValue设置为0x01，则接收任务的通知值中设置0位。另一个例子，如果ulValue是0x06(二进制0110)，那么第1位和第2位将被设置在接收任务的通知值中。eSetBits动作允许任务通知被用作事件组的更快和更轻的替代。 |
-| eIncrement                | 接收任务的通知值增加。没有使用xTaskNotify() uIValue参数。elncrement操作允许任务通知作为二进制或计数信号量的更快和更轻的替代方法，它相当于更简单的xTaskNotifyGive() API函数。 |
-| eSetValueWithoutOverwrite | 如果接收任务在调用xTaskNotify()之前有一个通知挂起，则不会采取任何操作，xTaskNotify()将返回pdFAlL。如果在调用xTaskNotify()之前接收任务没有挂起通知，那么接收任务的通知值将被设置为在xTaskNotify() uNValue参数中传递的值。 |
-| eSetValueWithOverwrite    | 接收任务的通知值被设置为在xTaskNotify() ulValue参数中传递的值，不管接收任务在调用xTaskNotify()之前是否有一个通知挂起。 |
+| 参数名称/返回值             | 描述                                                         |
+| --------------------------- | ------------------------------------------------------------ |
+| `eNoAction`                 | 接收任务的通知状态被设置为挂起，而它的通知值不被更新。没有使用`xTaskNotify()` uIValue参数。eNoAction操作允许任务通知作为二进制信号量的更快和更轻的替代。 |
+| `eSetBits`                  | 接收任务的通知值是按位或通过`xTaskNotify()`的ulValue参数传递的值。例如，ulValue设置为0x01，则接收任务的通知值中设置0位。另一个例子，如果ulValue是0x06(二进制0110)，那么第1位和第2位将被设置在接收任务的通知值中。eSetBits动作允许任务通知被用作事件组的更快和更轻的替代。 |
+| `eIncrement`                | 接收任务的通知值增加。没有使用`xTaskNotify()` uIValue参数。elncrement操作允许任务通知作为二进制或计数信号量的更快和更轻的替代方法，它相当于更简单的xTaskNotifyGive() API函数。 |
+| `eSetValueWithoutOverwrite` | 如果接收任务在调用`xTaskNotify()`之前有一个通知挂起，则不会采取任何操作，`xTaskNotify()`将返回pdFAlL。如果在调用`xTaskNotify()`之前接收任务没有挂起通知，那么接收任务的通知值将被设置为在`xTaskNotify()` uNValue参数中传递的值。 |
+| `eSetValueWithOverwrite`    | 接收任务的通知值被设置为在`xTaskNotify()` ulValue参数中传递的值，不管接收任务在调用`xTaskNotify()`之前是否有一个通知挂起。 |
 
 
 
 ### xTaskNotifyWait() API函数
 
-xTaskNotifyWait()是ulTaskNotifyTake()的一个更强大的版本。它允许任务等待(带有可选超时)，以便调用任务的通知状态变为挂起状态(如果它还没有挂起)。xTaskNotifyWait()提供了在进入函数和退出函数时要在调用任务的通知值中清除的位的选项。
+`xTaskNotifyWait()`是ulTaskNotifyTake()的一个更强大的版本。它允许任务等待(带有可选超时)，以便调用任务的通知状态变为挂起状态(如果它还没有挂起)。`xTaskNotifyWait()`提供了在进入函数和退出函数时要在调用任务的通知值中清除的位的选项。
 
 ```groovy
 BaseType_t xTaskNotifyWait( uint32_t ulBitsToClearOnEntry,
@@ -7506,19 +6954,17 @@ BaseType_t xTaskNotifyWait( uint32_t ulBitsToClearOnEntry,
  							TickType_t xTicksToWait );
 ```
 
-清单153.  xTaskNotifyWait() API函数原型
+清单153.  `xTaskNotifyWait()` API函数原型
 
+表 53.  `xTaskNotifyWait()`参数和返回值
 
-
-表 53.  xTaskNotifyWait()参数和返回值
-
-| 参数名称/返回值      | 描述                                                         |
-| -------------------- | ------------------------------------------------------------ |
-| ulBitsToClearOnEntry | 如果调用任务在调用xTaskNotifyWait()之前没有一个通知挂起，那么ulBitsToClearOnEntry中设置的任何位都将在进入函数时在任务的通知值中被清除。例如，如果ulBitsToClearOnEntry为0x01，则任务通知值的位0将被清除。另一个例子是，将ulBitsToClearOnEntry设置为0xFFFFFF（ULONG_MAX）将清除任务通知值中的所有位，有效地将该值清除为0。 |
-| ulBitsToClearOnExit  | 如果调用任务退出xTaskNotifyWait()因为它收到一个通知,或因为它已经通知等待当xTaskNotifyWait()被称为,那么任何部分设置在ulBitsToClearOnExit将被清除在任务前的通知价值任务退出xTaskNotifyWait()函数。任务的通知值保存在*pulNotificationValue中后，这些位将被清除（请参见下面的pulNotificationValue说明）。例如，如果ulBitsToClearOnExit为0x03，那么在函数退出之前，任务通知值的0位和1位将被清除。将ulBitsToClearOnExit设置为0xfff (ULONG_MAX)将清除任务通知值中的所有位，有效地将该值清除为0。 |
-| pulNotificationValue | 用于传递任务的通知值。复制到*pulNotificationValue的值是任务的通知值，与由于ulBitsToClearOnExit设置而清除任何位之前的值相同。pulNotificationValue是一个可选参数，如果不需要，可以设置为NULL。 |
-| xTicksToWait         | 调用任务应保持在阻止状态以等待其通知状态变为挂起的最长时间。块时间以滴答周期为单位指定，因此它表示的绝对时间取决于滴答频率。宏pdMS_TO_TICKS()可用于将以毫秒为单位指定的时间转换为以TICKS为单位指定的时间。如果FreeRTOSConfig.h中将INCLUDE_vTaskSuspend设置为1，则将xTicksToWait设置为portMAX_DELAY将导致任务无限期等待（不超时）。 |
-| 返回值               | 有两个可能的返回值：pdTRUE 这表明返回xTaskNotifyWait()是因为收到了通知，或者是因为调用xTaskNotifyWait()时，调用任务已经有一个通知挂起。如果指定了阻止时间（xTicksToWait不是零），则调用任务可能被置于阻止状态，以等待其通知状态变为挂起，但其通知状态在阻止时间到期之前被设置为挂起。pdFALSE这表明xTaskNotifyWait()在调用任务没有收到任务通知的情况下返回。如果xTicksToWait不是零，则调用任务将一直处于阻止状态，以等待其通知状态变为挂起，但指定的阻止时间在此之前已过期。 |
+| 参数名称/返回值        | 描述                                                         |
+| ---------------------- | ------------------------------------------------------------ |
+| `ulBitsToClearOnEntry` | 如果调用任务在调用`xTaskNotifyWait()`之前没有一个通知挂起，那么`ulBitsToClearOnEntry`中设置的任何位都将在进入函数时在任务的通知值中被清除。例如，如果`ulBitsToClearOnEntry`为0x01，则任务通知值的位0将被清除。另一个例子是，将`ulBitsToClearOnEntry`设置为0xFFFFFF（ULONG_MAX）将清除任务通知值中的所有位，有效地将该值清除为0。 |
+| `ulBitsToClearOnExit`  | 如果调用任务退出`xTaskNotifyWait()`因为它收到一个通知,或因为它已经通知等待当xTaskNotifyWait()被称为,那么任何部分设置在`ulBitsToClearOnExit`将被清除在任务前的通知价值任务退出`xTaskNotifyWait()`函数。任务的通知值保存在`*pulNotificationValue`中后，这些位将被清除（请参见下面的`pulNotificationValue`说明）。例如，如果`ulBitsToClearOnExit`为0x03，那么在函数退出之前，任务通知值的0位和1位将被清除。将`ulBitsToClearOnExit`设置为0xfff (ULONG_MAX)将清除任务通知值中的所有位，有效地将该值清除为0。 |
+| `pulNotificationValue` | 用于传递任务的通知值。复制到`*pulNotificationValue`的值是任务的通知值，与由于`ulBitsToClearOnExit`设置而清除任何位之前的值相同。`pulNotificationValue`是一个可选参数，如果不需要，可以设置为NULL。 |
+| `xTicksToWait`         | 调用任务应保持在阻止状态以等待其通知状态变为挂起的最长时间。块时间以滴答周期为单位指定，因此它表示的绝对时间取决于滴答频率。宏`pdMS_TO_TICKS()`可用于将以毫秒为单位指定的时间转换为以TICKS为单位指定的时间。如果`FreeRTOSConfig.h`中将`INCLUDE_vTaskSuspend`设置为1，则将xTicksToWait设置为portMAX_DELAY将导致任务无限期等待（不超时）。 |
+| 返回值                 | 有两个可能的返回值：pdTRUE 这表明返回`xTaskNotifyWait()`是因为收到了通知，或者是因为调用`xTaskNotifyWait()`时，调用任务已经有一个通知挂起。如果指定了阻止时间（`xTicksToWait`不是零），则调用任务可能被置于阻止状态，以等待其通知状态变为挂起，但其通知状态在阻止时间到期之前被设置为挂起。pdFALSE这表明`xTaskNotifyWait()`在调用任务没有收到任务通知的情况下返回。如果xTicksToWait不是零，则调用任务将一直处于阻止状态，以等待其通知状态变为挂起，但指定的阻止时间在此之前已过期。 |
 
 
 
@@ -7526,23 +6972,17 @@ BaseType_t xTaskNotifyWait( uint32_t ulBitsToClearOnEntry,
 
 外设驱动程序库提供了在硬件接口上执行常用操作的函数。通常提供此类库的外设示例包括通用异步接收器和发射器(UARTs)、串行外设接口(SPI)端口、模拟到数字转换器(adc)和以太网端口。这些库通常提供的函数示例包括初始化外设、向外设发送数据和从外设接收数据的函数。
 
-
-
 外围设备上的一些操作需要较长的时间才能完成。这类操作的例子包括高精度ADC转换，以及在UART上传输大数据包。在这些情况下，驱动程序库函数可以实现轮询反复读取外设的状态寄存器，以确定操作何时完成。然而，以这种方式轮询几乎总是浪费时间，因为它利用了处理器100%的时间，而没有执行有效的处理。在多任务系统中，这种浪费尤其昂贵，在该系统中，轮询外围设备的任务可能会阻止执行具有生产性处理的低优先级任务。
 
-
-
 为了避免浪费处理时间的可能性，高效的RTOS感知设备驱动程序应该是中断驱动的，并为启动长时间操作的任务提供在阻塞状态下等待操作完成的选项。这样，低优先级任务可以在执行长时间操作的任务处于阻塞状态时执行，并且没有任务会使用处理时间，除非它们能够有效地使用处理时间。
-
-
 
 RTOS驱动程序库通常使用二进制信号量将任务置于阻塞状态。清单154中所示的伪代码演示了该技术，它提供了在UART端口上传输数据的支持RTOS的库函数的概要。在清单154中：
 
 - xUART是描述UART外围设备并保存状态信息的结构。该结构的xTxSemaphore成员是semaphhorehandle_t类型的变量。它假设信号量已经被创建。
-- xUART_Send()函数不包含任何互斥逻辑。如果有多个任务要使用xUART_Send()函数，那么应用程序编写人员必须在应用程序本身中管理互斥。例如，任务可能需要在调用xUART_Send()之前获取互斥锁。
+- `xUART_Send()`函数不包含任何互斥逻辑。如果有多个任务要使用`xUART_Send()`函数，那么应用程序编写人员必须在应用程序本身中管理互斥。例如，任务可能需要在调用`xUART_Send()`之前获取互斥锁。
 
-- xSemaphoreTake() API函数用于在启动UART传输之后将调用任务置于阻塞状态。
-- xSemaphoreGiveFromISR() API函数用于在传输完成后将任务从阻塞状态中删除，此时UART外设的传输端中断服务例程执行。
+- `xSemaphoreTake()` API函数用于在启动UART传输之后将调用任务置于阻塞状态。
+- `xSemaphoreGiveFromISR()` API函数用于在传输完成后将任务从阻塞状态中删除，此时UART外设的传输端中断服务例程执行。
 
 ```groovy
 /*驱动程序库函数，用于向UART发送数据。*/
@@ -7579,8 +7019,6 @@ BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 清单154。演示如何在驱动程序库传输函数中使用二进制信号量的伪代码
 
-
-
 清单154中演示的技术是完全可行的，确实是常见的做法，但它有一些缺点：
 
 - 库使用多个信号量，这增加了内存占用。
@@ -7588,34 +7026,24 @@ BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 - 信号量是适用于广泛用例的通用对象；它们包括允许任意数量的任务在阻塞状态下等待信号量变为可用的逻辑，以及在信号量变为可用时选择（以确定性方式）从阻塞状态中移除哪个任务的逻辑。执行该逻辑需要有限的时间，在清单154所示的场景中，处理开销是不必要的，在该场景中，在任何给定时间都不能有多个任务等待信号量。
 
-
-
 清单155演示了如何使用任务通知代替二进制信号量来避免这些缺点。
 
-
-
-注意:如果库使用任务通知，那么库的文档必须清楚地说明调用库函数可以更改调用任务的通知状态和通知值。
-
-
+> 注意:如果库使用任务通知，那么库的文档必须清楚地说明调用库函数可以更改调用任务的通知状态和通知值。
 
 在清单155中：
 
 - xUART结构的xTxSemaphore成员已被xTaskToNotify成员替换。xTaskToNotify是TaskHandle_t类型的变量，用于保存等待UART操作完成的任务的句柄。
-- xTaskGetCurrentTaskHandle() FreeRTOS API函数用于获取运行状态任务的句柄。
+- `xTaskGetCurrentTaskHandle() `FreeRTOS API函数用于获取运行状态任务的句柄。
 
 - 库不创建任何FreeRTOS对象，因此不会引起内存开销，也不需要显式初始化。
 - 任务通知将直接发送到等待UART操作完成的任务，因此不会执行不必要的逻辑。
-
-
 
 xTaskToNotify结构的xTaskToNotify成员可以从任务和中断服务程序中访问，需要考虑处理器将如何更新它的值：
 
 - 如果xTaskToNotify通过一个内存写操作更新，那么它可以在临界区外更新，如清单155所示。如果xTaskToNotify是一个32位变量(TaskHandle_t是一个32位类型)，并且运行FreeRTOS的处理器是一个32位处理器，就会出现这种情况。
 - 如果更新xTaskToNotify需要一个以上的内存写入操作，则xTaskToNotify只能从关键部分中更新，否则中断服务例程可能会在xTaskToNotify处于不一致状态时访问xTaskToNotify。如果xTaskToNotify是32位变量，并且FreeRTOS运行的处理器是16位处理器，则会出现这种情况，因为它需要两个16位内存写入操作来更新所有32位。
 
-
-
-在FreeRTOS实现内部，TaskHandle_t是一个指针，所以sizeof(TaskHandle_t)总是等于sizeof(void *)。
+在FreeRTOS实现内部，TaskHandle_t是一个指针，所以`sizeof(TaskHandle_t)`总是等于`sizeof(void *)`。
 
 ```groovy
 /*驱动程序库函数，用于向UART发送数据。*/
@@ -7661,15 +7089,13 @@ BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 清单155. 演示如何在驱动程序库传输函数中使用任务通知的伪代码
 
-
-
 任务通知还可以替换接收函数中的信号量，如伪代码清单156所示，它提供了一个RTOS感知库函数的概要，该库函数在UART端口上接收数据。参见清单156：
 
-- xUART_Receive()函数不包含任何互斥逻辑。如果有多个任务要使用xUART_Receive()函数，那么应用程序编写器必须管理应用程序本身中的互斥。例如，在调用xUART_Receive()之前，可能需要一个任务来获取互斥体。
+- `xUART_Receive()`函数不包含任何互斥逻辑。如果有多个任务要使用`xUART_Receive()`函数，那么应用程序编写器必须管理应用程序本身中的互斥。例如，在调用`xUART_Receive()`之前，可能需要一个任务来获取互斥体。
 - UART的接收中断服务程序将UART接收到的字符放到RAM缓冲区中。函数的作用是:从RAM缓冲区返回字符。
 
-- xUART_Receive() uxWantedBytes参数用于指定要接收的字符数。如果RAM缓冲区尚未包含请求的数字字符，则调用任务将处于阻止状态，以等待通知缓冲区中的字符数已增加。while()循环用于重复此序列，直到接收缓冲区包含请求的字符数，或者发生超时。
-- 调用任务可能多次进入阻塞状态。因此，将块时间调整为考虑自调用xUART_Receive()以来已经经过的时间。这些调整确保在xUART_ Receive()内花费的总时间不会超过由xUART结构的xRxTimeout成员指定的块时间。块时间是使用FreeRTOS VTaskSetTimeOutState()和xTaskCheckForTimeOut()辅助函数调整的。
+- `xUART_Receive()` uxWantedBytes参数用于指定要接收的字符数。如果RAM缓冲区尚未包含请求的数字字符，则调用任务将处于阻止状态，以等待通知缓冲区中的字符数已增加。`while()`循环用于重复此序列，直到接收缓冲区包含请求的字符数，或者发生超时。
+- 调用任务可能多次进入阻塞状态。因此，将块时间调整为考虑自调用`xUART_Receive()`以来已经经过的时间。这些调整确保在`xUART_ Receive()`内花费的总时间不会超过由xUART结构的xRxTimeout成员指定的块时间。块时间是使用`FreeRTOS VTaskSetTimeOutState()`和`xTaskCheckForTimeOut()`辅助函数调整的。
 
 ```groovy
 /*用于从UART接收数据的驱动程序库函数。*/
@@ -7734,15 +7160,15 @@ BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 ### 外围设备驱动程序中使用的任务通知：ADC示例
 
-上一节演示了如何使用vTaskNotifyGiveFromISR()将任务通知从中断发送到任务。vTaskNotifyGiveFromISR()是一个简单的函数，但其功能有限；它只能将任务通知作为无值事件发送，不能发送数据。本节演示如何使用xTaskNotifyFromISR()发送带有任务通知事件的数据。清单157中所示的伪代码演示了该技术，它提供了用于模数转换器（ADC）的RTOS感知中断服务例程的概要。在清单157中：
+上一节演示了如何使用`vTaskNotifyGiveFromISR()`将任务通知从中断发送到任务。`vTaskNotifyGiveFromISR()`是一个简单的函数，但其功能有限；它只能将任务通知作为无值事件发送，不能发送数据。本节演示如何使用`xTaskNotifyFromISR()`发送带有任务通知事件的数据。清单157中所示的伪代码演示了该技术，它提供了用于模数转换器（ADC）的RTOS感知中断服务例程的概要。在清单157中：
 
 - 假设ADC转换至少每50毫秒启动一次。
-- ADC_ConversionEndISR()是ADC转换结束中断的中断服务程序，它是每次有新的ADC值可用时执行的中断。
+- `ADC_ConversionEndISR()`是ADC转换结束中断的中断服务程序，它是每次有新的ADC值可用时执行的中断。
 
-- 由vADCTask()实现的任务处理ADC生成的每个值。假设任务的句柄在创建任务时存储在xADCTaskToNotify中。
-- ADC_ConversionDisr()使用xTaskNotifyFromISR()，并将eAction参数设置为EsetValueWithoutOverwrite，向vADCTask()任务发送任务通知，并将ADC转换的结果写入任务的通知值。
+- 由`vADCTask()`实现的任务处理ADC生成的每个值。假设任务的句柄在创建任务时存储在xADCTaskToNotify中。
+- `ADC_ConversionDisr()`使用`xTaskNotifyFromISR()`，并将eAction参数设置为EsetValueWithoutOverwrite，向`vADCTask()`任务发送任务通知，并将ADC转换的结果写入任务的通知值。
 
-- VADCTask()任务使用xTaskNotifyWait()来等待收到新ADC值可用的通知，并从其通知值检索ADC转换的结果。
+- `VADCTask()`任务使用`xTaskNotifyWait()`来等待收到新ADC值可用的通知，并从其通知值检索ADC转换的结果。
 
 ```groovy
 /*使用ADC的任务。 */
@@ -7813,24 +7239,18 @@ BaseType_t xHigherPriorityTaskWoken = pdFALSE, xResult;
 
 1. 发送任务向云服务器发送数据后，必须处于阻塞状态等待云服务器正确接收数据的确认。
 
-
-
 软件设计原理图如图81所示。图81：
 
 - 处理到云服务器的多个互联网连接的复杂性被封装在一个FreeRTOS任务中。该任务充当FreeRTOS应用程序中的代理服务器，被称为服务器任务。
-- 应用程序任务通过调用CloudRead()从云服务器读取数据。CloudRead()不直接与云服务器通信，而是将读取请求发送到队列上的服务器任务，并从服务器任务接收请求的数据作为任务通知。
+- 应用程序任务通过调用`CloudRead()`从云服务器读取数据。`CloudRead()`不直接与云服务器通信，而是将读取请求发送到队列上的服务器任务，并从服务器任务接收请求的数据作为任务通知。
 
-- 应用程序任务通过调用CloudWrite()将日期写入云服务器。CloudWrite()不直接与云服务器通信，而是将写请求发送到队列上的服务器任务，并从服务器任务接收写操作的结果作为任务通知。
+- 应用程序任务通过调用`CloudWrite()`将日期写入云服务器。`CloudWrite()`不直接与云服务器通信，而是将写请求发送到队列上的服务器任务，并从服务器任务接收写操作的结果作为任务通知。
 
+由`ClouddRead()`和`CloudWrite()`函数发送到服务器任务的结构如清单158所示。
 
+![github](https://cdn.nlark.com/yuque/0/2021/jpeg/23129846/1636352261318-a237622a-4f80-4a4b-8b49-99a0e9809e0b.jpeg)
 
-由ClouddRead()和CloudWrite()函数发送到服务器任务的结构如清单158所示。
-
-![img](https://cdn.nlark.com/yuque/0/2021/jpeg/23129846/1636352261318-a237622a-4f80-4a4b-8b49-99a0e9809e0b.jpeg)
-
-图81  从应用程序任务到云服务器的通信路径
-
-
+​                                                                                      图81  从应用程序任务到云服务器的通信路径
 
 ```groovy
 typedef enum CloudOperations
@@ -7849,17 +7269,11 @@ typedef struct CloudCommand
 
 清单158. 队列上发送到服务器任务的结构和数据类型
 
+`CloudRead()`的伪代码如清单159所示。该函数将其请求发送到服务器任务，然后调用`xTaskNotifyWait()`以在阻塞状态下等待，直到通知请求的数据可用为止。
 
+显示服务器任务如何管理读取请求的伪代码如清单160所示。当从云服务器接收到数据时，服务器任务将取消阻止应用程序任务，并通过调用`xTaskNotify()`将接收到的数据发送到应用程序任务，并将eAction参数设置为`eSetValueWithOverwrite`。
 
-CloudRead()的伪代码如清单159所示。该函数将其请求发送到服务器任务，然后调用xTaskNotifyWait()以在阻塞状态下等待，直到通知请求的数据可用为止。
-
-
-
-显示服务器任务如何管理读取请求的伪代码如清单160所示。当从云服务器接收到数据时，服务器任务将取消阻止应用程序任务，并通过调用xTaskNotify()将接收到的数据发送到应用程序任务，并将eAction参数设置为eSetValueWithOverwrite。
-
-
-
-清单160显示了一个简化的场景，因为它假设GetCloudData()不必等待从云服务器获取值。
+清单160显示了一个简化的场景，因为它假设`GetCloudData()`不必等待从云服务器获取值。
 
 ```groovy
 /*ulDataID标识要读取的数据。pulValue保存从云服务器接收的数据要写入的变量的地址。*/
@@ -7890,8 +7304,6 @@ BaseType_t xReturn;
 
 清单159. 云读取API函数的实现
 
-
-
 ```groovy
 void ServerTask(void *pvParameters)
 {
@@ -7920,13 +7332,9 @@ void ServerTask(void *pvParameters)
 
 清单160. 处理读取请求的服务器任务
 
+`CloudWrite()`的伪代码如清单161所示。出于演示的目的，`CloudWrite()`返回一个按位状态代码，其中状态代码中的每一位都被赋予一个唯一的含义。清单161顶部的#define语句显示了四个示例状态位。
 
-
-CloudWrite()的伪代码如清单161所示。出于演示的目的，CloudWrite()返回一个按位状态代码，其中状态代码中的每一位都被赋予一个唯一的含义。清单161顶部的#define语句显示了四个示例状态位。
-
-
-
-任务清除四个状态位，将其请求发送到服务器任务，然后调用xTaskNotifyWait()以在阻塞状态下等待状态通知。
+任务清除四个状态位，将其请求发送到服务器任务，然后调用`xTaskNotifyWait()`以在阻塞状态下等待状态通知。
 
 ```groovy
 /*云写入操作使用的状态位。*/
@@ -7970,13 +7378,9 @@ uint32_t CloudWrite( uint32_t ulDataID, uint32_t ulDataValue )
 
 清单161. Cloud Write API函数的实现
 
+清单162显示了演示服务器任务如何管理写入请求的伪代码。将数据发送到云服务器后，服务器任务将取消阻止应用程序任务，并通过调用`xTaskNotify()`将按位状态代码发送到应用程序任务，并将eAction参数设置为eSetBits。只有`CLOUD_WRITE_STATUS_BIT_MASK`常量定义的位才能在接收任务的通知值中更改，因此接收任务可以将其通知值中的其他位用于其他目的。
 
-
-清单162显示了演示服务器任务如何管理写入请求的伪代码。将数据发送到云服务器后，服务器任务将取消阻止应用程序任务，并通过调用xTaskNotify()将按位状态代码发送到应用程序任务，并将eAction参数设置为eSetBits。只有CLOUD_WRITE_STATUS_BIT_MASK常量定义的位才能在接收任务的通知值中更改，因此接收任务可以将其通知值中的其他位用于其他目的。
-
-
-
-清单162显示了一个简化的场景，因为它假设SetCloudData()不必等待从远程云服务器获得确认。
+清单162显示了一个简化的场景，因为它假设`SetCloudData()`不必等待从远程云服务器获得确认。
 
 ```groovy
 void ServerTask(void *pvParameters)
@@ -8013,17 +7417,15 @@ uint32_t ulBitwiseStatusCode;
 
 
 
-
-
 # **低功耗支持**
 
-待定。本章将在最终出版前撰写。
-
-
+> 待定。本章将在最终出版前撰写。
 
 
 
 # **开发者支持**
+
+
 
 ## 引言与范围
 
@@ -8036,49 +7438,39 @@ uint32_t ulBitwiseStatusCode;
 
 ## configASSERT()
 
-在C语言中，宏 assert() 用于验证程序所做的断言（假设）。断言被写成C语言表达式，如果表达式的值为false（0），那么断言就被视为失败。例如，清单163测试指针 pxMyPointer 不是 NULL 的断言。
+在C语言中，宏 `assert()` 用于验证程序所做的断言（假设）。断言被写成C语言表达式，如果表达式的值为false（0），那么断言就被视为失败。例如，清单163测试指针 pxMyPointer 不是 `NULL` 的断言。
 
 ```verilog
 /* 测试pxMyPointer不为空 */
 assert( pxMyPointer != NULL );
 ```
 
-清单163 使用标准的C语言 assert() 宏来检查pxMyPointer不是 NULL 。
+清单163 使用标准的C语言 `assert() `宏来检查pxMyPointer不是 `NULL` 。
 
+应用程序编写者通过提供 `assert() `宏的实现，指定在断言失败时要采取的行动。
 
-
-应用程序编写者通过提供 assert() 宏的实现，指定在断言失败时要采取的行动。
-
-
-
-FreeRTOS的源代码没有调用 assert()，因为 assert() 在所有编译FreeRTOS的编译器中都不能使用。相反，FreeRTOS的源代码包含了对一个叫做 configASSERT() 的宏的大量调用，这个宏可以由应用程序编写者在FreeRTOSConfig.h 中定义，其行为与标准C语言的 assert() 完全一样。
-
-
+FreeRTOS的源代码没有调用 `assert()`，因为 assert() 在所有编译FreeRTOS的编译器中都不能使用。相反，FreeRTOS的源代码包含了对一个叫做 `configASSERT()` 的宏的大量调用，这个宏可以由应用程序编写者在`FreeRTOSConfig.h `中定义，其行为与标准C语言的 `assert() `完全一样。
 
 一个失败的断言必须被视为一个致命的错误。不要试图执行超过断言失败的那一行。
 
+使用 `configASSERT() `可以立即捕获和识别许多最常见的错误来源，从而提高生产力。我们强烈建议在开发或调试FreeRTOS应用程序时，定义 `configASSERT() `。
+
+定义 `configASSERT()` 将大大有助于运行时的调试，但也会增加应用程序的代码大小，从而减慢其执行速度。如果没有提供 `configASSERT()` 的定义，那么将使用默认的空定义，所有对` configASSERT()` 的调用将被C预处理器完全删除。
 
 
-使用 configASSERT() 可以立即捕获和识别许多最常见的错误来源，从而提高生产力。我们强烈建议在开发或调试FreeRTOS应用程序时，定义 configASSERT() 。
-
-
-
-定义 configASSERT() 将大大有助于运行时的调试，但也会增加应用程序的代码大小，从而减慢其执行速度。如果没有提供 configASSERT() 的定义，那么将使用默认的空定义，所有对 configASSERT() 的调用将被C预处理器完全删除。
 
 ### configASSERT()定义的实例
 
-清单164中显示的 configASSERT() 的定义在一个应用程序在调试器的控制下执行时非常有用。它将在任何断言失败的行上停止执行，因此断言失败的行将是调试器在暂停调试会话时显示的行。
+清单164中显示的 `configASSERT()` 的定义在一个应用程序在调试器的控制下执行时非常有用。它将在任何断言失败的行上停止执行，因此断言失败的行将是调试器在暂停调试会话时显示的行。
 
 ```verilog
 /* 禁用中断，使tick中断停止执行，然后坐在一个循环中，使执行不超过断言失败的那一行。如果硬件支持调试中断指令，那么可以用调试中断指令来代替for()循环。 */
 #define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); for(;;); }
 ```
 
-清单164 一个简单的 configASSERT() 定义，在调试器的控制下执行时非常有用 
+清单164 一个简单的 `configASSERT()` 定义，在调试器的控制下执行时非常有用 
 
-
-
-清单165中显示的 configASSERT() 的定义在应用程序没有在调试器的控制下执行时很有用。它打印出，或以其他方式记录断言失败的源代码行。使用标准的 C__FILE__ 宏来获取源文件的名称，使用标准的 C__LINE__ 宏来获取源文件的行号，来识别断言失败的行。
+清单165中显示的 `configASSERT()` 的定义在应用程序没有在调试器的控制下执行时很有用。它打印出，或以其他方式记录断言失败的源代码行。使用标准的 C__FILE__ 宏来获取源文件的名称，使用标准的 C__LINE__ 宏来获取源文件的行号，来识别断言失败的行。
 
 ```verilog
 /* 这个函数必须在C源文件中定义，而不是在FreeRTOSConfig.h头文件中。 */
@@ -8099,7 +7491,7 @@ extern void vAssertCalled(const char *pcFile, uint32_t ulLine);
     vAssertCalled(__FILE__, __LINE__)
 ```
 
-清单165 记录断言失败的源代码行的 configASSERT() 定义
+清单165 记录断言失败的源代码行的 `configASSERT()` 定义
 
 
 
@@ -8107,39 +7499,33 @@ extern void vAssertCalled(const char *pcFile, uint32_t ulLine);
 
 FreeRTOS+Trace是一个运行时诊断和优化工具，由我们的合作伙伴Percepio公司提供。
 
-
-
 FreeRTOS+Trace可以捕获有价值的动态行为信息，然后在相互连接的图形视图中展示捕获的信息。
-
-
 
 在分析、排除故障或简单地优化FreeRTOS应用程序时，所捕获的信息是非常宝贵的。
 
-
-
 FreeRTOS+Trace可以与传统的调试器并排使用，并以更高层次的时间视角来补充调试器的观点。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636343690571-cbaa44ca-b585-493e-97be-3c13e04fe035.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636343690571-cbaa44ca-b585-493e-97be-3c13e04fe035.png)
 
 图82 FreeRTOS+Trace包括20多个相互连接的视图
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636343747247-99193b55-dad4-434d-92d9-abd590bcdab8.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636343747247-99193b55-dad4-434d-92d9-abd590bcdab8.png)
 
 图83 FreeRTOS+Trace主跟踪视图——20多个相互连接的跟踪视图之一
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636342876673-4dbbc85e-6046-4871-b829-f90d8c05dc1d.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636342876673-4dbbc85e-6046-4871-b829-f90d8c05dc1d.png)
 
 图84 FreeRTOS+Trace CPU负载视图——20多个相互连接的跟踪视图之一
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636342969529-efd3b559-3c39-4991-b5f5-ffaab7e91bf1.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636342969529-efd3b559-3c39-4991-b5f5-ffaab7e91bf1.png)
 
 图85 FreeRTOS+Trace响应时间视图——20多个相互连接的跟踪视图之一
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636343055008-54ae9435-ee01-40bd-b879-94ce2a0e4e4f.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636343055008-54ae9435-ee01-40bd-b879-94ce2a0e4e4f.png)
 
 图86 FreeRTOS+Trace用户事件图视图——20多个相互连接的跟踪视图之一
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636343819967-8a79f228-0196-4cab-9ad6-35bee51e5643.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636343819967-8a79f228-0196-4cab-9ad6-35bee51e5643.png)
 
 图87 FreeRTOS+Trace内核对象历史视图 - 20多个相互连接的跟踪视图之一
 
@@ -8147,11 +7533,11 @@ FreeRTOS+Trace可以与传统的调试器并排使用，并以更高层次的时
 
 ## 调试相关的钩（回调）函数
 
+
+
 ### Malloc失败的钩
 
 malloc失败的钩（或回调）在第2章，堆内存管理中有所描述。
-
-
 
 定义一个malloc失败钩可以确保在试图创建任务、队列、信号或事件组失败时立即通知应用开发者。
 
@@ -8161,25 +7547,21 @@ malloc失败的钩（或回调）在第2章，堆内存管理中有所描述。
 
 堆栈溢出钩的细节在堆栈溢出那一节中提供。
 
-
-
 定义一个堆栈溢出钩可以确保在一个任务使用的堆栈量超过分配给该任务的堆栈空间时，应用程序开发人员得到通知。
 
 
 
 ## 查看运行时和任务状态信息
 
+
+
 ### 任务运行时间统计
 
 任务运行时间统计提供了关于每个任务所获得的处理时间的信息。一个任务的运行时间是该任务自应用程序启动以来一直处于运行状态的总时间。
 
-
-
 运行时统计的目的是在项目的开发阶段作为剖析和调试的辅助工具使用。项目的开发阶段。它们提供的信息只在作为运行时统计时钟的计数器溢出之前有效。收集运行时统计将增加任务上下文切换时间。
 
-
-
-要获得二进制运行时统计信息，请调用 uxTaskGetSystemState() API函数。要获得以人类可读的ASCII表形式的运行时统计信息，请调用 vTaskGetRunTimeStats() 辅助函数。
+要获得二进制运行时统计信息，请调用 `uxTaskGetSystemState()` API函数。要获得以人类可读的ASCII表形式的运行时统计信息，请调用 `vTaskGetRunTimeStats() `辅助函数。
 
 
 
@@ -8187,21 +7569,13 @@ malloc失败的钩（或回调）在第2章，堆内存管理中有所描述。
 
 运行时统计需要测量滴答周期的几分之一。因此，RTOS的tick计数不被用作运行时统计时钟，而是由应用程序代码提供时钟。建议使运行时统计时钟的频率比tick中断的频率快10到100倍。运行时统计时钟越快，统计就越准确，但时间值也会越早溢出。
 
-
-
 理想情况下，时间值将由一个自由运行的32位外设定时器/计数器产生，其值可以在没有其他处理开销的情况下被读取。如果可用的外设和时钟速度不能使这种技术成为可能，那么替代性的但效率较低的技术包括：
 
 1. 配置一个外设，使其在所需的运行时统计时钟频率下产生一个周期性中断，然后使用产生的中断数量的计数作为运行时统计时钟。
 
-
-
 如果周期性中断只用于提供运行时的统计时钟，那么这种方法是非常低效的。然而，如果应用程序已经使用了频率合适的周期性中断，那么将产生的中断数量的计数加入到现有的中断服务例程中，就很简单和有效。
 
-
-
 1. 用一个自由运行的16位外设定时器的当前值作为32位值中最没有意义的16位，用定时器溢出的次数作为32位值中最没有意义的16位，从而产生一个32位值。
-
-
 
 通过适当的、有点复杂的操作，可以将RTOS的滴答声与ARM Cortex-M SysTick定时器的当前值结合起来，产生一个运行时统计时钟。FreeRTOS下载中的一些演示项目展示了如何实现这一目标。
 
@@ -8209,21 +7583,21 @@ malloc失败的钩（或回调）在第2章，堆内存管理中有所描述。
 
 ### 配置应用程序以收集运行时统计信息
 
-表54详细介绍了收集任务运行时统计数据所需的宏。原本打算将这些宏包含在RTOS端口层中，这就是为什么这些宏的前缀是 "port"，但事实证明在 FreeRTOSConfig.h 中定义它们更为实用。
-
-
+表54详细介绍了收集任务运行时统计数据所需的宏。原本打算将这些宏包含在RTOS端口层中，这就是为什么这些宏的前缀是 "port"，但事实证明在 `FreeRTOSConfig.h` 中定义它们更为实用。
 
 表 54. 用于收集运行时统计数据的宏程序
 
 | 宏观                                                         | 描述                                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| configGENERATE_RUN_TIME_STATS                                | 这个宏必须在FreeRTOSConfig.h中设置为1。当这个宏被设置为1时，调度器将在适当的时候调用本表中详述的其他宏。 |
-| portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()                     | 必须提供这个宏来初始化用于提供运行时统计时钟的任何一个外设。 |
-| portGET_RUN_TIME_COUNTER_VALUE(), or portALT_GET_RUN_TIME_COUNTER_VALUE(Time) | 必须提供这两个宏中的一个来返回当前的运行时统计时钟值。这是自应用程序首次启动以来，应用程序运行的总时间，以运行时统计时钟为单位。如果使用第一个宏，它必须被定义为评估为当前的时钟值。如果使用第二个宏，它必须被定义为将其 “时间”参数设置为当前时钟值。 |
+| `configGENERATE_RUN_TIME_STATS`                              | 这个宏必须在`FreeRTOSConfig.h`中设置为1。当这个宏被设置为1时，调度器将在适当的时候调用本表中详述的其他宏。 |
+| `portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()`                   | 必须提供这个宏来初始化用于提供运行时统计时钟的任何一个外设。 |
+| `portGET_RUN_TIME_COUNTER_VALUE()`, or `portALT_GET_RUN_TIME_COUNTER_VALUE(Time)` | 必须提供这两个宏中的一个来返回当前的运行时统计时钟值。这是自应用程序首次启动以来，应用程序运行的总时间，以运行时统计时钟为单位。如果使用第一个宏，它必须被定义为评估为当前的时钟值。如果使用第二个宏，它必须被定义为将其 “时间”参数设置为当前时钟值。 |
+
+
 
 ### uxTaskGetSystemState() API函数
 
-uxTaskGetSystemState() 为FreeRTOS调度器控制下的每个任务提供了一个状态信息快照。这些信息是以TaskStatus_t结构数组的形式提供的，每个任务在数组中都有一个索引。TaskStatus_t由清单167和表56描述。
+`uxTaskGetSystemState()` 为FreeRTOS调度器控制下的每个任务提供了一个状态信息快照。这些信息是以TaskStatus_t结构数组的形式提供的，每个任务在数组中都有一个索引。TaskStatus_t由清单167和表56描述。
 
 ```verilog
 UBaseType_t uxTaskGetSystemState(TaskStatus_t *const pxTaskStatusArray,
@@ -8231,18 +7605,16 @@ UBaseType_t uxTaskGetSystemState(TaskStatus_t *const pxTaskStatusArray,
                                  uint32_t *const pulTotalRunTime);
 ```
 
-清单 166. uxTaskGetSystemState() API函数原型
+清单 166. `uxTaskGetSystemState()` API函数原型
 
+表 55 `uxTaskGetSystemState()` 参数和返回值
 
-
-表 55 uxTaskGetSystemState() 参数和返回值
-
-| 参数名称          | 描述                                                         |
-| ----------------- | ------------------------------------------------------------ |
-| pxTaskStatusArray | 一个指向TaskStatus_t结构数组的指针。该数组必须为每个任务至少包含一个TaskStatus_t结构。任务的数量可以用uxTaskGetNumberOfTasks() API函数来确定。TaskStatus_t结构在清单167中显示，TaskStatus_t结构成员在表56中描述。 |
-| uxArraySize       | pxTaskStatusArray参数所指向的数组的大小。该大小被指定为数组中的索引数（数组中包含的TaskStatus_t结构数），而不是数组中的字节数。 |
-| pulTotalRunTime   | 如果configGENERATE_RUN_TIME_STATS被设置为1，在 中设置为1，那么*pulTotalRunTime就会被 uxTaskGetSystemState() 设置为目标启动后的总运行时间（由应用程序提供的运行时间统计时钟定义）。pulTotalRunTime是可选的，如果不需要总运行时间，可以设置为NULL。 |
-| 返回值            | 返回由 uxTaskGetSystemState() 填充的TaskStatus_t结构的数量。返回的值应该等于 uxTaskGetNumberOfTasks() API函数返回的数字，但如果在uxArraySize参数中传递的值太小，则会为零。 |
+| 参数名称            | 描述                                                         |
+| ------------------- | ------------------------------------------------------------ |
+| `pxTaskStatusArray` | 一个指向TaskStatus_t结构数组的指针。该数组必须为每个任务至少包含一个TaskStatus_t结构。任务的数量可以用`uxTaskGetNumberOfTasks()` API函数来确定。TaskStatus_t结构在清单167中显示，TaskStatus_t结构成员在表56中描述。 |
+| `uxArraySize`       | `pxTaskStatusArray`参数所指向的数组的大小。该大小被指定为数组中的索引数（数组中包含的TaskStatus_t结构数），而不是数组中的字节数。 |
+| `pulTotalRunTime`   | 如果`configGENERATE_RUN_TIME_STATS`被设置为1，在 中设置为1，那么`*pulTotalRunTime`就会被 `uxTaskGetSystemState()` 设置为目标启动后的总运行时间（由应用程序提供的运行时间统计时钟定义）。`pulTotalRunTime`是可选的，如果不需要总运行时间，可以设置为`NULL`。 |
+| 返回值              | 返回由 `uxTaskGetSystemState()` 填充的TaskStatus_t结构的数量。返回的值应该等于 `uxTaskGetNumberOfTasks()` API函数返回的数字，但如果在`uxArraySize`参数中传递的值太小，则会为零。 |
 
 ```verilog
 typedef struct xTASK_STATUS
@@ -8260,107 +7632,95 @@ typedef struct xTASK_STATUS
 
 清单 167. TaskStatus_t结构
 
-
-
 表 56. TaskStatus_t结构成员
 
-| 参数名称/返回值      | 描述                                                         |
-| -------------------- | ------------------------------------------------------------ |
-| xHandle              | 该结构中的信息所涉及的任务的句柄。                           |
-| pcTaskName           | 任务的可读性文本名称。                                       |
-| xTaskNumber          | 每个任务都有唯一的xTaskNumber值。如果一个应用程序在运行时创建和删除任务，那么一个任务有可能与之前被删除的任务有相同的句柄。xTaskNumber被提供给应用程序代码和内核感知调试器，以区分一个仍然有效的任务和一个与有效任务有相同句柄的被删除任务。 |
-| eCurrentState        | 一个保持任务状态的枚举类型。eCurrentState可以是以下值之一：eRunning, eReady, eBlocked, eSuspended, eDeleted。一个任务只有在调用 vTaskDelete() 删除任务后，到Idle任务释放分配给被删除任务的内部数据结构和堆栈的内存这段时间内，才会被报告为处于eDeleted状态。在这段时间之后，该任务将不再以任何方式存在，试图使用其句柄是无效的。 |
-| uxCurrentPriority    | 在调用 uxTaskGetSystemState() 时，任务运行的优先级。只有当任务按照7.3节 "互斥（和二进制半挂）"中描述的优先级继承机制暂时被分配了更高的优先级时，uxCurrentPriority才会高于应用编写者分配给任务的优先级。 |
-| uxBasePriority       | 应用程序编写者分配给任务的优先级。只有在FreeRTOSConfig.h 中 configUSE_MUTEXES 被设置为1时，uxBasePriority才有效。 |
-| ulRunTimeCounter     | 自任务创建以来，任务使用的总运行时间。总运行时间是以绝对时间的形式提供的，它使用应用程序编写者提供的时钟来收集运行时间的统计数据。ulRunTimeCounter 只有在 FreeRTOSConfig.h 中configGENERATE_RUN_TIME_STATS 被设置为1时才有效。 |
-| usStackHighWaterMark | 任务的堆积高水位。这是自任务创建以来，任务所剩的最小堆栈空间。它是任务离溢出堆栈有多远的指示；这个值越接近零，任务就越接近溢出堆栈。 usStackHighWaterMark 的单位是字节。 |
+| 参数名称/返回值        | 描述                                                         |
+| ---------------------- | ------------------------------------------------------------ |
+| `xHandle`              | 该结构中的信息所涉及的任务的句柄。                           |
+| `pcTaskName`           | 任务的可读性文本名称。                                       |
+| `xTaskNumber`          | 每个任务都有唯一的`xTaskNumber`值。如果一个应用程序在运行时创建和删除任务，那么一个任务有可能与之前被删除的任务有相同的句柄。`xTaskNumber`被提供给应用程序代码和内核感知调试器，以区分一个仍然有效的任务和一个与有效任务有相同句柄的被删除任务。 |
+| `eCurrentState`        | 一个保持任务状态的枚举类型。`eCurrentState`可以是以下值之一：`eRunning`, `eReady`, `eBlocked`, `eSuspended`, eDeleted。一个任务只有在调用 `vTaskDelete() `删除任务后，到Idle任务释放分配给被删除任务的内部数据结构和堆栈的内存这段时间内，才会被报告为处于eDeleted状态。在这段时间之后，该任务将不再以任何方式存在，试图使用其句柄是无效的。 |
+| `uxCurrentPriority`    | 在调用 `uxTaskGetSystemState() `时，任务运行的优先级。只有当任务按照7.3节 "互斥（和二进制半挂）"中描述的优先级继承机制暂时被分配了更高的优先级时，uxCurrentPriority才会高于应用编写者分配给任务的优先级。 |
+| `uxBasePriority`       | 应用程序编写者分配给任务的优先级。只有在`FreeRTOSConfig.h` 中` configUSE_MUTEXES` 被设置为1时，`uxBasePriority`才有效。 |
+| `ulRunTimeCounter`     | 自任务创建以来，任务使用的总运行时间。总运行时间是以绝对时间的形式提供的，它使用应用程序编写者提供的时钟来收集运行时间的统计数据。`ulRunTimeCounter` 只有在 `FreeRTOSConfig.h `中`configGENERATE_RUN_TIME_STATS `被设置为1时才有效。 |
+| `usStackHighWaterMark` | 任务的堆积高水位。这是自任务创建以来，任务所剩的最小堆栈空间。它是任务离溢出堆栈有多远的指示；这个值越接近零，任务就越接近溢出堆栈。 `usStackHighWaterMark `的单位是字节。 |
+
+
 
 ### vTaskList() 辅助函数
 
-vTaskList() 提供的任务状态信息与 uxTaskGetSystemState() 提供的信息类似，但它以人类可读的ASCII表而不是二进制值数组的形式呈现信息。
+`vTaskList()` 提供的任务状态信息与 uxTaskGetSystemState() 提供的信息类似，但它以人类可读的ASCII表而不是二进制值数组的形式呈现信息。
 
+`vTaskList()` 是一个非常耗费处理器的函数，并且会让调度器在很长一段时间内悬浮。因此，建议该函数仅用于调试目的，而不是在生产性实时系统中使用。
 
-
-vTaskList() 是一个非常耗费处理器的函数，并且会让调度器在很长一段时间内悬浮。因此，建议该函数仅用于调试目的，而不是在生产性实时系统中使用。
-
-
-
-如果 FreeRTOSConfig.h 中的 configUSE_TRACE_FACILITY 和 configUSE_STATS_FORMATTING_FUNCTIONS 都被设置为1，则 vTaskList() 可用。
+如果 `FreeRTOSConfig.h `中的` configUSE_TRACE_FACILITY `和` configUSE_STATS_FORMATTING_FUNCTIONS `都被设置为1，则 `vTaskList() `可用。
 
 ```verilog
 void vTaskList( signed char *pcWriteBuffer );
 ```
 
-清单 168. vTaskList() API函数原型
+清单 168. `vTaskList()` API函数原型
 
+表 57.` vTaskList() `参数
 
+| 参数名称        | 描述                                                         |
+| --------------- | ------------------------------------------------------------ |
+| `pcWriteBuffer` | 一个指向字符缓冲区的指针，格式化和人类可读的表被写入其中。该缓冲区必须大到足以容纳整个表，因为不进行边界检查。 |
 
-表 57. vTaskList() 参数
-
-| 参数名称      | 描述                                                         |
-| ------------- | ------------------------------------------------------------ |
-| pcWriteBuffer | 一个指向字符缓冲区的指针，格式化和人类可读的表被写入其中。该缓冲区必须大到足以容纳整个表，因为不进行边界检查。 |
-
-图88显示了 vTaskList() 生成的输出的一个例子。 在输出中：
-
-
+图88显示了` vTaskList() `生成的输出的一个例子。 在输出中：
 
 - 每一行都提供了一个单一的任务信息。
 - 第一列是任务名称。
 
-- 第二列是任务的状态，其中'R'表示就绪，'B'表示阻塞，'S'表示暂停，'D'表示任务已被删除。一个任务只有在调用 vTaskDelete() 删除任务后，到Idle任务释放分配给被删除任务的内部数据结构和堆栈的内存这段时间内，才会被报告为处于删除状态。在这段时间之后，该任务将不再以任何方式存在，试图使用其句柄是无效的。
+- 第二列是任务的状态，其中'R'表示就绪，'B'表示阻塞，'S'表示暂停，'D'表示任务已被删除。一个任务只有在调用` vTaskDelete() `删除任务后，到Idle任务释放分配给被删除任务的内部数据结构和堆栈的内存这段时间内，才会被报告为处于删除状态。在这段时间之后，该任务将不再以任何方式存在，试图使用其句柄是无效的。
 - 第三列是任务的优先级。
 
-- 第四列是任务的堆栈高水位。见表56中对 usStackHighWaterMark 的描述。
-- 第五列是分配给该任务的唯一编号。见表56中对xTaskNumber的描述。
+- 第四列是任务的堆栈高水位。见表56中对 `usStackHighWaterMark` 的描述。
+- 第五列是分配给该任务的唯一编号。见表56中对`xTaskNumber`的描述。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636353441516-6a3312ed-11d9-435c-a274-b2a9ca36ade5.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636353441516-6a3312ed-11d9-435c-a274-b2a9ca36ade5.png)
 
-图88 由vTaskList()生成的输出示例
+图88 由`vTaskList()`生成的输出示例
+
+
 
 ### vTaskGetRunTimeStats() 辅助函数
 
-vTaskGetRunTimeStats() 将收集到的运行时统计数据格式化为人类可读的ASCII表格。
+`vTaskGetRunTimeStats() `将收集到的运行时统计数据格式化为人类可读的ASCII表格。
 
+`vTaskGetRunTimeStats() `是一个非常耗费处理器的函数，并且会让调度器暂停很长一段时间。因此，建议该函数仅用于调试目的，而不是在生产型实时系统中使用。
 
-
-vTaskGetRunTimeStats() 是一个非常耗费处理器的函数，并且会让调度器暂停很长一段时间。因此，建议该函数仅用于调试目的，而不是在生产型实时系统中使用。
-
-
-
-当 FreeRTOSConfig.h 中 configGENERATE_RUN_TIME_STATS 和 configUSE_STATS_FORMATTING_FUNCTIONS 都被设置为1时，vTaskGetRunTimeStats() 可用。
+当 `FreeRTOSConfig.h `中 `configGENERATE_RUN_TIME_STATS` 和 `configUSE_STATS_FORMATTING_FUNCTIONS `都被设置为1时，`vTaskGetRunTimeStats()` 可用。
 
 ```verilog
 void vTaskGetRunTimeStats( signed char *pcWriteBuffer );
 ```
 
-清单169. vTaskGetRunTimeStats() API函数原型
+清单169. `vTaskGetRunTimeStats() `API函数原型
 
+表 58. `vTaskGetRunTimeStats() `参数
 
+| 参数值          | 描述                                                         |
+| --------------- | ------------------------------------------------------------ |
+| `pcWriteBuffer` | 一个指向字符缓冲区的指针，格式化和人类可读的表被写入其中。该缓冲区必须大到足以容纳整个表，因为不进行边界检查。 |
 
-表 58. vTaskGetRunTimeStats() 参数
-
-| 参数值        | 描述                                                         |
-| ------------- | ------------------------------------------------------------ |
-| pcWriteBuffer | 一个指向字符缓冲区的指针，格式化和人类可读的表被写入其中。该缓冲区必须大到足以容纳整个表，因为不进行边界检查。 |
-
-图89显示了 vTaskGetRunTimeStats() 产生的一个输出例子。在输出中：
+图89显示了` vTaskGetRunTimeStats() `产生的一个输出例子。在输出中：
 
 - 每一行都提供了一个单一的任务信息。
 - 第一列是任务名称。
 
-- 第二列是任务在运行状态下花费的时间，是一个绝对值。见表56中 ulRunTimeCounter 的描述。
+- 第二列是任务在运行状态下花费的时间，是一个绝对值。见表56中 `ulRunTimeCounter` 的描述。
 - 第三列是任务在运行状态下花费的时间，占目标启动后总时间的百分比。显示的百分比时间的总和通常会小于预期的100%，因为统计数据的收集和计算是使用整数计算，四舍五入到最近的整数值。
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636354332626-801684d7-47e1-4065-aebc-b8326dc379d6.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636354332626-801684d7-47e1-4065-aebc-b8326dc379d6.png)
 
-图89 由 vTaskGetRunTimeStats() 生成的输出示例
+图89 由` vTaskGetRunTimeStats() `生成的输出示例
+
+
 
 ### 生成和显示运行时的统计数据，一个工作实例
 
 这个例子使用一个假设的16位定时器来产生一个32位的运行时统计时钟。该计数器被配置为在每次16位值达到最大值时产生一个中断，有效地产生一个溢出中断。中断服务程序对溢出发生的次数进行计数。
-
-
 
 32位值是通过使用溢出发生次数作为32位值中最有意义的两个字节，以及使用当前16位计数器值作为32位值中最没有意义的两个字节来创建的。中断服务例程的伪代码显示在清单170中。
 
@@ -8376,9 +7736,7 @@ void TimerOverflowInterruptHandler(void)
 
 清单 170. 用于计算定时器溢出的16位定时器溢出中断处理程序
 
-
-
-清单171显示了添加到FreeRTOSConfig.h中的行，以实现对运行时统计数据的收集。
+清单171显示了添加到`FreeRTOSConfig.h`中的行，以实现对运行时统计数据的收集。
 
 ```verilog
 /* 将 configGENERATE_RUN_TIME_STATS 设置为 1 以启用运行时统计数据的收集。这样做时， 必须同时定义 portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() 和 portGET_RUN_TIME_COUNTER_VALUE() 或 portALT_GET_RUN_TIME_COUNTER_VALUE(x)。 */
@@ -8408,9 +7766,7 @@ void vSetupTimerForRunTimeStats(void);
     }
 ```
 
-清单 171. 添加到 FreeRTOSConfig.h 中的宏，以实现对运行时统计数据的收集
-
-
+清单 171. 添加到` FreeRTOSConfig.h` 中的宏，以实现对运行时统计数据的收集
 
 清单172中显示的任务每5秒打印出收集到的运行时统计数据。
 
@@ -8451,8 +7807,6 @@ static void prvStatsTask(void *pvParameters)
 
 跟踪宏是被放置在FreeRTOS源代码的关键点上的宏。默认情况下，这些宏是空的，因此不产生任何代码，也没有运行时间的开销。通过覆盖默认的空实现，应用程序编写者可以：
 
-
-
 - 在不修改FreeRTOS源文件的情况下将代码插入FreeRTOS。
 - 通过目标硬件上的任何手段输出详细的执行顺序信息。跟踪宏出现在FreeRTOS源代码中的足够多的地方，允许它们被用来创建一个完整和详细的调度器活动跟踪和分析日志。
 
@@ -8462,54 +7816,46 @@ static void prvStatsTask(void *pvParameters)
 
 如果在这里详细介绍每一个宏，会占用太多的篇幅。表59详细列出了被认为对应用程序编写者最有用的宏子集。
 
-
-
-表59中的许多描述提到了一个叫做pxCurrentTCB的变量。一个FreeRTOS的私有变量，它持有运行状态下任务的句柄，并且对任何从 FreeRTOS/Source/tasks.c 源文件中调用的宏是可用的。
-
-
+表59中的许多描述提到了一个叫做`pxCurrentTCB`的变量。一个FreeRTOS的私有变量，它持有运行状态下任务的句柄，并且对任何从 `FreeRTOS/Source/tasks.c `源文件中调用的宏是可用的。
 
 表 59. 最常用的跟踪钩宏的选择
 
-| 宏观                                        | 描述                                                         |
-| ------------------------------------------- | ------------------------------------------------------------ |
-| traceTASK_INCREMENT_TICK(xTickCount)        | 在tick中断期间，在tick计数被增加后调用。xTickCount参数将新的tick计数值传递给宏。 |
-| traceTASK_SWITCHED_OUT()                    | 在一个新的任务被选中运行之前被调用。此时，pxCurrentTCB包含即将离开运行状态的任务的句柄。 |
-| traceTASK_SWITCHED_IN()                     | 在一个任务被选中运行后被调用。此时，pxCurrentTCB包含即将进入运行状态的任务的句柄。 |
-| traceBLOCKING_ON_QUEUE_RECEIVE(pxQueue)     | 在当前执行的任务试图从空队列中读取数据，或者试图 "夺取 "空信号或突发事件后进入阻塞状态前立即调用。pxQueue参数将目标队列或 semaphore 的句柄传递给宏。 |
-| traceBLOCKING_ON_QUEUE_SEND(pxQueue)        | 在试图向已满的队列写入后，当前执行的任务进入阻塞状态前立即调用。pxQueue参数将目标队列的句柄传入宏。 |
-| traceQUEUE_SEND(pxQueue)                    | 在xQueueSend()、xQueueSendToFront()、xQueueSendToBack()或任何semaphore "give"函数中调用，当队列发送或semaphore "give"成功时，pxQueue参数将目标队列或 semaphore 的句柄传入该宏。 |
-| traceQUEUE_SEND_FAILED(pxQueue)             | 从xQueueSend()、xQueueSendToFront()、xQueueSendToBack() 或任何semaphore "give"函数中调用，当队列发送或semaphore "give"操作失败时。如果队列已满，并且在指定的任何块时间内保持满的状态，那么队列发送或semaphore "give" 将失败。pxQueue参数将目标队列或信号灯的句柄传递给宏。 |
-| traceQUEUE_RECEIVE(pxQueue)                 | 在 xQueueReceive() 或任何semaphore "take" 函数中调用，当队列接收或semaphore "take "成功时。pxQueue参数将目标队列或信号灯的句柄传递给宏。 |
-| traceQUEUE_RECEIVE_FAILED(pxQueue)          | 当队列或信号灯接收操作失败时，从xQueueReceive() 或任何信号灯 "take" 函数中调用。如果队列或信号灯是空的，并且在指定的时间段内保持空的状态，那么队列接收或信号灯 "take" 的操作将失败。pxQueue参数将目标队列或信号灯的句柄传递给宏。 |
-| traceQUEUE_SEND_FROM_ISR(pxQueue)           | 当发送操作成功时，从 xQueueSendFromISR() 中调用。pxQueue参数将目标队列的句柄传入宏。 |
-| traceQUEUE_SEND_FROM_ISR_FAILED(pxQueue)    | 当发送操作失败时，从 xQueueSendFromISR() 中调用。如果队列已经满了，发送操作将失败。pxQueue参数将目标队列的句柄传入宏。 |
-| traceQUEUE_RECEIVE_FROM_ISR(pxQueue)        | 当接收操作成功时，从 xQueueReceiveFromISR() 中调用。pxQueue参数将目标队列的句柄传给宏。 |
-| traceQUEUE_RECEIVE_FROM_ISR_FAILED(pxQueue) | 当接收操作由于队列已经为空而失败时，在xQueueReceiveFromISR() 中调用。pxQueue参数将目标队列的句柄传入宏。 |
-| traceTASK_DELAY_UNTIL()                     | 从内部调用 vTaskDelayUntil() 中，在调用任务进入阻塞状态前立即调用。 |
-| traceTASK_DELAY()                           | 在调用任务进入阻塞状态之前，从 vTaskDelay() 中调用。         |
+| 宏观                                          | 描述                                                         |
+| --------------------------------------------- | ------------------------------------------------------------ |
+| `traceTASK_INCREMENT_TICK(xTickCount)`        | 在tick中断期间，在tick计数被增加后调用。xTickCount参数将新的tick计数值传递给宏。 |
+| `traceTASK_SWITCHED_OUT()`                    | 在一个新的任务被选中运行之前被调用。此时，`pxCurrentTCB`包含即将离开运行状态的任务的句柄。 |
+| `traceTASK_SWITCHED_IN()`                     | 在一个任务被选中运行后被调用。此时，`pxCurrentTCB`包含即将进入运行状态的任务的句柄。 |
+| `traceBLOCKING_ON_QUEUE_RECEIVE(pxQueue)`     | 在当前执行的任务试图从空队列中读取数据，或者试图 "夺取 "空信号或突发事件后进入阻塞状态前立即调用。pxQueue参数将目标队列或 semaphore 的句柄传递给宏。 |
+| `traceBLOCKING_ON_QUEUE_SEND(pxQueue)`        | 在试图向已满的队列写入后，当前执行的任务进入阻塞状态前立即调用。pxQueue参数将目标队列的句柄传入宏。 |
+| `traceQUEUE_SEND(pxQueue)`                    | 在`xQueueSend()`、`xQueueSendToFront()`、`xQueueSendToBack()`或任何semaphore "give"函数中调用，当队列发送或semaphore "give"成功时，pxQueue参数将目标队列或 semaphore 的句柄传入该宏。 |
+| `traceQUEUE_SEND_FAILED(pxQueue)`             | 从`xQueueSend()`、`xQueueSendToFront()`、`xQueueSendToBack() `或任何semaphore "give"函数中调用，当队列发送或semaphore "give"操作失败时。如果队列已满，并且在指定的任何块时间内保持满的状态，那么队列发送或semaphore "give" 将失败。pxQueue参数将目标队列或信号灯的句柄传递给宏。 |
+| `traceQUEUE_RECEIVE(pxQueue)`                 | 在 `xQueueReceive() `或任何semaphore "take" 函数中调用，当队列接收或semaphore "take "成功时。pxQueue参数将目标队列或信号灯的句柄传递给宏。 |
+| `traceQUEUE_RECEIVE_FAILED(pxQueue)`          | 当队列或信号灯接收操作失败时，从`xQueueReceive() `或任何信号灯 "take" 函数中调用。如果队列或信号灯是空的，并且在指定的时间段内保持空的状态，那么队列接收或信号灯 "take" 的操作将失败。pxQueue参数将目标队列或信号灯的句柄传递给宏。 |
+| `traceQUEUE_SEND_FROM_ISR(pxQueue)`           | 当发送操作成功时，从 `xQueueSendFromISR()` 中调用。pxQueue参数将目标队列的句柄传入宏。 |
+| `traceQUEUE_SEND_FROM_ISR_FAILED(pxQueue)`    | 当发送操作失败时，从` xQueueSendFromISR()` 中调用。如果队列已经满了，发送操作将失败。pxQueue参数将目标队列的句柄传入宏。 |
+| `traceQUEUE_RECEIVE_FROM_ISR(pxQueue)`        | 当接收操作成功时，从 `xQueueReceiveFromISR()` 中调用。pxQueue参数将目标队列的句柄传给宏。 |
+| `traceQUEUE_RECEIVE_FROM_ISR_FAILED(pxQueue)` | 当接收操作由于队列已经为空而失败时，在`xQueueReceiveFromISR() `中调用。pxQueue参数将目标队列的句柄传入宏。 |
+| `traceTASK_DELAY_UNTIL()`                     | 从内部调用 vTaskDelayUntil() 中，在调用任务进入阻塞状态前立即调用。 |
+| `traceTASK_DELAY()`                           | 在调用任务进入阻塞状态之前，从 `vTaskDelay()` 中调用。       |
+
+
 
 ### 定义跟踪钩宏
 
-每个跟踪宏都有一个默认的空定义。默认定义可以通过在 FreeRTOSConfig.h 中提供一个新的宏定义来覆盖。如果跟踪宏的定义变得很长或很复杂，那么它们可以在一个新的头文件中实现，然后本身包含在FreeRTOSConfig.h中。
-
-
+每个跟踪宏都有一个默认的空定义。默认定义可以通过在 `FreeRTOSConfig.h` 中提供一个新的宏定义来覆盖。如果跟踪宏的定义变得很长或很复杂，那么它们可以在一个新的头文件中实现，然后本身包含在`FreeRTOSConfig.h`中。
 
 根据软件工程的最佳实践，FreeRTOS坚持严格的数据隐藏政策。追踪宏允许用户代码被添加到FreeRTOS的源文件中，因此追踪宏所看到的数据类型将与应用代码所看到的数据类型不同：
 
-
-
-- 在 FreeRTOS/Source/tasks.c 源文件中，任务句柄是一个指向描述任务的数据结构（任务的任务控制块，或TCB）的指针。在 FreeRTOS/Source/tasks.c 源文件之外，任务句柄是一个指向void的指针。
-- 在 FreeRTOS/Source/queue.c 源文件中，队列句柄是一个指向描述队列的数据结构的指针。在FreeRTOS/Source/queue.c 源文件之外，一个队列句柄是一个指向void的指针。
-
-
+- 在 `FreeRTOS/Source/tasks.c` 源文件中，任务句柄是一个指向描述任务的数据结构（任务的任务控制块，或TCB）的指针。在 `FreeRTOS/Source/tasks.c `源文件之外，任务句柄是一个指向`void`的指针。
+- 在 `FreeRTOS/Source/queue.c `源文件中，队列句柄是一个指向描述队列的数据结构的指针。在`FreeRTOS/Source/queue.c `源文件之外，一个队列句柄是一个指向`void`的指针。
 
 如果一个通常是私有的FreeRTOS数据结构被跟踪宏直接访问，需要特别小心，因为私有数据结构在FreeRTOS版本之间可能会发生变化。
+
+
 
 ### FreeRTOS感知调试器插件
 
 提供一些FreeRTOS意识的插件可用于以下IDE。 这个列表可能并不详尽:
-
-
 
 - Eclipse (StateViewer)
 - Eclipse (ThreadSpy)
@@ -8522,7 +7868,7 @@ static void prvStatsTask(void *pvParameters)
 
 - iSYSTEM WinIDEA
 
-![img](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636357790972-483d19f5-328f-478b-929d-713b284d0f07.png)
+![github](https://cdn.nlark.com/yuque/0/2021/png/23129867/1636357790972-483d19f5-328f-478b-929d-713b284d0f07.png)
 
 图90 FreeRTOS ThreadSpy Eclipse 插件，来自Code Confidence Ltd
 
@@ -8534,38 +7880,30 @@ static void prvStatsTask(void *pvParameters)
 
 ## 引言与范围
 
-本章强调了刚接触FreeRTOS的用户最常遇到的问题。首先，它集中讨论了三个问题，这三个问题已被证明是多年来最频繁的支持请求的来源；不正确的中断优先级分配，堆栈溢出，以及不适当地使用 printf()。然后，它以FAQ的形式简要介绍了其他常见的错误，它们可能的原因，以及它们的解决方案。
+本章强调了刚接触FreeRTOS的用户最常遇到的问题。首先，它集中讨论了三个问题，这三个问题已被证明是多年来最频繁的支持请求的来源；不正确的中断优先级分配，堆栈溢出，以及不适当地使用 `printf()`。然后，它以FAQ的形式简要介绍了其他常见的错误，它们可能的原因，以及它们的解决方案。
 
-
-
-使用 configASSERT() 可以立即捕获和识别许多最常见的错误来源，从而提高生产力。强烈建议在开发或调试FreeRTOS应用程序时定义 configASSERT() 。configASSERT() 在之前描述过。
+使用 `configASSERT()` 可以立即捕获和识别许多最常见的错误来源，从而提高生产力。强烈建议在开发或调试FreeRTOS应用程序时定义 `configASSERT()` 。`configASSERT() `在之前描述过。
 
 
 
 ## 中断优先级
 
-注意: 这是导致支持请求的头号原因，在大多数端口中，定义 configASSERT() 将立即捕获这个错误
+> 注意: 这是导致支持请求的头号原因，在大多数端口中，定义` configASSERT() `将立即捕获这个错误
 
-
-
-如果使用的FreeRTOS端口支持中断嵌套，并且中断的服务例程使用了FreeRTOS的API，那么必须将中断的优先级设置为或低于configMAX_SYSCALL_INTERRUPT_PRIORITY，如6.8节所述，中断嵌套。如果不这样做，将导致无效的关键部分，这反过来又会导致间歇性的故障。
-
-
+如果使用的FreeRTOS端口支持中断嵌套，并且中断的服务例程使用了FreeRTOS的API，那么必须将中断的优先级设置为或低于`configMAX_SYSCALL_INTERRUPT_PRIORITY`，如6.8节所述，中断嵌套。如果不这样做，将导致无效的关键部分，这反过来又会导致间歇性的故障。
 
 如果在一个处理器上运行FreeRTOS，请特别注意：
-
-
 
 - 中断的优先级默认为具有最高的优先级，在一些ARM Cortex处理器上是这样的，可能还有其他处理器。在这种处理器上，使用FreeRTOS API的中断的优先级不能不被初始化。
 - 数字上的高优先级数字代表逻辑上的低中断优先级，这似乎有悖于直觉，因此会引起混淆。这也是ARM Cortex处理器的情况，也可能是其他处理器的情况。
 
-- 例如，在这样的处理器上，一个正在执行的优先级为5的中断本身可以被一个优先级为4的中断打断。 因此，如果configMAX_SYSCALL_INTERRUPT_PRIORITY被设置为5，任何使用FreeRTOS API的中断只能被分配一个数字上高于或等于5的优先级。 在这种情况下，5或6的中断优先级将是有效的，但3的中断优先级肯定是无效的。
+- 例如，在这样的处理器上，一个正在执行的优先级为5的中断本身可以被一个优先级为4的中断打断。 因此，如果`configMAX_SYSCALL_INTERRUPT_PRIORITY`被设置为5，任何使用FreeRTOS API的中断只能被分配一个数字上高于或等于5的优先级。 在这种情况下，5或6的中断优先级将是有效的，但3的中断优先级肯定是无效的。
 - 不同的库实现希望以不同的方式来指定中断的优先级。同样，这与以ARM Cortex处理器为目标的库特别相关，在那里，中断的优先级在写入硬件寄存器之前被移位。有些库会自己执行位移，而其他库则希望在优先级被传入库函数之前执行位移。
 
 - 同一架构的不同实现方式实现了不同数量的中断优先位。例如，一个制造商的Cortex-M处理器可能实现3个优先位，而另一个制造商的Cortex-M处理器可能实现4个优先位。
 - 定义中断优先级的位可以分成定义抢占式优先级的位和定义子优先级的位。确保所有的位都被分配给指定一个抢占性优先级，所以子优先级不被使用。
 
-- 在某些 FreeRTOS 端口中， configMAX_SYSCALL_INTERRUPT_PRIORITY 有另一个名字 configMAX_API_CALL_INTERRUPT_PRIORITY。
+- 在某些 FreeRTOS 端口中， `configMAX_SYSCALL_INTERRUPT_PRIORITY` 有另一个名字 `configMAX_API_CALL_INTERRUPT_PRIORITY`。
 
 
 
@@ -8577,36 +7915,34 @@ static void prvStatsTask(void *pvParameters)
 
 ### uxTaskGetStackHighWaterMark() API函数
 
-uxTaskGetStackHighWaterMark() 用于查询一个任务离溢出分配给它的堆栈空间还有多远。这个值被称为堆栈 "高水位线"。
+`uxTaskGetStackHighWaterMark()` 用于查询一个任务离溢出分配给它的堆栈空间还有多远。这个值被称为堆栈 "高水位线"。
 
 ```verilog
 UBaseType_t uxTaskGetStackHighWaterMark( TaskHandle_t xTask );
 ```
 
-清单173. uxTaskGetStackHighWaterMark() API函数原型
+清单173. `uxTaskGetStackHighWaterMark()` API函数原型
 
 
 
-表 60. uxTaskGetStackHighWaterMark() 参数和返回值
+表 60. `uxTaskGetStackHighWaterMark()` 参数和返回值
 
 | 参数名称/返回值 | 描述                                                         |
 | --------------- | ------------------------------------------------------------ |
-| xTask           | 堆栈高水位被查询的任务的句柄（主题任务——参见xTaskCreate() API函数的pxCreatedTask参数，了解获取任务句柄的信息。一个任务可以通过传递NULL来代替一个有效的任务句柄来查询自己的堆栈高水位。 |
-| 返回值          | 任务使用的堆栈量随着任务的执行和中断的处理而增长和缩小。uxTaskGetStackHighWaterMark() 返回任务开始执行后剩余堆栈空间的最小量。这是堆栈使用量最大（或最深）时未使用的堆栈的数量。高水位线越接近于零，任务就越接近于溢出其堆栈。 |
+| `xTask`         | 堆栈高水位被查询的任务的句柄（主题任务——参见`xTaskCreate() `API函数的pxCreatedTask参数，了解获取任务句柄的信息。一个任务可以通过传递NULL来代替一个有效的任务句柄来查询自己的堆栈高水位。 |
+| 返回值          | 任务使用的堆栈量随着任务的执行和中断的处理而增长和缩小。`uxTaskGetStackHighWaterMark() `返回任务开始执行后剩余堆栈空间的最小量。这是堆栈使用量最大（或最深）时未使用的堆栈的数量。高水位线越接近于零，任务就越接近于溢出其堆栈。 |
 
-1这些功能在FreeRTOS的Windows端口中是不可用的。
+> 这些功能在FreeRTOS的Windows端口中是不可用的。
+
+
 
 ### 运行时间堆栈检查——概述
 
-FreeRTOS包括两个可选的运行时堆栈检查机制。这两种机制由 FreeRTOSConfig.h 中的configCHECK_FOR_STACK_OVERFLOW编译时配置常数控制。
-
-
+FreeRTOS包括两个可选的运行时堆栈检查机制。这两种机制由` FreeRTOSConfig.h` 中的`configCHECK_FOR_STACK_OVERFLOW`编译时配置常数控制。
 
 堆栈溢出钩（或堆栈溢出回调）是一个函数，当内核检测到堆栈溢出时，它被调用。调用的函数。要使用一个堆栈溢出钩函数：
 
-
-
-1. 在 FreeRTOSConfig.h 中把configCHECK_FOR_STACK_OVERFLOW设置为1或2，如下面各小节所述。
+1. 在` FreeRTOSConfig.h `中把`configCHECK_FOR_STACK_OVERFLOW`设置为1或2，如下面各小节所述。
 2. 提供钩函数的实现，使用清单174中所示的确切的函数名称和原型。
 
 ```verilog
@@ -8615,15 +7951,9 @@ void vApplicationStackOverflowHook( TaskHandle_t *pxTask, signed char *pcTaskNam
 
 清单174. 堆栈溢出钩函数原型
 
-
-
 提供堆栈溢出钩是为了使捕获和调试堆栈错误更容易，但当堆栈溢出发生时，没有真正的方法来恢复。该函数的参数将已经溢出堆栈的任务的句柄和名称传递给钩函数。
 
-
-
 堆栈溢出钩从中断的上下文中被调用。
-
-
 
 一些微控制器在检测到不正确的内存访问时产生一个故障异常，有可能在内核有机会调用堆栈溢出钩函数之前就触发了一个故障。
 
@@ -8631,13 +7961,9 @@ void vApplicationStackOverflowHook( TaskHandle_t *pxTask, signed char *pcTaskNam
 
 ### 运行时堆栈检查——方法一
 
-当configCHECK_FOR_STACK_OVERFLOW被设置为1时，方法一被选中。
+当`configCHECK_FOR_STACK_OVERFLOW`被设置为1时，方法一被选中。
 
-
-
-一个任务的整个执行环境在每次被换出时都会被保存到它的堆栈中。这很可能是堆栈使用达到高峰的时候。当configCHECK_FOR_STACK_OVERFLOW被设置为1时，内核会检查堆栈指针在上下文被保存后是否仍在有效的堆栈空间内。如果发现堆栈指针超出其有效范围，则调用堆栈溢出钩。
-
-
+一个任务的整个执行环境在每次被换出时都会被保存到它的堆栈中。这很可能是堆栈使用达到高峰的时候。当`configCHECK_FOR_STACK_OVERFLOW`被设置为1时，内核会检查堆栈指针在上下文被保存后是否仍在有效的堆栈空间内。如果发现堆栈指针超出其有效范围，则调用堆栈溢出钩。
 
 方法一执行起来很快，但会错过上下文切换之间发生的堆栈溢出。
 
@@ -8645,13 +7971,9 @@ void vApplicationStackOverflowHook( TaskHandle_t *pxTask, signed char *pcTaskNam
 
 ### 运行时堆栈检查——方法二
 
-方法二在方法一已经描述的基础上执行额外的检查。当configCHECK_FOR_STACK_OVERFLOW被设置为2时，它被选中。
-
-
+方法二在方法一已经描述的基础上执行额外的检查。当`configCHECK_FOR_STACK_OVERFLOW`被设置为2时，它被选中。
 
 当一个任务被创建时，它的堆栈被填充了一个已知的模式。方法二测试任务堆栈空间的最后20个有效字节，以验证该模式没有被覆盖。如果这20个字节中的任何一个改变了它们的预期值，就会调用堆栈溢出钩函数。
-
-
 
 方法二的执行速度没有方法一快，但仍然比较快，因为只测试20个字节。 最有可能的是，它将捕捉到所有的堆栈溢出；然而，有可能（但极不可能）会错过一些溢出。
 
@@ -8659,52 +7981,40 @@ void vApplicationStackOverflowHook( TaskHandle_t *pxTask, signed char *pcTaskNam
 
 ## 不当使用printf()和sprintf()
 
-不适当地使用 printf() 是一个常见的错误来源，而且，由于没有意识到这一点，应用程序开发人员通常会进一步调用 printf() 来帮助调试，这样做会使问题更加严重。
+不适当地使用` printf() `是一个常见的错误来源，而且，由于没有意识到这一点，应用程序开发人员通常会进一步调用` printf() `来帮助调试，这样做会使问题更加严重。
+
+许多交叉编译器供应商将提供一个适合在小型嵌入式系统中使用的` printf()` 实现。即使是这样，该实现也可能不是线程安全的，可能不适合在中断服务例程中使用，而且根据输出的方向，需要花费相对较长的时间来执行。
+
+如果没有专门为小型嵌入式系统设计的` printf() `实现，而使用通用的` printf()` 实现，则必须特别小心，如：
+
+- 仅仅包括对` printf() `或 `sprintf()` 的调用就会大量增加应用程序的可执行文件的大小。
+- `printf() `和 `sprintf() `可能会调用 `malloc() `，如果使用的是heap_3以外的内存分配方案，这可能是无效的。更多信息请参见内存分配方案示例。
+
+- `printf() `和 `sprintf() `可能需要一个比原来大很多倍的栈。
 
 
-
-许多交叉编译器供应商将提供一个适合在小型嵌入式系统中使用的 printf() 实现。即使是这样，该实现也可能不是线程安全的，可能不适合在中断服务例程中使用，而且根据输出的方向，需要花费相对较长的时间来执行。
-
-
-
-如果没有专门为小型嵌入式系统设计的 printf() 实现，而使用通用的 printf() 实现，则必须特别小心，如：
-
-
-
-- 仅仅包括对 printf() 或 sprintf() 的调用就会大量增加应用程序的可执行文件的大小。
-- printf() 和 sprintf() 可能会调用 malloc() ，如果使用的是heap_3以外的内存分配方案，这可能是无效的。更多信息请参见内存分配方案示例。
-
-- printf() 和 sprintf() 可能需要一个比原来大很多倍的栈。
 
 ### Printf-stdarg.c
 
-许多FreeRTOS演示项目使用了一个名为printf——stdarg.c的文件，它提供了一个最小的、堆栈有效的sprintf() 实现，可以用来代替标准库版本。在大多数情况下，这将允许为每个调用 sprintf() 和相关函数的任务分配一个小得多的堆栈。
+许多FreeRTOS演示项目使用了一个名为printf——`stdarg.c`的文件，它提供了一个最小的、堆栈有效的`sprintf() `实现，可以用来代替标准库版本。在大多数情况下，这将允许为每个调用` sprintf() `和相关函数的任务分配一个小得多的堆栈。
 
+`printf-stdarg.c `还提供了一种机制，用于将` printf() `的输出逐个引向一个端口，这虽然很慢，但可以进一步减少栈的使用。
 
+请注意，并非所有包含在FreeRTOS下载中的printf——`stdarg.c`的副本都实现了`snprintf()`。 没有实现`snprintf()` 的副本只是忽略了缓冲区大小参数，因为它们直接映射到`sprintf()`。
 
-printf-stdarg.c 还提供了一种机制，用于将 printf() 的输出逐个引向一个端口，这虽然很慢，但可以进一步减少栈的使用。
-
-
-
-请注意，并非所有包含在FreeRTOS下载中的printf——stdarg.c的副本都实现了snprintf()。 没有实现snprintf() 的副本只是忽略了缓冲区大小参数，因为它们直接映射到sprintf()。
-
-
-
-Printf-stdarg.c是开源的，但由第三方拥有，因此与FreeRTOS分开许可。许可证条款包含在源文件的顶部。
+`Printf-stdarg.c`是开源的，但由第三方拥有，因此与FreeRTOS分开许可。许可证条款包含在源文件的顶部。
 
 
 
 ## 其他常见的错误来源
 
+
+
 ### 症状：在演示中添加一个简单的任务会导致演示崩溃
 
 创建一个任务需要从堆中获取内存。许多演示应用程序项目都要求堆的大小正好够创建演示任务——因此，在任务创建之后，将没有足够的堆来添加任何进一步的任务、队列、事件组或信号。
 
-
-
-当 vTaskStartScheduler() 被调用时，空闲任务以及可能的RTOS守护任务会被自动创建。vTaskStartScheduler() 只会在没有足够的堆内存来创建这些任务时返回。在调用 vTaskStartScheduler() 后加入一个空循环[ for(;;);]可以使这个错误更容易被调试。
-
-
+当 vTaskStartScheduler() 被调用时，空闲任务以及可能的RTOS守护任务会被自动创建。`vTaskStartScheduler() `只会在没有足够的堆内存来创建这些任务时返回。在调用 vTaskStartScheduler() 后加入一个空循环[ for(;;);]可以使这个错误更容易被调试。
 
 为了能够添加更多的任务，要么增加堆的大小，要么删除一些现有的演示任务。更多信息请参见内存分配方案示例。
 
@@ -8714,9 +8024,7 @@ Printf-stdarg.c是开源的，但由第三方拥有，因此与FreeRTOS分开许
 
 不要在中断服务程序中使用API函数，除非API函数的名称以"...FromISR() "结尾。特别是，不要在一个中断中创建一个关键部分，除非使用中断安全宏。参见：从ISR中使用FreeRTOS API，以获得更多信息。
 
-
-
-在支持中断嵌套的FreeRTOS端口中，不要在被分配的中断优先级高于configMAX_SYSCALL_INTERRUPT_PRIORITY的中断中使用任何API函数。更多信息请参见 ：中断嵌套。
+在支持中断嵌套的FreeRTOS端口中，不要在被分配的中断优先级高于`configMAX_SYSCALL_INTERRUPT_PRIORITY`的中断中使用任何API函数。更多信息请参见 ：中断嵌套。
 
 
 
@@ -8724,11 +8032,7 @@ Printf-stdarg.c是开源的，但由第三方拥有，因此与FreeRTOS分开许
 
 首先要检查的是，中断没有导致堆栈溢出。有些端口只检查任务内的堆栈溢出，而不是中断内的堆栈溢出。
 
-
-
 中断的定义和使用方式在不同的端口和不同的编译器之间是不同的。因此，第二件要检查的事情是，在中断服务例程中使用的语法、宏和调用约定，与所使用的端口的文档页上的描述完全一致，并且与端口提供的演示应用程序中的演示完全一致。
-
-
 
 如果应用程序运行在一个使用数字上的低优先级数字来代表逻辑上的高优先级的处理器上，那么确保分配给每个中断的优先级考虑到这一点，因为它可能看起来是反直觉的。如果应用程序运行在一个将每个中断的优先级默认为最大可能的优先级的处理器上，那么要确保每个中断的优先级不停留在其默认值。更多信息请参见：中断嵌套和中断优先级。
 
@@ -8738,9 +8042,7 @@ Printf-stdarg.c是开源的，但由第三方拥有，因此与FreeRTOS分开许
 
 确保FreeRTOS的中断处理程序已经安装。请参考正在使用的FreeRTOS端口的文档页，以及为该端口提供的演示应用程序的例子。
 
-
-
-一些处理器在启动调度程序之前必须处于特权模式。实现这一目标的最简单方法是在调用main()之前，C语言启动代码中把处理器放入特权模式。
+一些处理器在启动调度程序之前必须处于特权模式。实现这一目标的最简单方法是在调用`main()`之前，C语言启动代码中把处理器放入特权模式。
 
 
 
@@ -8748,9 +8050,7 @@ Printf-stdarg.c是开源的，但由第三方拥有，因此与FreeRTOS分开许
 
 如果一个FreeRTOS API函数在调度器启动之前被调用，那么中断将被故意关闭，直到第一个任务开始执行时才重新启用。这样做是为了保护系统在系统初始化期间，在调度程序启动之前，以及在调度程序可能处于不一致的状态下，避免中断试图使用FreeRTOS API函数而导致的崩溃。
 
-
-
-除了调用 taskENTER_CRITICAL() 和 taskEXIT_CRITICAL() 以外，不要用任何方法改变微控制器的中断使能位或优先级标志。这些宏保持其调用嵌套深度的计数，以确保只有当调用嵌套完全解开为零时，中断才会再次启用。请注意，一些库函数本身可能会启用和禁用中断。
+除了调用 `taskENTER_CRITICAL() `和 `taskEXIT_CRITICAL()` 以外，不要用任何方法改变微控制器的中断使能位或优先级标志。这些宏保持其调用嵌套深度的计数，以确保只有当调用嵌套完全解开为零时，中断才会再次启用。请注意，一些库函数本身可能会启用和禁用中断。
 
 
 
@@ -8758,16 +8058,12 @@ Printf-stdarg.c是开源的，但由第三方拥有，因此与FreeRTOS分开许
 
 在调度器启动之前，不允许执行可能导致上下文切换的中断服务例程。同样的情况也适用于任何试图向FreeRTOS对象（如队列或信号）发送或接收的中断服务例程。在调度器启动之后，才能发生上下文切换。
 
-
-
-许多API函数在调度器启动后才能被调用。最好是将API的使用限制在创建对象上，比如任务、队列和semaphores，而不是使用这些对象，直到调用 vTaskStartScheduler() 之后。
+许多API函数在调度器启动后才能被调用。最好是将API的使用限制在创建对象上，比如任务、队列和信号，而不是使用这些对象，直到调用 `vTaskStartScheduler()` 之后。
 
 
 
 ### 症状：在调度器暂停时调用API函数，或从关键部分内部调用API函数，导致应用程序崩溃
 
-调用 vTaskSuspendAll() 暂停调度程序，并通过调用 xTaskResumeAll() 恢复（未暂停）。通过调用taskENTER_CRITICAL() 进入关键部分，并通过调用 taskEXIT_CRITICAL() 退出。
-
-
+调用 `vTaskSuspendAll()` 暂停调度程序，并通过调用 `xTaskResumeAll()` 恢复（未暂停）。通过调用`taskENTER_CRITICAL()` 进入关键部分，并通过调用 `taskEXIT_CRITICAL()` 退出。
 
 不要在调度程序暂停时或从关键部分内部调用API函数。
