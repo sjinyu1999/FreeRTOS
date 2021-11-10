@@ -19,30 +19,32 @@
 
 2. 读、修改、写操作<br/>
 	清单111显示了一行C代码，以及一个如何将C代码转换为汇编代码的示例。可以看到，`PORTA`的值首 先从内存中读入寄存器，在寄存器中修改，然后写回内存。这被称为读、修改、写操作。
-
-```groovy
- /* 正在编译的C代码。*/
- PORTA |= 0x01; 
- 
- /* 编译C代码时生成的汇编代码。*/
- LOAD   R1, [#PORTA]  ; Read a value from PORTA into R1
- MOVE   R2, #0x01     ; Move the absolute constant 1 into R2
- OR     R1, R2        ; Bitwise OR R1 (PORTA) with R2 (constant 1)
- STORE  R1, [#PORTA]  ; Store the new value back to PORTA
-```
-
-​	清单 111. 读、修改、写顺序的示例
-
-​	这是一个“非原子”操作，因为它需要多个指令才能完成，并且可以被中断。考虑以下场景，其中两个任务试图更新名为`PORTA`的内存映射寄存器。<br/>
-
-1. 任务A将`PORTA`的值加载到寄存器中——操作的读部分。
-2. 任务A在完成同一操作的修改和写部分之前被任务B抢占。
-3. 任务B更新`PORTA`值。则进入阻塞状态。
-4. 任务A从它被抢占的位置继续执行。在将更新后的值写回`PORTA`之前，它修改已经保存在寄存器中的`PORTA`值的副本。 
-
-​		在这个场景中，任务A更新和回写`PORTA`的过期值。任务B在任务A获取`PORTA`值的副本之后修改`PORTA`，并且	在任务A将其修改后的值写回`PORTA`寄存器之		前修改`PORTA`。当任务A写入`PORTA`时，它会覆盖任务B已经执行的修改，从而有效地破坏`PORTA`寄存器值。
-
-​		本例使用外设寄存器，但在对变量执行读、修改、写操作时也适用相同的原则。
+	
+	```
+	 /* 正在编译的C代码。*/
+	 PORTA |= 0x01; 
+	 
+	 /* 编译C代码时生成的汇编代码。*/
+	 LOAD   R1, [#PORTA]  ; Read a value from PORTA into R1
+	 MOVE   R2, #0x01     ; Move the absolute constant 1 into R2
+	 OR     R1, R2        ; Bitwise OR R1 (PORTA) with R2 (constant 1)
+	 STORE  R1, [#PORTA]  ; Store the new value back to PORTA
+	```
+	
+	清单 111. 读、修改、写顺序的示例
+	
+	
+	
+	这是一个“非原子”操作，因为它需要多个指令才能完成，并且可以被中断。考虑以下场景，其中两个任务试图更新名为`PORTA`的内存映射寄存器。
+	
+	1. 任务A将`PORTA`的值加载到寄存器中——操作的读部分。
+	2. 任务A在完成同一操作的修改和写部分之前被任务B抢占。
+	3. 任务B更新`PORTA`值。则进入阻塞状态。
+	4. 任务A从它被抢占的位置继续执行。在将更新后的值写回`PORTA`之前，它修改已经保存在寄存器中的`PORTA`值的副本。
+	
+	在这个场景中，任务A更新和回写`PORTA`的过期值。任务B在任务A获取`PORTA`值的副本之后修改`PORTA`，并且	在任务A将其修改后的值写回`PORTA`寄存器之前修改`PORTA`。当任务A写入`PORTA`时，它会覆盖任务B已经执行的修改，从而有效地破坏`PORTA`寄存器值。
+	
+	本例使用外设寄存器，但在对变量执行读、修改、写操作时也适用相同的原则。
 
 3. 变量的非原子访问
 
