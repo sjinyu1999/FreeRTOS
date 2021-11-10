@@ -146,7 +146,7 @@ taskEXIT_CRITICAL();
 
 清单111.  使用临界区来保护对寄存器的访问
 
-本书附带的示例项目使用了一个名为vPrintString()的函数来将字符串写入标准输出(即使用FreeRTOS Windows端口时的终端窗口)。vPrintString()从许多不同的任务调用;因此，理论上，它的实现可以使用临界区保护对标准输出的访问，如清单115所示。
+本书附带的示例项目使用了一个名为`vPrintString()`的函数来将字符串写入标准输出(即使用FreeRTOS Windows端口时的终端窗口)。`vPrintString()`从许多不同的任务调用;因此，理论上，它的实现可以使用临界区保护对标准输出的访问，如清单115所示。
 
 ```groovy
 void vPrintString( const char *pcString )
@@ -229,7 +229,7 @@ void vTaskSuspendAll( void );
 BaseType_t xTaskResumeAll( void );
 ```
 
-清单118.  xTaskResumeAll() API函数原型
+清单118.  `xTaskResumeAll()` API函数原型
 
 通过调用`xTaskResumeAl()`恢复(未挂起)调度器。
 
@@ -281,7 +281,7 @@ void vPrintString( const char *pcString )
 
 ### xSemaphoreCreateMutex() API函数
 
-FreeRTOS V9.0.0还包括`xSemaphoreCreateMutexStatic()`函数，该函数在编译时分配静态创建互斥锁所需的内存:互斥锁是一种信号量类型。所有不同类型的FreeRTOS信号量的句柄都存储在SemaphoreHandle_t类型的变量中。
+FreeRTOS V9.0.0还包括`xSemaphoreCreateMutexStatic()`函数，该函数在编译时分配静态创建互斥锁所需的内存:互斥锁是一种信号量类型。所有不同类型的FreeRTOS信号量的句柄都存储在`SemaphoreHandle_t`类型的变量中。
 
 在使用互斥锁之前，必须先创建它。要创建互斥量类型的信号量，请使用`xSemaphoreCreateMutex()` APl函数。
 
@@ -295,7 +295,7 @@ SemaphoreHandle_t xSemaphoreCreateMutex( void );
 
 | 参数名称/返回值 | 描述                                                         |
 | --------------- | ------------------------------------------------------------ |
-| 返回值          | 如果返回`NULL`，则无法创建互斥锁，因为没有足够的堆内存供FreeRTOS分配互斥锁数据结构。第2章提供了堆内存管理的更多信息。非null返回值表明互斥锁已经成功创建。返回值应该存储为创建的互斥锁的句柄。 |
+| 返回值          | 如果返回`NULL`，则无法创建互斥锁，因为没有足够的堆内存供FreeRTOS分配互斥锁数据结构。第2章提供了堆内存管理的更多信息。非`NULL`返回值表明互斥锁已经成功创建。返回值应该存储为创建的互斥锁的句柄。 |
 
 
 
@@ -306,10 +306,10 @@ SemaphoreHandle_t xSemaphoreCreateMutex( void );
 ```groovy
 static void prvNewPrintString( const char *pcString )
 {
-	/*互斥锁是在调度器启动之前创建的，所以在任务执行时已经存在尝试获取互斥锁，如果互斥锁不能立即可用，		则无限期阻塞以等待它。对xSemaphoreTake()的调用只有在成功获得互斥锁时才会返回。所以不需要检查函		 数的返回值。如果使用了任何其他延迟周期，那么代码必须在访问共享资源(在本例中是标准输出)之前检查 		xSemaphorerake()是否返回pdTRUE。正如本书前面提到的，不建议在生产代码中使用无限期超时。*/
+	/*互斥锁是在调度器启动之前创建的，所以在任务执行时已经存在尝试获取互斥锁，如果互斥锁不能立即可用，则无限期阻塞以等待它。对xSemaphoreTake()的调用只有在成功获得互斥锁时才会返回。所以不需要检查函数的返回值。如果使用了任何其他延迟周期，那么代码必须在访问共享资源(在本例中是标准输出)之前检查xSemaphorerake()是否返回pdTRUE。正如本书前面提到的，不建议在生产代码中使用无限期超时。*/
  	xSemaphoreTake( xMutex, portMAX_DELAY );
  	{
-	/*只有成功获得互斥锁后，才会执行下面的行。现在可以自由访问标准输出，因为在任何时候只有一个任务可以		拥有互斥锁。*/
+	/*只有成功获得互斥锁后，才会执行下面的行。现在可以自由访问标准输出，因为在任何时候只有一个任务可以拥有互斥锁。*/
 	 printf( "%s", pcString );
      fflush( stdout );
         
@@ -335,17 +335,17 @@ const TickType_t xMaxBlockTimeTicks = 0x20;
  	{
  		/*使用新定义的函数输出字符串。*/
  		prvNewPrintString( pcStringToPrint );
-		/*等待一个伪随机时间。请注意rand()不一定是可重入的，但在这种情况下，它实际上并不重要，因为代			码并不关心返回的值是什么。在更安全的应用程序中，应该使用已知可重入的rand()版本——或者应该在		   临界区段保护rand()的调用。*/
+		/*等待一个伪随机时间。请注意rand()不一定是可重入的，但在这种情况下，它实际上并不重要，因为代码并不关心返回的值是什么。在更安全的应用程序中，应该使用已知可重入的rand()版本——或者应该在临界区段保护rand()的调用。*/
  		 vTaskDelay( ( rand() % xMaxBlockTimeTicks ) );
  	} 
 }
 ```
 
-清单122.  例20中`prvPrintTask()`的实现
+清单122.  示例20中`prvPrintTask()`的实现
 
 正常情况下，`main()`只是创建互斥锁，创建任务，然后启动调度器。实现如清单123所示。
 
-`prvPrintTask()`的两个实例以不同的优先级创建，因此优先级较低的任务有时会被优先级较高的任务抢占。由于使用互斥锁来确保每个任务对终端的访问是互斥的，所以即使发生了抢占，被删除的字符串也将是正确的，并且不会损坏。通过减少任务处于阻塞状态的最大时间，可以增加抢占的频率，该时间是由xMaxBlockTimeTicks常量设置的。
+`prvPrintTask()`的两个实例以不同的优先级创建，因此优先级较低的任务有时会被优先级较高的任务抢占。由于使用互斥锁来确保每个任务对终端的访问是互斥的，所以即使发生了抢占，被删除的字符串也将是正确的，并且不会损坏。通过减少任务处于阻塞状态的最大时间，可以增加抢占的频率，该时间是由`xMaxBlockTimeTicks`常量设置的。
 
 使用FreeRTOS Windows端口的示例20的注意事项:
 
@@ -360,7 +360,7 @@ int main( void )
  	/*在创建任务之前检查信号量是否创建成功。*/
  	if( xMutex != NULL )
  	{
-		/*创建两个写入stdout的任务实例。他们写入的字符串作为任务的参数传递给任务。任务按不同的优先级			创建，因此会发生一些抢占。*/
+		/*创建两个写入stdout的任务实例。他们写入的字符串作为任务的参数传递给任务。任务按不同的优先级创建，因此会发生一些抢占。*/
  		xTaskCreate( prvPrintTask, "Print1", 1000, 
  					"Task 1 ***************************************\r\n", 1, NULL );
  		xTaskCreate( prvPrintTask, "Print2", 1000, 
@@ -483,19 +483,19 @@ const TickType_t xMaxBlock20ms = pdMS_TO_TICKS( 20 );
         /*取递归互斥锁。 */
         if( xSemaphoreTakeRecursive( xRecursiveMutex, xMaxBlock20ms ) == pdPASS )
         {
-            /*成功获取递归互斥锁。任务现在可以访问互斥锁保护的资源。此时，递归调用计数(即对					xSemaphoreTakeRecursive()的嵌套调用的数量)为1，因为递归互斥对象只被取过一次。* /
+            /*成功获取递归互斥锁。任务现在可以访问互斥锁保护的资源。此时，递归调用计数(即对xSemaphoreTakeRecursive()的嵌套调用的数量)为1，因为递归互斥对象只被取过一次。* /
             
- 			/*当它已经持有递归的互斥对象时，任务再次接受互斥对象。在实际的应用程序中这只可能发生			    在该任务调用的子函数中，因为没有实际的理由要多次使用同一个互斥锁。调用任务已经是互斥			   锁的持有者，所以对xSemaphorerakeRecursive()的第二次调用只是将递归调用的声音增加到2。*/
+ 			/*当它已经持有递归的互斥对象时，任务再次接受互斥对象。在实际的应用程序中这只可能发生在该任务调用的子函数中，因为没有实际的理由要多次使用同一个互斥锁。调用任务已经是互斥锁的持有者，所以对xSemaphorerakeRecursive()的第二次调用只是将递归调用的声音增加到2。*/
  		   xSemaphoreTakeRecursive( xRecursiveMutex, xMaxBlock20ms );
             
  			/* ... */
-            /*任务在访问了互斥锁保护的资源后返回互斥锁。此时，递归调用计数为2，因此对							xSemaphoreGiveRecursive()的第一次调用不返回互斥锁。相反它只是将递归调用计数减回1。*/
+            /*任务在访问了互斥锁保护的资源后返回互斥锁。此时，递归调用计数为2，因此对xSemaphoreGiveRecursive()的第一次调用不返回互斥锁。相反它只是将递归调用计数减回1。*/
  			xSemaphoreGiveRecursive( xRecursiveMutex );
             
-			/*下一次调用xSemaphoreGiveRecursive()时，返回的调用计数减少为0。所以这次返回的是递归			  互斥锁。*/
+			/*下一次调用xSemaphoreGiveRecursive()时，返回的调用计数减少为0。所以这次返回的是递归互斥锁。*/
  			xSemaphoreGiveRecursive( xRecursiveMutex );
             
-			/*现在每次调用xSemaphoreGiveRecursive()都会执行一个xSemaphoreGiveRecursive()，所以				任务不再是互斥锁的持有者。*/
+			/*现在每次调用xSemaphoreGiveRecursive()都会执行一个xSemaphoreGiveRecursive()，所以任务不再是互斥锁的持有者。*/
 		}
 	} 
 }
@@ -585,7 +585,7 @@ TickType_t xTimeAtWhichMutexWasTaken;
  		/* 文本已经写入显示器，因此返回互斥锁。*/
  		xSemaphoreGive( xMutex );
         
-		/*如果每次迭代都调用taskYIELD()，那么该任务只会在很短的一段时间内保持运行状态，而在任务之间		快速切换会浪费处理时间。因此，只有当在互斥锁被持有时时钟计数改变时才调用taskYIELD()。* /
+		/*如果每次迭代都调用taskYIELD()，那么该任务只会在很短的一段时间内保持运行状态，而在任务之间快速切换会浪费处理时间。因此，只有当在互斥锁被持有时时钟计数改变时才调用taskYIELD()。* /
  		if( xTaskGetTickCount() != xTimeAtWhichMutexWasTaken )
  		{
  			taskYIELD();
@@ -618,7 +618,7 @@ TickType_t xTimeAtWhichMutexWasTaken;
 
 滴答钩子(或滴答回调)是内核在每次滴答中断期间调用的函数。使用滴答钩子函数:
 
-1. 在`FreeRTOSConfig.h`中设置configUSE_TICK_HOOK为1。
+1. 在`FreeRTOSConfig.h`中设置`configUSE_TICK_HOOK`为1。
 2. 提供钩子函数的实现，使用清单127所示的准确的函数名称和原型如清单127所示。
 
 ```groovy
@@ -629,17 +629,17 @@ void vApplicationTickHook( void );
 
 钩子函数在勾选中断的上下文中执行，因此必须保持非常短的时间。所以必须保持非常短，必须只使用适量的堆栈空间，并且不能调用任何不以“`FromISR()`”结尾的FreeRTOS API 函数，而不是以 “`FromISR() `”结尾。
 
-调度器将总是在滴答钩子函数之后立即执行，所以中断安全。从滴答钩子调用的FreeRTOS API函数不需要使用其 pxHigherPriorityTaskWoken参数，并且该参数可以被设置为`NULL`。
+调度器将总是在滴答钩子函数之后立即执行，所以中断安全。从滴答钩子调用的FreeRTOS API函数不需要使用其 `pxHigherPriorityTaskWoken`参数，并且该参数可以被设置为`NULL`。
 
 ```groovy
 static void prvStdioGatekeeperTask( void *pvParameters )
 {
 char *pcMessageToPrint;
     
-    /*这是唯一允许写入标准输出的任务。任何其他想要将字符串写入输出的任务都不会直接访问标准输出，而是将		字符串发送给该任务。因为只有该任务访问标准输出，所以在任务本身的实现中不需要考虑互斥或序列化问		  题。*/
+    /*这是唯一允许写入标准输出的任务。任何其他想要将字符串写入输出的任务都不会直接访问标准输出，而是将字符串发送给该任务。因为只有该任务访问标准输出，所以在任务本身的实现中不需要考虑互斥或序列化问题。*/
  	for( ;; )
 	{
-		/*等待消息到达。指定了一个不确定的块时间，因此不需要检查返回值-该函数只在成功接收到消息时返			回。*/
+		/*等待消息到达。指定了一个不确定的块时间，因此不需要检查返回值-该函数只在成功接收到消息时返回。*/
  		xQueueReceive( xPrintQueue, &pcMessageToPrint, portMAX_DELAY );
         
  		/* Output the received string. */
@@ -666,10 +666,10 @@ const TickType_t xMaxBlockTimeTicks = 0x20;
     
     for( ;; )
  	{
-        /*输出字符串，不是直接输出，而是通过队列将字符串的指针传递给看门人任务。队列是在调度程序			启动之前创建的，因此在该任务第一次执行时已经存在。没有指定块时间，因为队列中总是有空间。*/
+        /*输出字符串，不是直接输出，而是通过队列将字符串的指针传递给看门人任务。队列是在调度程序启动之前创建的，因此在该任务第一次执行时已经存在。没有指定块时间，因为队列中总是有空间。*/
  		xQueueSendToBack( xPrintQueue, &( pcStringsToPrint[ iIndexToString ] ), 0 );
         
-        /*等待一个伪随机时间。请注意rand()不一定是可重入的，但在这种情况下，它实际上并不重要，因为代		  码并不关心返回的值是什么。在更安全的应用程序中，应该使用已知可重入的rand()版本——或者应该使		    用临界区来保护对rand()的调用。*/
+        /*等待一个伪随机时间。请注意rand()不一定是可重入的，但在这种情况下，它实际上并不重要，因为代码并不关心返回的值是什么。在更安全的应用程序中，应该使用已知可重入的rand()版本——或者应该使用临界区来保护对rand()的调用。*/
  		vTaskDelay( ( rand() % xMaxBlockTimeTicks ) );
  	}
 }
@@ -688,7 +688,7 @@ static int iCount = 0;
  	iCount++;
  	if( iCount >= 200 )
  	{
-		/*由于xQueueSendToFrontFromISR()是从标记钩子调用的，所以不需要使用								xHigherPriorityTaskwoken参数(第三个参数)，该参数设置为NULL。*/
+		/*由于xQueueSendToFrontFromISR()是从标记钩子调用的，所以不需要使用xHigherPriorityTaskwoken参数(第三个参数)，该参数设置为NULL。*/
  		xQueueSendToFrontFromISR( xPrintQueue, 
  							  	  &( pcStringsToPrint[ 2 ] ), 
  							      NULL );
@@ -724,7 +724,7 @@ int main( void )
  	/* 检查队列是否创建成功。 */
  	if( xPrintQueue != NULL )
  	{
-        /*创建任务的两个实例，发送消息给守门人。任务使用的字符串的索引通过任务参数传递给任务				(xTaskcreate()的第4个参数)。这些任务按不同的优先级创建，因此高优先级任务偶尔会抢占低优先级		 任务。*/
+        /*创建任务的两个实例，发送消息给守门人。任务使用的字符串的索引通过任务参数传递给任务(xTaskcreate()的第4个参数)。这些任务按不同的优先级创建，因此高优先级任务偶尔会抢占低优先级任务。*/
  		xTaskCreate( prvPrintTask, "Print1", 1000, ( void * ) 0, 1, NULL );
  		xTaskCreate( prvPrintTask, "Print2", 1000, ( void * ) 1, 2, NULL );
        
@@ -735,7 +735,7 @@ int main( void )
  		vTaskStartScheduler();
  	}
     
-    /*如果一切正常，那么main()将永远不会到达这里，因为调度程序现在将运行任务。如果main()确实到达了这		里，那么很可能是没有足够的堆内存可用来创建空闲任务。第2章提供了堆内存管理的更多信息。*/
+    /*如果一切正常，那么main()将永远不会到达这里，因为调度程序现在将运行任务。如果main()确实到达了这里，那么很可能是没有足够的堆内存可用来创建空闲任务。第2章提供了堆内存管理的更多信息。*/
  	for( ;; );
 }
 ```
