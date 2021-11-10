@@ -310,16 +310,12 @@ const EventBits_t xBitsToWaitFor = ( mainFIRST_TASK_BIT  |
         /* 阻塞以等待事件位在事件组中被设置。*/
  		xEventGroupValue = xEventGroupWaitBits( /* 要读取的事件组。 */
  												xEventGroup,
-            
  												/* 位测试。 */
- 												xBitsToWaitFor,
-            
+ 												xBitsToWaitFor,           
  												/*如果满足解封条件，则在退出时清除位。*/
- 												pdTRUE,
-            
+ 												pdTRUE,           
  												/*不要等待所有的位。对于第二次执行，该参数被设置为pdTRUE。 */
- 												pdFALSE,
-            
+ 												pdFALSE,         
  												/* 不要超时。 */
  												portMAX_DELAY );
  		/*为设置的每个位打印一条消息。 */
